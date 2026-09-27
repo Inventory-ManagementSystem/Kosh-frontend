@@ -95,14 +95,13 @@ function Signup() {
 
   return (
     <main className="relative flex min-h-screen items-center justify-center bg-[#00010f] px-4 py-8 text-[#e6e6e8]">
-      <Link to="/" className="absolute top-6 left-6 sm:left-8">
-        <img src={logo} alt="KOSH" className="h-4 w-auto sm:h-5" />
+      <Link to="/" className="fixed top-8 left-8 sm:left-15">
+        <img src={logo} alt="KOSH" className="h-4 w-auto sm:h-6" />
       </Link>
       <AuthDecoration />
 
       <div className="w-full max-w-4xl">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-extrabold sm:text-4xl">KOSH</h1>
           <p className="mt-2 text-2xl">Create account as {roleName}</p>
         </div>
 
@@ -128,7 +127,7 @@ function Signup() {
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="Enter your name"
-                className={`w-full rounded-md border bg-[#00010f] px-4 py-3 text-sm text-[#e6e6e8] outline-none transition placeholder:text-[#9697a1] ${
+                className={`w-full rounded-md border bg-[#00010f] px-4 py-3 text-sm text-[#e6e6e8] outline-none transition placeholder:text-[#9697a1]${
                   errors.name
                     ? "border-[#d14d4d] focus:border-[#d14d4d]"
                     : "border-[#2b2c40] focus:border-[#b4bedd]"

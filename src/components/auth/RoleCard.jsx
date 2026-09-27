@@ -10,7 +10,7 @@ function RoleCard({ title, description, active, onSignup }) {
       }`}
     >
       <div className="flex flex-col items-center">
-        <div className="mb-5 text-4xl text-[#b4bedd]">
+        <div className="mb-5 h-20 w-20 flex items-center justify-center text-[#b4bedd] rounded-full bg-[#2b2c40]">
           <BsPersonFill size={70} />
         </div>
         <h2 className="text-2xl font-semibold text-[#e6e6e8]">{title}</h2>

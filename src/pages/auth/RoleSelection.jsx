@@ -13,13 +13,15 @@ function RoleSelection() {
 
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center bg-[#00010f] px-4 py-8 text-[#e6e6e8] sm:px-6">
-      <Link to="/" className="absolute top-6 left-6 sm:left-8">
-        <img src={logo} alt="KOSH" className="h-4 w-auto sm:h-5" />
+      <Link to="/" className="fixed  top-8 left-8 sm:left-15">
+        <img src={logo} alt="KOSH" className="h-4 w-auto sm:h-6" />
       </Link>
       <AuthDecoration />
       <div className="mx-auto flex w-full max-w-4xl flex-col items-center justify-center">
         <div className="mb-10 text-center">
-          <h1 className="text-3xl font-bold sm:text-4xl">Welcome to KOSH</h1>
+          <h1 className="text-3xl font-extrabold sm:text-4xl">
+            Welcome to <span className="text-[#b4bedd]">KOSH</span>
+          </h1>
         </div>
         <div className="flex w-full flex-col items-center gap-14 sm:flex-row sm:justify-center">
           <RoleCard

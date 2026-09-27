@@ -3,3 +3,7 @@
 body {
   font-family: "Inter", sans-serif;
 }
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 500px #00010f inset;
+  -webkit-text-fill-color: #e6e6e8;
+}

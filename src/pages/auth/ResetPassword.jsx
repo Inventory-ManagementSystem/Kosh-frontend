@@ -76,8 +76,8 @@ function ResetPassword() {
 
   return (
     <main className="relative flex min-h-screen items-center justify-center bg-[#00010f] px-4 py-8 text-[#e6e6e8]">
-      <Link to="/" className="absolute top-6 left-6 sm:left-8">
-        <img src={logo} alt="KOSH" className="h-4 w-auto sm:h-5" />
+      <Link to="/" className="fixed  top-8 left-8 sm:left-15">
+        <img src={logo} alt="KOSH" className="h-4 w-auto sm:h-6" />
       </Link>
       <AuthDecoration />
 

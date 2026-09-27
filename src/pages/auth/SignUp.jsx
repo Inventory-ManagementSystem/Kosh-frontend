@@ -2,7 +2,10 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { FcGoogle } from "react-icons/fc";
+import { Link } from "react-router-dom";
 
+import createaccount from "../../assets/auth/createaccount.svg";
+import logo from "../../assets/auth/logo.svg";
 import AuthDecoration from "../../components/auth/AuthDecoration";
 
 function Signup() {
@@ -87,10 +90,14 @@ function Signup() {
       ...formData,
       role,
     });
+    navigate("/setup-business");
   };
 
   return (
     <main className="relative flex min-h-screen items-center justify-center bg-[#00010f] px-4 py-8 text-[#e6e6e8]">
+      <Link to="/" className="absolute top-6 left-6 sm:left-8">
+        <img src={logo} alt="KOSH" className="h-4 w-auto sm:h-5" />
+      </Link>
       <AuthDecoration />
 
       <div className="w-full max-w-4xl">
@@ -260,7 +267,7 @@ function Signup() {
           <div className="hidden lg:flex lg:w-1/2 lg:flex-col lg:items-center lg:justify-center lg:self-stretch lg:pl-8">
             <div className="flex flex-1 w-full items-center justify-center">
               <div className="flex h-72 w-full items-center justify-center rounded-lg">
-                <span className="text-sm text-[#9697a1]">IMAGE</span>
+                <img src={createaccount} alt="SignUp illustration" />
               </div>
             </div>
             <p className="mt-6 text-xs text-[#9697a1]">

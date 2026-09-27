@@ -1,22 +1,26 @@
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+
 import RoleCard from "../../components/auth/RoleCard";
 import AuthDecoration from "../../components/auth/AuthDecoration";
+import logo from "../../assets/auth/logo.svg";
 
 function RoleSelection() {
   const navigate = useNavigate();
-
   const handleSignup = (role) => {
     navigate("/signup", { state: { role } });
   };
 
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center bg-[#00010f] px-4 py-8 text-[#e6e6e8] sm:px-6">
+      <Link to="/" className="absolute top-6 left-6 sm:left-8">
+        <img src={logo} alt="KOSH" className="h-4 w-auto sm:h-5" />
+      </Link>
       <AuthDecoration />
       <div className="mx-auto flex w-full max-w-4xl flex-col items-center justify-center">
         <div className="mb-10 text-center">
           <h1 className="text-3xl font-bold sm:text-4xl">Welcome to KOSH</h1>
         </div>
-
         <div className="flex w-full flex-col items-center gap-14 sm:flex-row sm:justify-center">
           <RoleCard
             title="Business Owner"
@@ -24,7 +28,6 @@ function RoleSelection() {
             active={false}
             onSignup={() => handleSignup("business_owner")}
           />
-
           <RoleCard
             title="Employee/Staff"
             description="Access limited to assigned features"
@@ -32,7 +35,6 @@ function RoleSelection() {
             onSignup={() => handleSignup("employee")}
           />
         </div>
-
         <p className="mt-10 text-sm text-[#9697a1]">
           Already have an account?{" "}
           <button

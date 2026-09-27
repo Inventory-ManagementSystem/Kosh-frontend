@@ -3,7 +3,7 @@ import { BsPersonFill } from "react-icons/bs";
 function RoleCard({ title, description, active, onSignup }) {
   return (
     <div
-      className={`flex min-h-74 w-full max-w-80 flex-col items-center justify-between rounded-lg border bg-[#000112] px-6 py-7 text-center transition duration-200 ${
+      className={`flex min-h-74 w-full max-w-80 flex-col items-center justify-between rounded-lg border bg-[#000112] px-6 py-7 text-center transition ${
         active
           ? "border-[#b4bedd] shadow-lg"
           : "border-[#2b2c40] hover:border-[#6b6c7a] hover:shadow-[0_0_25px_rgba(180,190,221,0.1)]"

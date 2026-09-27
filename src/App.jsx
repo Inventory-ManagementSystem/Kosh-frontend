@@ -4,6 +4,9 @@ import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/SignUp";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import OTPVerification from "./pages/auth/OTPVerification";
+import ResetPassword from "./pages/auth/ResetPassword";
+import SetupBusiness from "./pages/auth/SetUpBusiness";
+import SetupComplete from "./pages/auth/SetUpComplete";
 
 function App() {
   return (
@@ -14,6 +17,9 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/verify-otp" element={<OTPVerification />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/setup-business" element={<SetupBusiness />} />
+        <Route path="/complete-setup" element={<SetupComplete />} />
       </Routes>
     </>
   );

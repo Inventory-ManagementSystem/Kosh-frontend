@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
+import forgotpass from "../../assets/auth/forgotpass.svg";
+import logo from "../../assets/auth/logo.svg";
 import AuthDecoration from "../../components/auth/AuthDecoration";
 
 function ForgotPassword() {
@@ -28,6 +31,9 @@ function ForgotPassword() {
 
   return (
     <main className="relative flex min-h-screen items-center justify-center bg-[#00010f] px-4 py-8 text-[#e6e6e8]">
+      <Link to="/" className="absolute top-6 left-6 sm:left-8">
+        <img src={logo} alt="KOSH" className="h-4 w-auto sm:h-5" />
+      </Link>
       <AuthDecoration />
       <div className="w-full max-w-4xl">
         <div className="mb-8 text-center">
@@ -73,7 +79,7 @@ function ForgotPassword() {
 
           <div className="hidden lg:flex lg:w-1/2 lg:items-center lg:justify-center lg:pl-8">
             <div className="flex h-72 w-full items-center justify-center rounded-lg">
-              <span className="text-sm text-[#9697a1]">IMAGE</span>
+              <img src={forgotpass} alt="Forgot Password illustration" />
             </div>
           </div>
         </div>

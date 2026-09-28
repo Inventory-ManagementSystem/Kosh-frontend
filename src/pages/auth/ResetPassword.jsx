@@ -4,7 +4,7 @@ import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { Link } from "react-router-dom";
 
 import AuthDecoration from "../../components/auth/AuthDecoration";
-import login from "../../assets/auth/login.svg";
+import loginsvg from "../../assets/auth/loginsvg.svg";
 import logo from "../../assets/auth/logo.svg";
 
 function ResetPassword() {
@@ -191,7 +191,7 @@ function ResetPassword() {
 
           <div className="hidden lg:flex lg:w-1/2 lg:items-center lg:justify-center lg:self-stretch lg:pl-8">
             <div className="flex h-72 w-full items-center justify-center rounded-lg">
-              <img src={login} alt="Reset Password illustration" />
+              <img src={loginsvg} alt="Reset Password illustration" />
             </div>
           </div>
         </div>

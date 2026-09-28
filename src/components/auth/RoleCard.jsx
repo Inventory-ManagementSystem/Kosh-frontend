@@ -4,9 +4,7 @@ function RoleCard({ title, active, onSelect }) {
   const isEmployee = title === "Employee";
 
   return (
-    <button
-      type="button"
-      onClick={onSelect}
+    <label
       className={`flex h-16 w-full items-center rounded-lg border px-3 text-left transition ${
         active
           ? "border-[#b4bedd] shadow-[0_0_20px_rgba(180,190,221,0.12)]"
@@ -22,14 +20,14 @@ function RoleCard({ title, active, onSelect }) {
         </p>
         <p className="text-sm font-bold text-[#b4bedd]">{title}</p>
       </div>
-      <span
-        className={`flex h-3 w-3 items-center justify-center rounded-full border ${
-          active ? "border-[#b4bedd]" : "border-[#6b6c7a]"
-        }`}
-      >
-        {active && <span className="h-1.5 w-1.5 rounded-full bg-[#b4bedd]" />}
-      </span>
-    </button>
+      <input
+        type="radio"
+        name="role"
+        checked={active}
+        onChange={onSelect}
+        className="h-3 w-3 appearance-none rounded-full border border-[#6b6c7a] checked:border-[#b4bedd] checked:bg-[#b4bedd] checked:ring-2 checked:ring-[#00010f] checked:ring-inset"
+      />
+    </label>
   );
 }
 

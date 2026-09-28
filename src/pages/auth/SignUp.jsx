@@ -8,6 +8,8 @@ import createaccount from "../../assets/auth/createaccount.svg";
 import logo from "../../assets/auth/logo.svg";
 import AuthDecoration from "../../components/auth/AuthDecoration";
 
+import { regUser } from "../../api/regApi";
+
 function Signup() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -17,20 +19,19 @@ function Signup() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
   const [formData, setFormData] = useState({
-    name: "",
+    username: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
-
   const [errors, setErrors] = useState({
-    name: "",
+    username: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
+  const [apiError, setApiError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -44,18 +45,24 @@ function Signup() {
       ...errors,
       [name]: "",
     });
+
+    setApiError("");
   };
 
   const validateForm = () => {
     const newErrors = {
-      name: "",
+      username: "",
       email: "",
       password: "",
       confirmPassword: "",
     };
 
-    if (!formData.name.trim()) {
-      newErrors.name = "Name is required";
+    const usernameRegex = /^[a-zA-Z0-9_]{3,50}$/;
+    if (!formData.username.trim()) {
+      newErrors.username = "Username is required";
+    } else if (!usernameRegex.test(formData.username)) {
+      newErrors.username =
+        "Username must be 3-50 characters and contain only letters, numbers and underscores";
     }
 
     if (!formData.email.trim()) {
@@ -64,13 +71,16 @@ function Signup() {
       newErrors.email = "Enter a valid email address";
     }
 
-    if (/\s/.test(formData.password)) {
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,30}$/;
+    if (!formData.password) {
       newErrors.password = "Password is required";
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
+    } else if (!passwordRegex.test(formData.password)) {
+      newErrors.password =
+        "Password must be 8-30 characters with uppercase, lowercase, number and special character";
     }
 
-    if (/\s/.test(formData.confirmPassword)) {
+    if (!formData.confirmPassword) {
       newErrors.confirmPassword = "Please confirm your password";
     } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
@@ -81,28 +91,43 @@ function Signup() {
     return !Object.values(newErrors).some((error) => error);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) {
       return;
     }
-    console.log({
-      ...formData,
-      role,
-    });
-    navigate("/setup-business");
+    setApiError("");
+    try {
+      const data = await regUser({
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+      });
+      console.log(data);
+      navigate("/setup-business");
+    } catch (error) {
+      console.error("Registration failed:", error.message);
+      setApiError(error.message);
+    }
   };
 
   return (
     <main className="relative flex min-h-screen items-center justify-center bg-[#00010f] px-4 py-8 text-[#e6e6e8]">
-      <Link to="/" className="fixed top-8 left-8 sm:left-15">
-        <img src={logo} alt="KOSH" className="h-4 w-auto sm:h-6" />
+      <div className="fixed left-0 top-0 z-50 h-16 w-full bg-[#00010f] sm:hidden">
+        <Link to="/" className="absolute left-1/2 top-6 -translate-x-1/2">
+          <img src={logo} alt="KOSH" className="h-6 w-auto" />
+        </Link>
+      </div>
+      <Link to="/" className="fixed left-8 top-8 hidden sm:block">
+        <img src={logo} alt="KOSH" className="h-5 w-auto" />
       </Link>
       <AuthDecoration />
 
-      <div className="w-full max-w-4xl">
+      <div className="w-full max-w-4xl pt-20 sm:pt-0">
         <div className="mb-8 text-center">
-          <p className="mt-2 text-2xl">Create account as {roleName}</p>
+          <p className="mt-2 text-xl sm:text-2xl">
+            Create account as {roleName}
+          </p>
         </div>
 
         <div className="mx-auto w-full max-w-md rounded-lg border border-[#2b2c40] bg-[#000112] p-6 sm:p-8 lg:flex lg:max-w-4xl lg:items-center lg:p-10">
@@ -113,29 +138,29 @@ function Signup() {
           >
             <div className="mb-5">
               <label
-                htmlFor="name"
+                htmlFor="username"
                 className="mb-2 block text-sm font-medium text-[#e6e6e8]"
               >
-                Name
+                Username
               </label>
 
               <input
-                id="name"
+                id="username"
                 type="text"
-                name="name"
+                name="username"
                 maxLength={50}
-                value={formData.name}
+                value={formData.username}
                 onChange={handleChange}
-                placeholder="Enter your name"
+                placeholder="Enter your username"
                 className={`w-full rounded-md border bg-[#00010f] px-4 py-3 text-sm text-[#e6e6e8] outline-none transition placeholder:text-[#9697a1]${
-                  errors.name
+                  errors.username
                     ? "border-[#d14d4d] focus:border-[#d14d4d]"
                     : "border-[#2b2c40] focus:border-[#b4bedd]"
                 }`}
               />
 
-              {errors.name && (
-                <p className="mt-2 text-xs text-[#d14d4d]">{errors.name}</p>
+              {errors.username && (
+                <p className="mt-2 text-xs text-[#d14d4d]">{errors.username}</p>
               )}
             </div>
 
@@ -180,7 +205,7 @@ function Signup() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   name="password"
-                  maxLength={20}
+                  maxLength={30}
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Enter your password"
@@ -196,7 +221,7 @@ function Signup() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9697a1] transition hover:text-[#e6e6e8]"
                 >
-                  {showPassword ? <BsEyeSlash /> : <BsEye />}
+                  {showPassword ? <BsEye /> : <BsEyeSlash />}
                 </button>
               </div>
 
@@ -219,7 +244,7 @@ function Signup() {
                   type={showConfirmPassword ? "text" : "password"}
                   name="confirmPassword"
                   value={formData.confirmPassword}
-                  maxLength={20}
+                  maxLength={30}
                   onChange={handleChange}
                   placeholder="Confirm your password"
                   className={`w-full rounded-md border bg-[#00010f] px-4 py-3 pr-12 text-sm text-[#e6e6e8] outline-none transition placeholder:text-[#9697a1] ${
@@ -234,7 +259,7 @@ function Signup() {
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9697a1] transition hover:text-[#e6e6e8]"
                 >
-                  {showConfirmPassword ? <BsEyeSlash /> : <BsEye />}
+                  {showConfirmPassword ? <BsEye /> : <BsEyeSlash />}
                 </button>
               </div>
 
@@ -245,6 +270,11 @@ function Signup() {
               )}
             </div>
 
+            {apiError && (
+              <p className="mb-4 text-center text-xs text-[#d14d4d]">
+                {apiError}
+              </p>
+            )}
             <button
               type="submit"
               className="w-full rounded-md bg-[#2b2c40] text-[#9697a1] py-3 text-sm font-semibold transition hover:bg-[#b4bedd] hover:text-[#000119]"

@@ -47,11 +47,16 @@ function OTPVerification() {
 
   return (
     <main className="relative flex min-h-screen items-center justify-center bg-[#00010f] px-4 py-8 text-[#e6e6e8]">
-      <Link to="/" className="fixed  top-8 left-8 sm:left-15">
-        <img src={logo} alt="KOSH" className="h-4 w-auto sm:h-6" />
+      <div className="fixed left-0 top-0 z-50 h-16 w-full bg-[#00010f] sm:hidden">
+        <Link to="/" className="absolute left-1/2 top-6 -translate-x-1/2">
+          <img src={logo} alt="KOSH" className="h-6 w-auto" />
+        </Link>
+      </div>
+      <Link to="/" className="fixed left-8 top-8 hidden sm:block">
+        <img src={logo} alt="KOSH" className="h-5 w-auto" />
       </Link>
       <AuthDecoration />
-      <div className="w-full max-w-2xl">
+      <div className="w-full max-w-2xl pt-20 sm:pt-0">
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-extrabold sm:text-4xl">Verify OTP</h1>
           <p className="mx-auto mt-2 max-w-sm text-sm text-[#9697a1]">

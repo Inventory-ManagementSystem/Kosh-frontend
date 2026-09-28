@@ -1,12 +1,15 @@
 import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 
 import AuthDecoration from "../../components/auth/AuthDecoration";
 import logo from "../../assets/auth/logo.svg";
 
+import { verifyOTP } from "../../api/verifyOTP";
+
 function OTPVerification() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const email = location.state?.email;
   const inputRefs = useRef([]);
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [error, setError] = useState("");
@@ -28,15 +31,25 @@ function OTPVerification() {
       inputRefs.current[index - 1]?.focus();
     }
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const enteredOtp = otp.join("");
     if (enteredOtp.length !== 6) {
       setError("Please enter the complete 6-digit OTP");
       return;
     }
-    console.log("OTP:", enteredOtp);
-    navigate("/reset-password");
+    if (!email) {
+      setError("Email not found. Please restart the password reset process.");
+      return;
+    }
+    try {
+      const data = await verifyOTP(email, enteredOtp);
+      console.log("OTP verified:", data);
+      sessionStorage.setItem("resetToken", data.reset_token);
+      navigate("/reset-password");
+    } catch (error) {
+      setError(error.message);
+    }
   };
   const handleResend = () => {
     setOtp(["", "", "", "", "", ""]);

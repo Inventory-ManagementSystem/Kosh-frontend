@@ -7,6 +7,8 @@ import AuthDecoration from "../../components/auth/AuthDecoration";
 import loginsvg from "../../assets/auth/loginsvg.svg";
 import logo from "../../assets/auth/logo.svg";
 
+import { resetPwd } from "../../api/resetPwd";
+
 function ResetPassword() {
   const navigate = useNavigate();
 
@@ -43,15 +45,16 @@ function ResetPassword() {
       confirmPassword: "",
     };
 
-    if (!formData.password.trim()) {
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,30}$/;
+    if (!formData.password) {
       newErrors.password = "Password is required";
-    } else if (/\s/.test(formData.password)) {
-      newErrors.password = "Password cannot contain spaces";
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
+    } else if (!passwordRegex.test(formData.password)) {
+      newErrors.password =
+        "Password must be 8-30 characters with uppercase, lowercase, number and special character";
     }
 
-    if (!formData.confirmPassword.trim()) {
+    if (!formData.confirmPassword) {
       newErrors.confirmPassword = "Please confirm your password";
     } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
@@ -62,16 +65,29 @@ function ResetPassword() {
     return !Object.values(newErrors).some((error) => error);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateForm()) {
       return;
     }
-
-    console.log("Password reset:", formData);
-
-    navigate("/login");
+    const resetToken = sessionStorage.getItem("resetToken");
+    if (!resetToken) {
+      console.log("Reset token not found");
+      return;
+    }
+    try {
+      const data = await resetPwd(
+        resetToken,
+        formData.password,
+        formData.confirmPassword,
+      );
+      console.log("Password reset successful:", data);
+      sessionStorage.removeItem("resetToken");
+      navigate("/login");
+    } catch (error) {
+      console.log("Password reset failed:", error.message);
+    }
   };
 
   return (

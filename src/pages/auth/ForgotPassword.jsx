@@ -6,11 +6,13 @@ import forgotpass from "../../assets/auth/forgotpass.svg";
 import logo from "../../assets/auth/logo.svg";
 import AuthDecoration from "../../components/auth/AuthDecoration";
 
+import { forgotPwd } from "../../api/forgotPasswordApi";
+
 function ForgotPassword() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email.trim()) {
       setError("Email is required");
@@ -21,8 +23,14 @@ function ForgotPassword() {
       return;
     }
     setError("");
-    console.log({ email });
-    navigate("/verify-otp", { state: { email } });
+    try {
+      const data = await forgotPwd(email);
+      console.log("OTP sent:", data);
+      navigate("/verify-otp", { state: { email } });
+    } catch (error) {
+      console.log("Forgot password failed:", error.message);
+      setError(error.message);
+    }
   };
   const handleChange = (e) => {
     setEmail(e.target.value);

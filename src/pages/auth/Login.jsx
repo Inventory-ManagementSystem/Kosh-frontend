@@ -45,12 +45,13 @@ function Login() {
     if (!formData.identifier.trim()) {
       newErrors.identifier = "Invalid credentials";
     }
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,30}$/;
     if (!formData.password) {
       newErrors.password = "Password is required";
-    } else if (/\s/.test(formData.password)) {
-      newErrors.password = "Password cannot contain spaces";
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
+    } else if (!passwordRegex.test(formData.password)) {
+      newErrors.password =
+        "Password must be 8-30 characters with uppercase, lowercase, number and special character";
     }
     setErrors(newErrors);
     return !newErrors.identifier && !newErrors.password;

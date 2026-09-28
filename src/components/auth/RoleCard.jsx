@@ -1,34 +1,35 @@
-import { BsPersonFill } from "react-icons/bs";
+import { BsPersonFill, BsPeopleFill } from "react-icons/bs";
 
-function RoleCard({ title, description, active, onSignup }) {
+function RoleCard({ title, active, onSelect }) {
+  const isEmployee = title === "Employee";
+
   return (
-    <div
-      className={`flex min-h-74 w-full max-w-80 flex-col items-center justify-between rounded-lg border bg-[#000112] px-6 py-7 text-center transition ${
+    <button
+      type="button"
+      onClick={onSelect}
+      className={`flex h-16 w-full items-center rounded-lg border px-3 text-left transition ${
         active
-          ? "border-[#b4bedd] shadow-lg"
-          : "border-[#2b2c40] hover:border-[#6b6c7a] hover:shadow-[0_0_25px_rgba(180,190,221,0.1)]"
+          ? "border-[#b4bedd] shadow-[0_0_20px_rgba(180,190,221,0.12)]"
+          : "border-[#2b2c40] hover:border-[#6b6c7a]"
       }`}
     >
-      <div className="flex flex-col items-center">
-        <div className="mb-5 h-20 w-20 flex items-center justify-center text-[#b4bedd] rounded-full bg-[#2b2c40]">
-          <BsPersonFill size={70} />
-        </div>
-        <h2 className="text-2xl font-semibold text-[#e6e6e8]">{title}</h2>
-        <p className="mt-1 max-w-44 text-xs text-[#9697a1]">{description}</p>
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#6b6c7a] bg-[#000112] text-[#b4bedd]">
+        {isEmployee ? <BsPeopleFill size={16} /> : <BsPersonFill size={17} />}
       </div>
-
-      <button
-        type="button"
-        onClick={onSignup}
-        className={`mt-6 rounded-md px-5 py-2 text-xs font-semibold transition ${
-          active
-            ? "bg-[#2b2c40] text-[#9697a1] hover:bg-[#9697a1] hover:text-[#2b2c40]"
-            : "bg-[#2b2c40] text-[#9697a1] hover:bg-[#b4bedd] hover:text-[#000119]"
+      <div className="ml-4 flex-1">
+        <p className="text-xs font-medium text-[#e6e6e8]">
+          {isEmployee ? "I am an" : "I am a"}
+        </p>
+        <p className="text-sm font-bold text-[#b4bedd]">{title}</p>
+      </div>
+      <span
+        className={`flex h-3 w-3 items-center justify-center rounded-full border ${
+          active ? "border-[#b4bedd]" : "border-[#6b6c7a]"
         }`}
       >
-        Sign Up
-      </button>
-    </div>
+        {active && <span className="h-1.5 w-1.5 rounded-full bg-[#b4bedd]" />}
+      </span>
+    </button>
   );
 }
 

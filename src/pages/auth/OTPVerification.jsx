@@ -5,6 +5,8 @@ import AuthDecoration from "../../components/auth/AuthDecoration";
 import logo from "../../assets/auth/logo.svg";
 
 import { verifyOTP } from "../../api/verifyOTP";
+import BackButton from "../../components/auth/BackButton";
+import NavigationButton from "../../components/auth/NavigationButton";
 
 function OTPVerification() {
   const navigate = useNavigate();
@@ -13,6 +15,7 @@ function OTPVerification() {
   const inputRefs = useRef([]);
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [error, setError] = useState("");
+  const isFormFilled = otp.every((digit) => digit !== "");
   const handleChange = (index, value) => {
     if (!/^\d?$/.test(value)) {
       return;
@@ -102,13 +105,6 @@ function OTPVerification() {
           {error && (
             <p className="mt-4 text-center text-xs text-[#d14d4d]">{error}</p>
           )}
-          <button
-            type="submit"
-            className="mx-auto mt-6 block w-full max-w-xs cursor-pointer rounded-md bg-[#2b2c40] py-3 text-sm font-semibold text-[#9697a1] transition duration-200 hover:bg-[#b4bedd] hover:text-[#000119]"
-          >
-            Verify OTP
-          </button>
-
           <p className="mt-5 text-center text-sm text-[#9697a1]">
             Didn't receive the code?{" "}
             <button
@@ -118,14 +114,14 @@ function OTPVerification() {
             >
               Resend OTP
             </button>
+            <div className="mt-6 gap-4 flex justify-center">
+              <BackButton onClick={() => navigate(-1)}>Back</BackButton>
+
+              <NavigationButton type="submit" isFormFilled={isFormFilled}>
+                Verify OTP
+              </NavigationButton>
+            </div>
           </p>
-          <button
-            type="button"
-            onClick={() => navigate("/login")}
-            className="mt-4 block w-full text-center text-sm text-[#9697a1] transition hover:text-[#e6e6e8]"
-          >
-            Back to Login
-          </button>
         </form>
       </div>
     </main>

@@ -7,6 +7,8 @@ import logo from "../../assets/auth/logo.svg";
 import AuthDecoration from "../../components/auth/AuthDecoration";
 
 import { forgotPwd } from "../../api/forgotPasswordApi";
+import NavigationButton from "../../components/auth/NavigationButton";
+import BackButton from "../../components/auth/BackButton";
 
 function ForgotPassword() {
   const navigate = useNavigate();
@@ -36,6 +38,7 @@ function ForgotPassword() {
     setEmail(e.target.value);
     setError("");
   };
+  const isFormFilled = Boolean(email.trim());
 
   return (
     <main className="relative flex min-h-screen items-center justify-center bg-[#00010f] px-4 py-8 text-[#e6e6e8]">
@@ -76,12 +79,13 @@ function ForgotPassword() {
               />
               {error && <p className="mt-2 text-xs text-[#d14d4d]">{error}</p>}
             </div>
-            <button
-              type="submit"
-              className="w-full cursor-pointer rounded-md bg-[#2b2c40] py-3 text-sm font-semibold text-[#9697a1] transition duration-200 hover:bg-[#b4bedd] hover:text-[#000119]"
-            >
-              Send OTP
-            </button>
+            <div className="mt-6 flex gap-4">
+              <BackButton onClick={() => navigate("/login")}>Back</BackButton>
+
+              <NavigationButton type="submit" isFormFilled={isFormFilled}>
+                Send OTP
+              </NavigationButton>
+            </div>
           </form>
 
           <div className="hidden lg:flex lg:w-1/2 lg:items-center lg:justify-center lg:pl-8">

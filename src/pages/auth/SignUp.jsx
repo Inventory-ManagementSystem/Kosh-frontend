@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
-import { FcGoogle } from "react-icons/fc";
+import { IoMdArrowRoundBack } from "react-icons/io";
 import { Link } from "react-router-dom";
 
 import createaccount from "../../assets/auth/createaccount.svg";
 import logo from "../../assets/auth/logo.svg";
 import AuthDecoration from "../../components/auth/AuthDecoration";
+import AuthButton from "../../components/auth/AuthButton";
+import GoogleButton from "../../components/auth/GoogleButton";
 
 import { regUser } from "../../api/regApi";
 
@@ -91,6 +93,12 @@ function Signup() {
     return !Object.values(newErrors).some((error) => error);
   };
 
+  const isFormFilled =
+    Boolean(formData.username.trim()) &&
+    Boolean(formData.email.trim()) &&
+    Boolean(formData.password) &&
+    Boolean(formData.confirmPassword);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) {
@@ -125,12 +133,20 @@ function Signup() {
 
       <div className="w-full max-w-4xl pt-20 sm:pt-0">
         <div className="mb-8 text-center">
-          <p className="mt-2 text-xl sm:text-2xl">
-            Create account as {roleName}
+          <p className="font-['Google_Sans_Flex'] mt-2 text-xl sm:text-2xl font-semibold">
+            Create account as{" "}
+            <span className="text-[#b4bedd] font-bold">{roleName}</span>
           </p>
         </div>
 
-        <div className="mx-auto w-full max-w-md rounded-lg border border-[#2b2c40] bg-[#000112] p-6 sm:p-8 lg:flex lg:max-w-4xl lg:items-center lg:p-10">
+        <div className="relative mx-auto w-full max-w-md rounded-lg border border-[#2b2c40] bg-[#000112] p-6 sm:p-8 lg:flex lg:max-w-4xl lg:items-center lg:p-10">
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="absolute left-4 top-4 z-10 cursor-pointer text-[#b4bedd]"
+          >
+            <IoMdArrowRoundBack size={20} />
+          </button>
           <form
             noValidate
             onSubmit={handleSubmit}
@@ -139,11 +155,10 @@ function Signup() {
             <div className="mb-5">
               <label
                 htmlFor="username"
-                className="mb-2 block text-sm font-medium text-[#e6e6e8]"
+                className="text-sm font-medium text-[#e6e6e8]"
               >
                 Username
               </label>
-
               <input
                 id="username"
                 type="text"
@@ -275,22 +290,11 @@ function Signup() {
                 {apiError}
               </p>
             )}
-            <button
-              type="submit"
-              className="w-full rounded-md bg-[#2b2c40] text-[#9697a1] py-3 text-sm font-semibold transition hover:bg-[#b4bedd] hover:text-[#000119]"
-            >
-              Create Account
-            </button>
+            <AuthButton isFormFilled={isFormFilled}>Create Account</AuthButton>
 
             <div className="my-5 text-center text-xs text-[#9697a1]">OR</div>
 
-            <button
-              type="button"
-              className="flex w-full items-center justify-center gap-3 py-3 text-sm font-semibold text-[#e6e6e8] cursor-pointer"
-            >
-              <FcGoogle />
-              Continue with Google
-            </button>
+            <GoogleButton onClick={() => console.log("Google Login")} />
           </form>
 
           <div className="hidden lg:flex lg:w-1/2 lg:flex-col lg:items-center lg:justify-center lg:self-stretch lg:pl-8">
@@ -316,7 +320,7 @@ function Signup() {
             <button
               type="button"
               onClick={() => navigate("/login")}
-              className="text-base text-[#b4bedd] transition hover:text-[#e6e6e8]"
+              className="text-base text-[#b4bedd] underline underline-offset-4 transition hover:text-[#e6e6e8]"
             >
               Login
             </button>

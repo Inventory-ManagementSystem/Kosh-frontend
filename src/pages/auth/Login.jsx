@@ -2,11 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
-import { FcGoogle } from "react-icons/fc";
 
 import loginsvg from "../../assets/auth/loginsvg.svg";
 import logo from "../../assets/auth/logo.svg";
 import AuthDecoration from "../../components/auth/AuthDecoration";
+import AuthButton from "../../components/auth/AuthButton";
+import GoogleButton from "../../components/auth/GoogleButton";
 
 import { loginUser } from "../../api/loginApi";
 import { useAuth } from "../../context/AuthContext";
@@ -74,6 +75,8 @@ function Login() {
     }
   };
 
+  const isFormFilled =
+    Boolean(formData.identifier.trim()) && Boolean(formData.password);
   return (
     <main className="relative flex min-h-screen items-center justify-center bg-[#00010f] px-4 py-8 text-[#e6e6e8]">
       <div className="fixed left-0 top-0 z-50 h-16 w-full bg-[#00010f] sm:hidden">
@@ -87,7 +90,9 @@ function Login() {
       <AuthDecoration />
       <div className="w-full max-w-4xl pt-20 sm:pt-0">
         <div className="mb-8 text-center">
-          <p className="mt-2 text-2xl font-bold">Welcome Back!</p>
+          <p className="font-['Google_Sans_Flex'] mt-2 text-2xl font-bold">
+            Welcome to <span className="text-[#b4bedd]">KOSH</span>
+          </p>
         </div>
 
         <div className="mx-auto w-full max-w-md rounded-lg border border-[#2b2c40] bg-[#000112] p-6 sm:p-8 lg:flex lg:max-w-4xl lg:items-center lg:p-10">
@@ -101,7 +106,7 @@ function Login() {
                 htmlFor="identifier"
                 className="mb-2 block text-sm font-medium text-[#e6e6e8]"
               >
-                Email/Username
+                Email or Username
               </label>
               <input
                 id="identifier"
@@ -165,34 +170,23 @@ function Login() {
               <button
                 type="button"
                 onClick={() => navigate("/forgot-password")}
-                className="text-xs text-[#b4bedd] transition hover:text-[#e6e6e8]"
+                className="text-xs text-[#b4bedd] transition hover:text-[#e6e6e8] underline underline-offset-4"
               >
                 Forgot Password?
               </button>
             </div>
 
-            <button
-              type="submit"
-              className="w-full cursor-pointer rounded-md bg-[#2b2c40] text-[#9697a1] py-3 text-sm font-semibold transition hover:bg-[#b4bedd] hover:text-[#000119]"
-            >
-              Login
-            </button>
+            <AuthButton isFormFilled={isFormFilled}>Login</AuthButton>
             <div className="my-5 text-center text-xs text-[#9697a1]">OR</div>
 
-            <button
-              type="button"
-              className="flex w-full items-center justify-center gap-3 py-3 text-sm font-semibold text-[#e6e6e8] transition cursor-pointer"
-            >
-              <FcGoogle className="text-[#b4bedd]" />
-              Login with Google
-            </button>
+            <GoogleButton onClick={() => console.log("Google Login")} />
 
             <p className="mt-6 text-center text-sm text-[#9697a1]">
               Don't have an account?{" "}
               <button
                 type="button"
                 onClick={() => navigate("/role")}
-                className="text-base text-[#b4bedd] transition hover:text-[#e6e6e8]"
+                className="text-base text-[#b4bedd] underline underline-offset-4 transition hover:text-[#e6e6e8]"
               >
                 Sign Up
               </button>

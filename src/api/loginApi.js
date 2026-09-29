@@ -11,7 +11,7 @@ export const loginUser = async (credentials) => {
 
   const data = await response.json();
   if (!response.ok) {
-    throw new Error(data.message || "Invalid username and password");
+    throw new Error(data.message || "Invalid username or password");
   }
 
   return data;

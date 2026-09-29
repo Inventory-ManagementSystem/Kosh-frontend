@@ -112,7 +112,11 @@ function Signup() {
         password: formData.password,
       });
       console.log(data);
-      navigate("/setup-business");
+      navigate("/registration-otp", {
+  state: {
+    email: formData.email,
+  },
+});
     } catch (error) {
       console.error("Registration failed:", error.message);
       setApiError(error.message);

@@ -8,7 +8,7 @@ import AuthDecorations from "../../components/auth/AuthDecoration";
 function SetupComplete() {
   const navigate = useNavigate();
   const handleDashboard = () => {
-    navigate("/login");
+    navigate("/dashboard");
   };
 
   return (

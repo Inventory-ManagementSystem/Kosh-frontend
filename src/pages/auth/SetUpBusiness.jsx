@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 import AuthDecoration from "../../components/auth/AuthDecoration";
 import setupbusiness from "../../assets/auth/setupbusiness.svg";
 import logo from "../../assets/auth/logo.svg";
+
+import {regBusiness} from "../../api/businessApi";
 
 function SetupBusiness() {
   const navigate = useNavigate();
@@ -50,14 +52,23 @@ function SetupBusiness() {
     setErrors(newErrors);
     return !Object.values(newErrors).some((error) => error);
   };
-
-  const handleSubmit = (e) => {
+const location = useLocation();
+const email = location.state?.email;
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) {
       return;
     }
-    console.log(formData);
-    navigate("/complete-setup");
+     try {
+    const data = await regBusiness({
+      business_name: formData.businessName,
+      business_type: formData.businessType,
+      city: formData.city,
+    });
+     navigate("/complete-setup");
+  } catch (error) {
+    console.error("Business registration failed:", error);
+  }
   };
 
   return (

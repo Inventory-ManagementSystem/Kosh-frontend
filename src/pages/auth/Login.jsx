@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation,useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 
@@ -14,6 +14,7 @@ import { useAuth } from "../../context/AuthContext";
 
 function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -23,6 +24,7 @@ function Login() {
   const [errors, setErrors] = useState({
     identifier: "",
     password: "",
+    general:"",
   });
 
   const handleChange = (e) => {
@@ -69,9 +71,22 @@ function Login() {
         password: formData.password,
       });
       login(data.access, data.refresh);
-      navigate("/dashboard");
+        if (location.state?.fromRegistration) {
+    navigate("/setup-business", {
+      state: {
+        email: location.state.email,
+      },
+    });
+  } else {
+  navigate("/dashboard");
+}
     } catch (error) {
       console.log("Login Failed", error.message);
+       setErrors({
+        identifier: "",
+        password: "",
+        general: error.message,
+  });
     }
   };
 
@@ -165,7 +180,11 @@ function Login() {
                 <p className="mt-2 text-xs text-[#d14d4d]">{errors.password}</p>
               )}
             </div>
-
+            {errors.general && (
+                <p className="mb-4 text-center text-xs text-[#d14d4d]">
+                  {errors.general}
+                </p>
+              )}
             <div className="mb-6 text-right">
               <button
                 type="button"

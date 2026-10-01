@@ -8,16 +8,15 @@ export const googleLogin = () => {
 export const getGoogleJwt = async () => {
   const response = await fetch(GOOGLE_JWT_API_URL, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
     credentials: "include",
   });
 
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.message || data.detail || "Google login failed");
+    throw new Error(
+      data.message || data.detail || data.error || "Google login failed",
+    );
   }
 
   return data;

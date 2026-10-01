@@ -13,7 +13,7 @@ function OAuthCallback() {
       try {
         const data = await getGoogleJwt();
 
-        login(data.access, data.refresh);
+        login(data.access);
 
         if (data.has_business) {
           navigate("/dashboard");

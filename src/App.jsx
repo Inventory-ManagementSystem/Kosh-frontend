@@ -10,7 +10,7 @@ import SetupComplete from "./pages/auth/SetUpComplete";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import RegistrationOtp from "./pages/auth/RegistrationOtp";
-import OAuthCallback from "./pages/auth/OAuthCallback";
+// import OAuthCallback from "./pages/auth/OAuthCallback";
 
 function App() {
   return (
@@ -48,7 +48,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/oauth/callback" element={<OAuthCallback />} />
+        {/* <Route path="/oauth/callback" element={<OAuthCallback />} /> */}
       </Routes>
     </>
   );

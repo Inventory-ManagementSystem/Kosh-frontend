@@ -1,16 +1,17 @@
 import { useState } from "react";
-import {useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 import AuthDecoration from "../../components/auth/AuthDecoration";
 import setupbusiness from "../../assets/auth/setupbusiness.svg";
 import logo from "../../assets/auth/logo.svg";
 
-import {regBusiness} from "../../api/businessApi";
+import { regBusiness } from "../../api/businessApi";
 
 function SetupBusiness() {
   const navigate = useNavigate();
-
+  const { accessToken } = useAuth();
   const [formData, setFormData] = useState({
     businessName: "",
     businessType: "",
@@ -52,23 +53,26 @@ function SetupBusiness() {
     setErrors(newErrors);
     return !Object.values(newErrors).some((error) => error);
   };
-const location = useLocation();
-const email = location.state?.email;
+  const location = useLocation();
+  const email = location.state?.email;
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) {
       return;
     }
-     try {
-    const data = await regBusiness({
-      business_name: formData.businessName,
-      business_type: formData.businessType,
-      city: formData.city,
-    });
-     navigate("/complete-setup");
-  } catch (error) {
-    console.error("Business registration failed:", error);
-  }
+    try {
+      const data = await regBusiness(
+        {
+          business_name: formData.businessName,
+          business_type: formData.businessType,
+          city: formData.city,
+        },
+        accessToken,
+      );
+      navigate("/complete-setup");
+    } catch (error) {
+      console.error("Business registration failed:", error);
+    }
   };
 
   return (
@@ -79,7 +83,7 @@ const email = location.state?.email;
         </Link>
       </div>
       <Link to="/" className="fixed left-8 top-8 hidden sm:block">
-        <img src={logo} alt="KOSH" className="h-5 w-auto" />
+        <img src={logo} alt="KOSH" className="h-7 w-auto" />
       </Link>
       <AuthDecoration />
 

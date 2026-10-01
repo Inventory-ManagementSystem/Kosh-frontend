@@ -98,7 +98,7 @@ function ResetPassword() {
         </Link>
       </div>
       <Link to="/" className="fixed left-8 top-8 hidden sm:block">
-        <img src={logo} alt="KOSH" className="h-5 w-auto" />
+        <img src={logo} alt="KOSH" className="h-7 w-auto" />
       </Link>
       <AuthDecoration />
 

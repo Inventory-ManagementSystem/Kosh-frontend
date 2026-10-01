@@ -12,12 +12,26 @@ function OTPVerification() {
   const navigate = useNavigate();
   const location = useLocation();
   const email = location.state?.email;
+
   const inputRefs = useRef([]);
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [error, setError] = useState("");
+
   const isFormFilled = otp.every((digit) => digit !== "");
+
   const handleChange = (index, value) => {
-    if (!/^\d?$/.test(value)) {
+    if (!/^\d*$/.test(value)) {
+      return;
+    }
+    if (value.length > 1) {
+      const pastedOtp = value.slice(0, 6).split("");
+      const newOtp = ["", "", "", "", "", ""];
+      pastedOtp.forEach((digit, i) => {
+        newOtp[i] = digit;
+      });
+      setOtp(newOtp);
+      setError("");
+      inputRefs.current[Math.min(pastedOtp.length - 1, 5)]?.focus();
       return;
     }
     const newOtp = [...otp];
@@ -29,11 +43,33 @@ function OTPVerification() {
     }
   };
 
+  const handlePaste = (e, index) => {
+    e.preventDefault();
+    const pastedText = e.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, 6);
+    if (!pastedText) {
+      return;
+    }
+    const newOtp = [...otp];
+    pastedText.split("").forEach((digit, i) => {
+      if (index + i < 6) {
+        newOtp[index + i] = digit;
+      }
+    });
+    setOtp(newOtp);
+    setError("");
+    const nextIndex = Math.min(index + pastedText.length, 5);
+    inputRefs.current[nextIndex]?.focus();
+  };
+
   const handleKeyDown = (index, e) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const enteredOtp = otp.join("");
@@ -51,9 +87,12 @@ function OTPVerification() {
       sessionStorage.setItem("resetToken", data.reset_token);
       navigate("/reset-password");
     } catch (error) {
+      setOtp(["", "", "", "", "", ""]);
+      inputRefs.current[0]?.focus();
       setError(error.message);
     }
   };
+
   const handleResend = () => {
     setOtp(["", "", "", "", "", ""]);
     setError("");
@@ -68,13 +107,17 @@ function OTPVerification() {
           <img src={logo} alt="KOSH" className="h-6 w-auto" />
         </Link>
       </div>
+
       <Link to="/" className="fixed left-8 top-8 hidden sm:block">
         <img src={logo} alt="KOSH" className="h-5 w-auto" />
       </Link>
+
       <AuthDecoration />
+
       <div className="w-full max-w-2xl pt-20 sm:pt-0">
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-extrabold sm:text-4xl">Verify OTP</h1>
+
           <p className="mx-auto mt-2 max-w-sm text-sm text-[#9697a1]">
             Enter the 6-digit OTP sent to your email address.
           </p>
@@ -90,9 +133,9 @@ function OTPVerification() {
                 }}
                 type="text"
                 inputMode="numeric"
-                maxLength={1}
                 value={digit}
                 onChange={(e) => handleChange(index, e.target.value)}
+                onPaste={(e) => handlePaste(e, index)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
                 className={`h-12 min-w-0 rounded-md border bg-[#00010f] text-center text-lg font-semibold text-[#e6e6e8] outline-none transition sm:h-14 sm:w-12 ${
                   error
@@ -102,9 +145,11 @@ function OTPVerification() {
               />
             ))}
           </div>
+
           {error && (
             <p className="mt-4 text-center text-xs text-[#d14d4d]">{error}</p>
           )}
+
           <p className="mt-5 text-center text-sm text-[#9697a1]">
             Didn't receive the code?{" "}
             <button
@@ -114,14 +159,15 @@ function OTPVerification() {
             >
               Resend OTP
             </button>
-            <div className="mt-6 gap-4 flex justify-center">
-              <BackButton onClick={() => navigate(-1)}>Back</BackButton>
-
-              <NavigationButton type="submit" isFormFilled={isFormFilled}>
-                Verify OTP
-              </NavigationButton>
-            </div>
           </p>
+
+          <div className="mt-6 flex justify-center gap-4">
+            <BackButton onClick={() => navigate(-1)}>Back</BackButton>
+
+            <NavigationButton type="submit" isFormFilled={isFormFilled}>
+              Verify OTP
+            </NavigationButton>
+          </div>
         </form>
       </div>
     </main>

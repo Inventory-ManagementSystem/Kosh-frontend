@@ -14,7 +14,7 @@ function SetupComplete() {
   return (
     <div className="min-h-screen bg-[#020313] text-white relative overflow-hidden">
       <Link to="/" className="fixed  top-8 left-8 sm:left-15">
-        <img src={logo} alt="KOSH" className="h-4 w-auto sm:h-6" />
+        <img src={logo} alt="KOSH" className="h-6 w-auto sm:h-7" />
       </Link>
       <AuthDecorations />
       <div className="min-h-screen flex items-center justify-center px-4 sm:px-6">

@@ -10,6 +10,7 @@ import SetupComplete from "./pages/auth/SetUpComplete";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import RegistrationOtp from "./pages/auth/RegistrationOtp";
+import OAuthCallback from "./pages/auth/OAuthCallback";
 
 function App() {
   return (
@@ -22,10 +23,32 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/verify-otp" element={<OTPVerification />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/setup-business" element={<ProtectedRoute><SetupBusiness /></ProtectedRoute>} />
+        <Route
+          path="/setup-business"
+          element={
+            <ProtectedRoute>
+              <SetupBusiness />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/registration-otp" element={<RegistrationOtp />} />
-        <Route path="/complete-setup" element={<ProtectedRoute><SetupComplete /></ProtectedRoute>} />
-        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>}/>
+        <Route
+          path="/complete-setup"
+          element={
+            <ProtectedRoute>
+              <SetupComplete />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/oauth/callback" element={<OAuthCallback />} />
       </Routes>
     </>
   );

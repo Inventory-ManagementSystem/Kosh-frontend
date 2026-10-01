@@ -21,7 +21,7 @@ function RoleSelection() {
     <main className="relative min-h-screen overflow-hidden bg-[#00010f] text-[#e6e6e8]">
       <AuthDecorations />
       <Link to="/" className="fixed left-8 top-8 z-50">
-        <img src={logo} alt="KOSH" className="h-4 w-auto sm:h-5" />
+        <img src={logo} alt="KOSH" className="h-6 w-auto sm:h-7" />
       </Link>
       <div className="mx-auto flex min-h-screen w-full max-w-6xl items-center px-8 py-20 lg:px-12">
         <div className="grid w-full grid-cols-1 items-center gap-8 lg:grid-cols-2">
@@ -46,7 +46,9 @@ function RoleSelection() {
             </div>
             <div className="mt-5 flex gap-4">
               <BackButton onClick={() => navigate("/login")}>Back</BackButton>
-              <NavigationButton onClick={handleNext}>Next</NavigationButton>
+              <NavigationButton onClick={handleNext} isFormFilled={!!role}>
+                Next
+              </NavigationButton>
             </div>
           </div>
           <div className="hidden flex-col items-center justify-center lg:flex">

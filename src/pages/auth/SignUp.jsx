@@ -9,8 +9,11 @@ import logo from "../../assets/auth/logo.svg";
 import AuthDecoration from "../../components/auth/AuthDecoration";
 import AuthButton from "../../components/auth/AuthButton";
 import GoogleButton from "../../components/auth/GoogleButton";
+import GithubButton from "../../components/auth/GithubButton";
 
 import { regUser } from "../../api/regApi";
+import { googleLogin } from "../../api/googleApi";
+import { githubLogin } from "../../api/githubApi";
 
 function Signup() {
   const navigate = useNavigate();
@@ -22,13 +25,13 @@ function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
-    username: "",
+    name: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
   const [errors, setErrors] = useState({
-    username: "",
+    name: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -53,17 +56,17 @@ function Signup() {
 
   const validateForm = () => {
     const newErrors = {
-      username: "",
+      name: "",
       email: "",
       password: "",
       confirmPassword: "",
     };
 
-    const usernameRegex = /^[a-zA-Z0-9_]{3,50}$/;
-    if (!formData.username.trim()) {
-      newErrors.username = "Username is required";
-    } else if (!usernameRegex.test(formData.username)) {
-      newErrors.username =
+    const nameRegex = /^[a-zA-Z0-9_]{3,50}$/;
+    if (!formData.name.trim()) {
+      newErrors.name = "Username is required";
+    } else if (!nameRegex.test(formData.name)) {
+      newErrors.name =
         "Username must be 3-50 characters and contain only letters, numbers and underscores";
     }
 
@@ -94,7 +97,7 @@ function Signup() {
   };
 
   const isFormFilled =
-    Boolean(formData.username.trim()) &&
+    Boolean(formData.name.trim()) &&
     Boolean(formData.email.trim()) &&
     Boolean(formData.password) &&
     Boolean(formData.confirmPassword);
@@ -107,16 +110,13 @@ function Signup() {
     setApiError("");
     try {
       const data = await regUser({
-        username: formData.username,
+        name: formData.name,
         email: formData.email,
         password: formData.password,
       });
-      console.log(data);
-      navigate("/registration-otp", {
-  state: {
-    email: formData.email,
-  },
-});
+      sessionStorage.setItem("registrationName", formData.name);
+      sessionStorage.setItem("registrationEmail", formData.email);
+      navigate("/registration-otp");
     } catch (error) {
       console.error("Registration failed:", error.message);
       setApiError(error.message);
@@ -124,62 +124,62 @@ function Signup() {
   };
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center bg-[#00010f] px-4 py-8 text-[#e6e6e8]">
-      <div className="fixed left-0 top-0 z-50 h-16 w-full bg-[#00010f] sm:hidden">
-        <Link to="/" className="absolute left-1/2 top-6 -translate-x-1/2">
+    <main className="relative min-h-screen overflow-x-hidden bg-[#00010f] text-[#e6e6e8]">
+      <div className="fixed left-0 top-0 z-50 h-16 w-full bg-[#00010f] min-[700px]:hidden">
+        <Link to="/" className="absolute left-8 top-7">
           <img src={logo} alt="KOSH" className="h-6 w-auto" />
         </Link>
       </div>
-      <Link to="/" className="fixed left-8 top-8 hidden sm:block">
-        <img src={logo} alt="KOSH" className="h-5 w-auto" />
+      <Link to="/" className="absolute left-10 top-8">
+        <img src={logo} alt="KOSH" className="h-7 w-auto" />
       </Link>
       <AuthDecoration />
 
-      <div className="w-full max-w-4xl pt-20 sm:pt-0">
-        <div className="mb-8 text-center">
-          <p className="font-['Google_Sans_Flex'] mt-2 text-xl sm:text-2xl font-semibold">
+      <div className="flex min-h-screen flex-col items-center justify-center px-4 pt-20 min-[700px]:px-6 min-[700px]:pt-8">
+        <div className="mb-4 text-center min-[700px]:mb-5">
+          <p className="font-['Google_Sans_Flex'] text-xl font-semibold min-[700px]:text-2xl">
             Create account as{" "}
-            <span className="text-[#b4bedd] font-bold">{roleName}</span>
+            <span className="font-bold text-[#b4bedd]">{roleName}</span>
           </p>
         </div>
 
-        <div className="relative mx-auto w-full max-w-md rounded-lg border border-[#2b2c40] bg-[#000112] p-6 sm:p-8 lg:flex lg:max-w-4xl lg:items-center lg:p-10">
+        <div className="relative mx-auto w-full max-w-xl rounded-lg border border-[#2b2c40] bg-[#000112] p-6 sm:p-8 lg:flex lg:max-w-4xl lg:items-center lg:p-10">
           <button
             type="button"
             onClick={() => navigate(-1)}
-            className="absolute left-4 top-4 z-10 cursor-pointer text-[#b4bedd]"
+            className="absolute left-3 top-3 z-10 cursor-pointer text-[#b4bedd]"
           >
             <IoMdArrowRoundBack size={20} />
           </button>
           <form
             noValidate
             onSubmit={handleSubmit}
-            className="w-full lg:w-1/2 lg:pr-8"
+            className="w-full pl-6 lg:w-1/2 lg:pl-6"
           >
             <div className="mb-5">
               <label
-                htmlFor="username"
+                htmlFor="name"
                 className="text-sm font-medium text-[#e6e6e8]"
               >
-                Username
+                Full Name
               </label>
               <input
-                id="username"
+                id="name"
                 type="text"
-                name="username"
+                name="name"
                 maxLength={50}
-                value={formData.username}
+                value={formData.name}
                 onChange={handleChange}
-                placeholder="Enter your username"
-                className={`w-full rounded-md border bg-[#00010f] px-4 py-3 text-sm text-[#e6e6e8] outline-none transition placeholder:text-[#9697a1]${
-                  errors.username
+                placeholder="Your Name"
+                className={`mt-2 w-full rounded-md border bg-[#00010f] px-4 py-3 text-sm text-[#e6e6e8] caret-[#b4bedd] outline-none transition placeholder:text-[#9697a1]${
+                  errors.name
                     ? "border-[#d14d4d] focus:border-[#d14d4d]"
                     : "border-[#2b2c40] focus:border-[#b4bedd]"
                 }`}
               />
 
-              {errors.username && (
-                <p className="mt-2 text-xs text-[#d14d4d]">{errors.username}</p>
+              {errors.name && (
+                <p className="mt-2 text-xs text-[#d14d4d]">{errors.name}</p>
               )}
             </div>
 
@@ -198,8 +198,8 @@ function Signup() {
                 value={formData.email}
                 maxLength={30}
                 onChange={handleChange}
-                placeholder="Enter your email"
-                className={`w-full rounded-md border bg-[#00010f] px-4 py-3 text-sm text-[#e6e6e8] outline-none transition placeholder:text-[#9697a1] ${
+                placeholder="Enter Email"
+                className={`w-full rounded-md border bg-[#00010f] px-4 py-3 caret-[#b4bedd] text-sm text-[#e6e6e8] outline-none transition placeholder:text-[#9697a1] ${
                   errors.email
                     ? "border-[#d14d4d] focus:border-[#d14d4d]"
                     : "border-[#2b2c40] focus:border-[#b4bedd]"
@@ -227,8 +227,8 @@ function Signup() {
                   maxLength={30}
                   value={formData.password}
                   onChange={handleChange}
-                  placeholder="Enter your password"
-                  className={`w-full rounded-md border bg-[#00010f] px-4 py-3 pr-12 text-sm text-[#e6e6e8] outline-none transition placeholder:text-[#9697a1] ${
+                  placeholder="Create a strong password"
+                  className={`w-full rounded-md border bg-[#00010f] px-4 caret-[#b4bedd] py-3 pr-12 text-sm text-[#e6e6e8] outline-none transition placeholder:text-[#9697a1] ${
                     errors.password
                       ? "border-[#d14d4d] focus:border-[#d14d4d]"
                       : "border-[#2b2c40] focus:border-[#b4bedd]"
@@ -265,8 +265,8 @@ function Signup() {
                   value={formData.confirmPassword}
                   maxLength={30}
                   onChange={handleChange}
-                  placeholder="Confirm your password"
-                  className={`w-full rounded-md border bg-[#00010f] px-4 py-3 pr-12 text-sm text-[#e6e6e8] outline-none transition placeholder:text-[#9697a1] ${
+                  placeholder="Confirm password"
+                  className={`w-full rounded-md border bg-[#00010f] caret-[#b4bedd] px-4 py-3 pr-12 text-sm text-[#e6e6e8] outline-none transition placeholder:text-[#9697a1] ${
                     errors.confirmPassword
                       ? "border-[#d14d4d] focus:border-[#d14d4d]"
                       : "border-[#2b2c40] focus:border-[#b4bedd]"
@@ -298,7 +298,10 @@ function Signup() {
 
             <div className="my-5 text-center text-xs text-[#9697a1]">OR</div>
 
-            <GoogleButton onClick={() => console.log("Google Login")} />
+            <div className="flex gap-5">
+              <GoogleButton onClick={googleLogin} className="w-1/2" />
+              <GithubButton onClick={githubLogin} className="w-1/2" />
+            </div>
           </form>
 
           <div className="hidden lg:flex lg:w-1/2 lg:flex-col lg:items-center lg:justify-center lg:self-stretch lg:pl-8">
@@ -307,12 +310,12 @@ function Signup() {
                 <img src={createaccount} alt="SignUp illustration" />
               </div>
             </div>
-            <p className="mt-6 text-xs text-[#9697a1]">
+            <p className="mt-6 text-sm text-[#9697a1]">
               Already have an account?{" "}
               <button
                 type="button"
                 onClick={() => navigate("/login")}
-                className="text-base text-[#b4bedd] transition hover:text-[#e6e6e8]"
+                className=" text-[#b4bedd] underline underline-offset-4 transition hover:text-[#e6e6e8]"
               >
                 Login
               </button>
@@ -324,7 +327,7 @@ function Signup() {
             <button
               type="button"
               onClick={() => navigate("/login")}
-              className="text-base text-[#b4bedd] underline underline-offset-4 transition hover:text-[#e6e6e8]"
+              className="text-[#b4bedd] underline underline-offset-4 transition hover:text-[#e6e6e8]"
             >
               Login
             </button>

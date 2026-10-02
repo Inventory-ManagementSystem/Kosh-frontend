@@ -5,20 +5,18 @@ export const githubLogin = () => {
   window.location.href = GITHUB_LOGIN_API_URL;
 };
 
-export const githubJwt = async (code) => {
+export const getGithubJwt = async () => {
   const response = await fetch(GITHUB_JWT_API_URL, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
     credentials: "include",
-    body: JSON.stringify({ code }),
   });
 
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.message || data.detail || "GitHub login failed");
+    throw new Error(
+      data.message || data.detail || data.error || "GitHub login failed",
+    );
   }
 
   return data;

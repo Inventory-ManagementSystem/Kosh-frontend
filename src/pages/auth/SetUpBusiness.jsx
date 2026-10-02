@@ -76,25 +76,27 @@ function SetupBusiness() {
   };
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center bg-[#00010f] px-4 py-8 text-[#e6e6e8]">
-      <div className="fixed left-0 top-0 z-50 h-16 w-full bg-[#00010f] sm:hidden">
-        <Link to="/" className="absolute left-1/2 top-6 -translate-x-1/2">
+    <main className="relative min-h-screen overflow-x-hidden bg-[#00010f] text-[#e6e6e8]">
+      <div className="fixed left-0 top-0 z-50 h-16 w-full bg-[#00010f] min-[700px]:hidden">
+        <Link to="/" className="absolute left-8 top-7">
           <img src={logo} alt="KOSH" className="h-6 w-auto" />
         </Link>
       </div>
-      <Link to="/" className="fixed left-8 top-8 hidden sm:block">
+      <Link to="/" className="absolute left-10 top-8 hidden min-[700px]:block">
         <img src={logo} alt="KOSH" className="h-7 w-auto" />
       </Link>
       <AuthDecoration />
 
-      <div className="w-full max-w-4xl pt-20 sm:pt-0">
-        <div className="mb-8 ml-10 text-left">
-          <p className="mt-2 text-3xl">Let's Setup Your Business</p>
-          <p className="mt-2 text-l text-[#b4bedd]">
+      <div className="flex min-h-screen flex-col items-center justify-center px-4 pt-20 min-[700px]:px-6 min-[700px]:pt-8">
+        <div className="mb-4 text-center min-[700px]:mb-5">
+          <p className="font-['Google_Sans_Flex'] text-xl font-semibold min-[700px]:text-2xl">
+            Let's Setup Your Business
+          </p>
+          <p className="mt-2 text-sm text-[#b4bedd] min-[700px]:text-base">
             Tell us about your business to get started
           </p>
         </div>
-        <div className="mx-auto w-full max-w-md p-6 sm:p-8 lg:flex lg:max-w-4xl lg:items-center lg:p-10">
+        <div className="relative mx-auto w-full max-w-xl rounded-lg border border-[#2b2c40] bg-[#000112] p-6 sm:p-8 lg:flex lg:max-w-4xl lg:items-center lg:p-10">
           <form
             noValidate
             onSubmit={handleSubmit}

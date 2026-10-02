@@ -11,6 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import RegistrationOtp from "./pages/auth/RegistrationOtp";
 import OAuthCallback from "./pages/auth/OAuthCallback";
+import GitHubOAuthCallback from "./pages/auth/GitHubOAuthCallback";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>
         <Route path="/oauth/callback" element={<OAuthCallback />} />
+        <Route path="/github/callback" element={<GitHubOAuthCallback />} />
       </Routes>
     </>
   );

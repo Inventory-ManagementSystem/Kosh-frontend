@@ -23,31 +23,12 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/verify-otp" element={<OTPVerification />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route
-          path="/setup-business"
-          element={
-            <ProtectedRoute>
-              <SetupBusiness />
-            </ProtectedRoute>
-          }
-        />
         <Route path="/registration-otp" element={<RegistrationOtp />} />
-        <Route
-          path="/complete-setup"
-          element={
-            <ProtectedRoute>
-              <SetupComplete />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/setup-business" element={<SetupBusiness />} />
+          <Route path="/complete-setup" element={<SetupComplete />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Route>
         <Route path="/oauth/callback" element={<OAuthCallback />} />
       </Routes>
     </>

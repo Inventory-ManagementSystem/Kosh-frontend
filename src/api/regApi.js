@@ -11,7 +11,13 @@ export const regUser = async (userData) => {
 
   const data = await response.json();
   if (!response.ok) {
-    throw new Error(data.message || data.detail || JSON.stringify(data));
+    const errorMessage =
+      data.errors?.email?.[0] ||
+      data.errors?.name?.[0] ||
+      data.errors?.password?.[0] ||
+      data.message ||
+      "Registration failed";
+    throw new Error(errorMessage);
   }
 
   return data;

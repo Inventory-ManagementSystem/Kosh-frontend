@@ -6,6 +6,7 @@ export const resetPwd = async (resetToken, newPassword, confirmPassword) => {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify({
       reset_token: resetToken,
       new_password: newPassword,

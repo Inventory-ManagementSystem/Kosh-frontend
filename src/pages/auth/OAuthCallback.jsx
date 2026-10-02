@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { getGoogleJwt } from "../../api/googleApi";
 import { useAuth } from "../../context/AuthContext";
 
@@ -11,18 +10,19 @@ function OAuthCallback() {
   useEffect(() => {
     const handleGoogleCallback = async () => {
       try {
-        const data = await getGoogleJwt();
+        const response = await getGoogleJwt();
 
-        login(data.access);
+        console.log("Google JWT response:", response);
 
-        if (data.has_business) {
-          navigate("/dashboard");
+        login(response.data.access);
+
+        if (response.data.has_business === true) {
+          navigate("/dashboard", { replace: true });
         } else {
-          navigate("/setup-business");
+          navigate("/setup-business", { replace: true });
         }
       } catch (error) {
         console.error("Google login failed:", error);
-        navigate("/login");
       }
     };
 

@@ -84,7 +84,7 @@ function OTPVerification() {
     try {
       const data = await verifyOTP(email, enteredOtp);
       console.log("OTP verified:", data);
-      sessionStorage.setItem("resetToken", data.reset_token);
+      sessionStorage.setItem("resetToken", data.data.reset_token);
       navigate("/reset-password");
     } catch (error) {
       setOtp(["", "", "", "", "", ""]);

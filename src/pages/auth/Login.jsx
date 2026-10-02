@@ -34,14 +34,43 @@ function Login() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
 
-    setErrors({
-      ...errors,
-      [name]: "",
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    setErrors((prev) => {
+      const newErrors = {
+        ...prev,
+        general: "",
+      };
+
+      if (name === "email") {
+        if (!value.trim()) {
+          newErrors.email = "Email is required";
+        } else if (value.length > 50) {
+          newErrors.email = "Maximum limit reached";
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) {
+          newErrors.email = "Enter a valid email address";
+        } else {
+          newErrors.email = "";
+        }
+      }
+
+      if (name === "password") {
+        if (!value) {
+          newErrors.password = "Password is required";
+        } else if (value.length < 3) {
+          newErrors.password = "The password you entered is incorrect";
+        } else if (value.length > 30) {
+          newErrors.password = "Maximum limit reached";
+        } else {
+          newErrors.password = "";
+        }
+      }
+
+      return newErrors;
     });
   };
 
@@ -51,49 +80,50 @@ function Login() {
       password: "",
       general: "",
     };
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
-    } else if (!emailRegex.test(formData.email)) {
+    } else if (!emailRegex.test(formData.email.trim())) {
       newErrors.email = "Enter a valid email address";
     }
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,30}$/;
+
     if (!formData.password) {
       newErrors.password = "Password is required";
     } else if (formData.password.length < 3) {
       newErrors.password = "The password you entered is incorrect";
     } else if (formData.password.length > 30) {
       newErrors.password = "Maximum limit reached";
-    } else if (!passwordRegex.test(formData.password)) {
-      newErrors.password = "The password you entered is incorrect";
     }
+
     setErrors(newErrors);
+
     return !newErrors.email && !newErrors.password;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!validateForm()) {
       return;
     }
     try {
-      const data = await loginUser({
+      const response = await loginUser({
         email: formData.email,
         password: formData.password,
       });
-      login(data.access);
-      if (location.state?.fromRegistration) {
-        navigate("/setup-business", {
-          state: {
-            email: location.state.email,
-          },
-        });
-      } else {
+
+      login(response.data.access);
+
+      if (response.data.has_business === true) {
         navigate("/dashboard");
+      } else {
+        navigate("/setup-business");
       }
     } catch (error) {
       console.log("Login Failed", error.message);
+
       setErrors({
         email: "",
         password: "",

@@ -1,8 +1,8 @@
-const GOOGLE_API_URL = import.meta.env.VITE_GOOGLE_API_URL;
+const GOOGLE_LOGIN_API_URL = import.meta.env.VITE_GOOGLE_API_URL;
 const GOOGLE_JWT_API_URL = import.meta.env.VITE_GOOGLE_JWT_API_URL;
 
 export const googleLogin = () => {
-  window.location.href = GOOGLE_API_URL;
+  window.location.href = GOOGLE_LOGIN_API_URL;
 };
 
 export const getGoogleJwt = async () => {

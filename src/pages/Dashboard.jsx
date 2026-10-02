@@ -3,12 +3,12 @@ import { useAuth } from "../context/AuthContext";
 import { logoutUser } from "../api/logoutApi";
 
 function Dashboard() {
-  const { logout, refreshToken } = useAuth();
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
-      await logoutUser(refreshToken);
+      await logoutUser();
     } catch (error) {
       console.log("Logout API failed:", error.message);
     } finally {

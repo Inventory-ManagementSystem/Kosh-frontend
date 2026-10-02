@@ -45,12 +45,118 @@ function Signup() {
       ...formData,
       [name]: value,
     });
+    if (name === "name") {
+      if (!value.trim()) {
+        setErrors({
+          ...errors,
+          name: "Name is required",
+        });
+      } else if (value.length < 3) {
+        setErrors({
+          ...errors,
+          name: "Name must be at least 3 characters",
+        });
+      } else if (value.length >= 50) {
+        setErrors({
+          ...errors,
+          name: "Name must not exceed 50 characters",
+        });
+      } else if (!/^[A-Za-z ]+$/.test(value)) {
+        setErrors({
+          ...errors,
+          name: "Name can contain only letters and spaces",
+        });
+      } else {
+        setErrors({
+          ...errors,
+          name: "",
+        });
+      }
+    } else if (name === "email") {
+      if (!value.trim()) {
+        setErrors({
+          ...errors,
+          email: "Email is required",
+        });
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        setErrors({
+          ...errors,
+          email: "Enter a valid email address",
+        });
+      } else {
+        setErrors({
+          ...errors,
+          email: "",
+        });
+      }
+    } else if (name === "password") {
+      const passwordRegex =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,30}$/;
 
-    setErrors({
-      ...errors,
-      [name]: "",
-    });
-
+      if (!value) {
+        setErrors({
+          ...errors,
+          password: "Password is required",
+        });
+      } else if (value.length < 8) {
+        setErrors({
+          ...errors,
+          password: "Password must be at least 8 characters",
+        });
+      } else if (!/[a-z]/.test(value)) {
+        setErrors({
+          ...errors,
+          password: "Password must contain a lowercase letter",
+        });
+      } else if (!/[A-Z]/.test(value)) {
+        setErrors({
+          ...errors,
+          password: "Password must contain an uppercase letter",
+        });
+      } else if (!/\d/.test(value)) {
+        setErrors({
+          ...errors,
+          password: "Password must contain a number",
+        });
+      } else if (!/[@$!%*?&#]/.test(value)) {
+        setErrors({
+          ...errors,
+          password: "Password must contain a special character",
+        });
+      } else if (!passwordRegex.test(value)) {
+        setErrors({
+          ...errors,
+          password: "Password contains an invalid character",
+        });
+      } else {
+        setErrors({
+          ...errors,
+          password: "",
+        });
+      }
+    } else if (name === "confirmPassword") {
+      if (!value) {
+        setErrors({
+          ...errors,
+          confirmPassword: "Please confirm your password",
+        });
+      } else if (value !== formData.password) {
+        setErrors({
+          ...errors,
+          confirmPassword: "Passwords do not match",
+        });
+      } else {
+        setErrors({
+          ...errors,
+          confirmPassword: "",
+        });
+      }
+    } else {
+      setErrors({
+        ...errors,
+        [name]: "",
+      });
+    }
     setApiError("");
   };
 
@@ -62,12 +168,15 @@ function Signup() {
       confirmPassword: "",
     };
 
-    const nameRegex = /^[a-zA-Z0-9_]{3,50}$/;
+    const nameRegex = /^[A-Za-z ]+$/;
     if (!formData.name.trim()) {
-      newErrors.name = "Username is required";
+      newErrors.name = "Name is required";
+    } else if (formData.name.length < 3) {
+      newErrors.name = "Name must be at least 3 characters";
+    } else if (formData.name.length > 50) {
+      newErrors.name = "Maximum Limit reached";
     } else if (!nameRegex.test(formData.name)) {
-      newErrors.name =
-        "Username must be 3-50 characters and contain only letters, numbers and underscores";
+      newErrors.name = "Name can contain only letters and spaces";
     }
 
     if (!formData.email.trim()) {

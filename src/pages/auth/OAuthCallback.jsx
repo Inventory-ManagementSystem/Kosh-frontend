@@ -13,6 +13,7 @@ function OAuthCallback() {
         const response = await getGoogleJwt();
 
         console.log("Google JWT response:", response);
+        console.log("Access token:", response.data.access);
 
         login(response.data.access);
 

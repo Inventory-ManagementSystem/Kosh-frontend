@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { IoMdArrowRoundBack } from "react-icons/io";
@@ -19,13 +19,31 @@ import { loginUser } from "../../api/loginApi";
 
 function Login() {
   const navigate = useNavigate();
-  const location = useLocation();
   const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+  const [formData, setFormData] = useState(() => {
+    const savedData = localStorage.getItem("loginFormData");
+    if (savedData) {
+      const data = JSON.parse(savedData);
+      return {
+        email: data.email || "",
+        password: "",
+      };
+    }
+    return {
+      email: "",
+      password: "",
+    };
   });
+  useEffect(() => {
+    localStorage.setItem(
+      "loginFormData",
+      JSON.stringify({
+        email: formData.email,
+      }),
+    );
+  }, [formData.email]);
+
   const [errors, setErrors] = useState({
     email: "",
     password: "",
@@ -104,7 +122,6 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!validateForm()) {
       return;
     }
@@ -115,7 +132,7 @@ function Login() {
       });
 
       login(response.data.access);
-
+      localStorage.removeItem("loginFormData");
       if (response.data.has_business === true) {
         navigate("/dashboard");
       } else {
@@ -123,7 +140,6 @@ function Login() {
       }
     } catch (error) {
       console.log("Login Failed", error.message);
-
       setErrors({
         email: "",
         password: "",

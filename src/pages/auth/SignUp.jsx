@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { IoMdArrowRoundBack } from "react-icons/io";
@@ -24,12 +24,34 @@ function Signup() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+  const [formData, setFormData] = useState(() => {
+    const savedData = localStorage.getItem("signupFormData");
+    if (savedData) {
+      const data = JSON.parse(savedData);
+      return {
+        name: data.name || "",
+        email: data.email || "",
+        password: "",
+        confirmPassword: "",
+      };
+    }
+    return {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    };
   });
+  useEffect(() => {
+    localStorage.setItem(
+      "signupFormData",
+      JSON.stringify({
+        name: formData.name,
+        email: formData.email,
+      }),
+    );
+  }, [formData.name, formData.email]);
+
   const [errors, setErrors] = useState({
     name: "",
     email: "",
@@ -37,6 +59,7 @@ function Signup() {
     confirmPassword: "",
   });
   const [apiError, setApiError] = useState("");
+  const [focusedField, setFocusedField] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -51,10 +74,15 @@ function Signup() {
           ...errors,
           name: "Name is required",
         });
-      } else if (value.length < 3) {
+      } else if (value.startsWith(" ") || value.endsWith(" ")) {
         setErrors({
           ...errors,
-          name: "Name must be at least 3 characters",
+          name: "Name cannot start or end with a space",
+        });
+      } else if (value.length < 2) {
+        setErrors({
+          ...errors,
+          name: "Name must be at least 2 characters",
         });
       } else if (value.length >= 50) {
         setErrors({
@@ -171,8 +199,10 @@ function Signup() {
     const nameRegex = /^[A-Za-z ]+$/;
     if (!formData.name.trim()) {
       newErrors.name = "Name is required";
-    } else if (formData.name.length < 3) {
-      newErrors.name = "Name must be at least 3 characters";
+    } else if (formData.name.startsWith(" ") || formData.name.endsWith(" ")) {
+      newErrors.name = "Name cannot start or end with a space";
+    } else if (formData.name.length < 2) {
+      newErrors.name = "Name must be at least 2 characters";
     } else if (formData.name.length > 50) {
       newErrors.name = "Maximum Limit reached";
     } else if (!nameRegex.test(formData.name)) {
@@ -218,11 +248,12 @@ function Signup() {
     }
     setApiError("");
     try {
-      const data = await regUser({
-        name: formData.name,
+      await regUser({
+        name: formData.name.trim(),
         email: formData.email,
         password: formData.password,
       });
+      localStorage.removeItem("signupFormData");
       sessionStorage.setItem("registrationName", formData.name);
       sessionStorage.setItem("registrationEmail", formData.email);
       navigate("/registration-otp");
@@ -278,12 +309,16 @@ function Signup() {
                 name="name"
                 maxLength={50}
                 value={formData.name}
+                onFocus={() => setFocusedField("name")}
+                onBlur={() => setFocusedField(null)}
                 onChange={handleChange}
                 placeholder="Your Name"
-                className={`mt-2 w-full rounded-md border bg-[#00010f] px-4 py-3 text-sm text-[#e6e6e8] caret-[#b4bedd] outline-none transition placeholder:text-[#9697a1]${
+                className={`mt-2 w-full rounded-md border bg-[#00010f] px-4 py-3 text-sm text-[#e6e6e8] caret-[#b4bedd] outline-none transition placeholder:text-[#9697a1] ${
                   errors.name
-                    ? "border-[#d14d4d] focus:border-[#d14d4d]"
-                    : "border-[#2b2c40] focus:border-[#b4bedd]"
+                    ? "border-[#d14d4d]"
+                    : focusedField === "name"
+                      ? "border-[#b4bedd]"
+                      : "border-[#2b2c40]"
                 }`}
               />
 
@@ -307,11 +342,15 @@ function Signup() {
                 value={formData.email}
                 maxLength={30}
                 onChange={handleChange}
+                onFocus={() => setFocusedField("email")}
+                onBlur={() => setFocusedField(null)}
                 placeholder="Enter Email"
                 className={`w-full rounded-md border bg-[#00010f] px-4 py-3 caret-[#b4bedd] text-sm text-[#e6e6e8] outline-none transition placeholder:text-[#9697a1] ${
                   errors.email
-                    ? "border-[#d14d4d] focus:border-[#d14d4d]"
-                    : "border-[#2b2c40] focus:border-[#b4bedd]"
+                    ? "border-[#d14d4d]"
+                    : focusedField === "email"
+                      ? "border-[#b4bedd]"
+                      : "border-[#2b2c40]"
                 }`}
               />
 
@@ -336,11 +375,15 @@ function Signup() {
                   maxLength={30}
                   value={formData.password}
                   onChange={handleChange}
+                  onFocus={() => setFocusedField("password")}
+                  onBlur={() => setFocusedField(null)}
                   placeholder="Create a strong password"
                   className={`w-full rounded-md border bg-[#00010f] px-4 caret-[#b4bedd] py-3 pr-12 text-sm text-[#e6e6e8] outline-none transition placeholder:text-[#9697a1] ${
                     errors.password
-                      ? "border-[#d14d4d] focus:border-[#d14d4d]"
-                      : "border-[#2b2c40] focus:border-[#b4bedd]"
+                      ? "border-[#d14d4d]"
+                      : focusedField === "password"
+                        ? "border-[#b4bedd]"
+                        : "border-[#2b2c40]"
                   }`}
                 />
 
@@ -374,11 +417,15 @@ function Signup() {
                   value={formData.confirmPassword}
                   maxLength={30}
                   onChange={handleChange}
+                  onFocus={() => setFocusedField("confirmPassword")}
+                  onBlur={() => setFocusedField(null)}
                   placeholder="Confirm password"
                   className={`w-full rounded-md border bg-[#00010f] caret-[#b4bedd] px-4 py-3 pr-12 text-sm text-[#e6e6e8] outline-none transition placeholder:text-[#9697a1] ${
                     errors.confirmPassword
-                      ? "border-[#d14d4d] focus:border-[#d14d4d]"
-                      : "border-[#2b2c40] focus:border-[#b4bedd]"
+                      ? "border-[#d14d4d]"
+                      : focusedField === "confirmPassword"
+                        ? "border-[#b4bedd]"
+                        : "border-[#2b2c40]"
                   }`}
                 />
 

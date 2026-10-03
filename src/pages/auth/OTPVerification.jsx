@@ -7,6 +7,7 @@ import logo from "../../assets/auth/logo.svg";
 import { verifyOTP } from "../../api/verifyOTP";
 import BackButton from "../../components/auth/BackButton";
 import NavigationButton from "../../components/auth/NavigationButton";
+import { forgotPwd } from "../../api/forgotPasswordApi";
 
 function OTPVerification() {
   const navigate = useNavigate();
@@ -23,22 +24,14 @@ function OTPVerification() {
     if (!/^\d*$/.test(value)) {
       return;
     }
-    if (value.length > 1) {
-      const pastedOtp = value.slice(0, 6).split("");
-      const newOtp = ["", "", "", "", "", ""];
-      pastedOtp.forEach((digit, i) => {
-        newOtp[i] = digit;
-      });
-      setOtp(newOtp);
-      setError("");
-      inputRefs.current[Math.min(pastedOtp.length - 1, 5)]?.focus();
+    if (otp[index] && value) {
       return;
     }
     const newOtp = [...otp];
-    newOtp[index] = value;
+    newOtp[index] = value.slice(-1);
     setOtp(newOtp);
     setError("");
-    if (value && index < otp.length - 1) {
+    if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
   };
@@ -54,10 +47,9 @@ function OTPVerification() {
     }
     const newOtp = [...otp];
     pastedText.split("").forEach((digit, i) => {
-      if (index + i < 6) {
-        newOtp[index + i] = digit;
-      }
+      newOtp[index + i] = digit;
     });
+
     setOtp(newOtp);
     setError("");
     const nextIndex = Math.min(index + pastedText.length, 5);
@@ -93,11 +85,19 @@ function OTPVerification() {
     }
   };
 
-  const handleResend = () => {
-    setOtp(["", "", "", "", "", ""]);
-    setError("");
-    inputRefs.current[0]?.focus();
-    console.log("OTP resent");
+  const handleResend = async () => {
+    if (!email) {
+      setError("Email not found.");
+      return;
+    }
+    try {
+      await forgotPwd(email);
+      setOtp(["", "", "", "", "", ""]);
+      setError("");
+      inputRefs.current[0]?.focus();
+    } catch (error) {
+      setError(error.message);
+    }
   };
 
   return (
@@ -133,6 +133,7 @@ function OTPVerification() {
                 }}
                 type="text"
                 inputMode="numeric"
+                maxLength={1}
                 value={digit}
                 onChange={(e) => handleChange(index, e.target.value)}
                 onPaste={(e) => handlePaste(e, index)}

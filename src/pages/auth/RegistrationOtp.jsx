@@ -7,6 +7,7 @@ import logo from "../../assets/auth/logo.svg";
 import { regVerifyOtp } from "../../api/regVerifyOtp";
 import BackButton from "../../components/auth/BackButton";
 import NavigationButton from "../../components/auth/NavigationButton";
+import { resendRegistrationOtp } from "../../api/resendRegistrationOtp";
 
 function RegistrationOTP() {
   const navigate = useNavigate();
@@ -40,7 +41,6 @@ function RegistrationOTP() {
     newOtp[index] = value;
     setOtp(newOtp);
     setError("");
-
     if (value && index < otp.length - 1) {
       inputRefs.current[index + 1]?.focus();
     }
@@ -115,12 +115,20 @@ function RegistrationOTP() {
     }
   };
 
-  const handleResend = () => {
-    setOtp(["", "", "", "", "", ""]);
-    setError("");
-    inputRefs.current[0]?.focus();
-
-    console.log("OTP resent");
+  const handleResend = async () => {
+    if (!email) {
+      setError("Email not found. Please register again.");
+      return;
+    }
+    try {
+      await resendRegistrationOtp(email);
+      setOtp(["", "", "", "", "", ""]);
+      setError("");
+      inputRefs.current[0]?.focus();
+      console.log("Reg OTP resent");
+    } catch (error) {
+      setError(error.message);
+    }
   };
 
   return (

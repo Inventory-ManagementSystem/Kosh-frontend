@@ -7,11 +7,14 @@ import OTPVerification from "./pages/auth/OTPVerification";
 import ResetPassword from "./pages/auth/ResetPassword";
 import SetupBusiness from "./pages/auth/SetUpBusiness";
 import SetupComplete from "./pages/auth/SetUpComplete";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./pages/dashboard/Dashboard";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import RegistrationOtp from "./pages/auth/RegistrationOtp";
 import OAuthCallback from "./pages/auth/OAuthCallback";
 import GitHubOAuthCallback from "./pages/auth/GitHubOAuthCallback";
+import AddEmployee from "./pages/dashboard/AddEmployee";
+import EmployeeInvites from "./pages/dashboard/EmployeeInvites";
+import EmployeeDashboard from "./pages/dashboard/EmployeeDashboard";
 
 function App() {
   return (
@@ -29,6 +32,9 @@ function App() {
           <Route path="/setup-business" element={<SetupBusiness />} />
           <Route path="/complete-setup" element={<SetupComplete />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/employee-invites" element={<EmployeeInvites />} />
+          <Route path="/add-employee" element={<AddEmployee />} />
+          <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
         </Route>
         <Route path="/oauth/callback" element={<OAuthCallback />} />
         <Route path="/github/callback" element={<GitHubOAuthCallback />} />

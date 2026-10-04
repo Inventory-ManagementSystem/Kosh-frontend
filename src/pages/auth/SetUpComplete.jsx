@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { IoCheckmarkOutline } from "react-icons/io5";
 
@@ -7,8 +7,13 @@ import AuthDecorations from "../../components/auth/AuthDecoration";
 
 function SetupComplete() {
   const navigate = useNavigate();
+  const location = useLocation();
   const handleDashboard = () => {
-    navigate("/dashboard");
+    if (location.state?.employee) {
+      navigate("/employee-dashboard");
+    } else {
+      navigate("/dashboard");
+    }
   };
 
   return (

@@ -106,6 +106,11 @@ function Signup() {
           ...errors,
           email: "Email is required",
         });
+      } else if (/[^\x00-\x7F]/.test(value)) {
+        setErrors({
+          ...errors,
+          email: "Emojis are not allowed",
+        });
       } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
         setErrors({
           ...errors,
@@ -256,6 +261,7 @@ function Signup() {
       localStorage.removeItem("signupFormData");
       sessionStorage.setItem("registrationName", formData.name);
       sessionStorage.setItem("registrationEmail", formData.email);
+      sessionStorage.setItem("registrationRole", role);
       navigate("/registration-otp");
     } catch (error) {
       console.error("Registration failed:", error.message);

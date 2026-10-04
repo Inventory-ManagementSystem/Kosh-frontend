@@ -14,6 +14,7 @@ function RoleSelection() {
   const [role, setRole] = useState("business_owner");
 
   const handleNext = () => {
+    localStorage.setItem("selectedRole", role);
     navigate("/signup", { state: { role } });
   };
 

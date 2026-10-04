@@ -16,6 +16,7 @@ import GoogleButton from "../../components/auth/GoogleButton";
 import GithubButton from "../../components/auth/GithubButton";
 
 import { loginUser } from "../../api/loginApi";
+import { getProfile } from "../../api/getProfileApi";
 
 function Login() {
   const navigate = useNavigate();
@@ -67,6 +68,8 @@ function Login() {
       if (name === "email") {
         if (!value.trim()) {
           newErrors.email = "Email is required";
+        } else if (/[^\x00-\x7F]/.test(value)) {
+          newErrors.email = "Emojis are not allowed";
         } else if (value.length > 50) {
           newErrors.email = "Maximum limit reached";
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) {
@@ -133,7 +136,14 @@ function Login() {
 
       login(response.data.access);
       localStorage.removeItem("loginFormData");
-      if (response.data.has_business === true) {
+      const profile = await getProfile(response.data.access);
+      const role = profile.data?.role;
+      const selectedRole = localStorage.getItem("selectedRole");
+      if (role === "employee") {
+        navigate("/employee-dashboard");
+      } else if (selectedRole === "employee") {
+        navigate("/employee-invites");
+      } else if (response.data.has_business === true) {
         navigate("/dashboard");
       } else {
         navigate("/setup-business");

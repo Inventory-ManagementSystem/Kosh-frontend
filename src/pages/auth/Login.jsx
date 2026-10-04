@@ -71,7 +71,7 @@ function Login() {
         } else if (/[^\x00-\x7F]/.test(value)) {
           newErrors.email = "Emojis are not allowed";
         } else if (value.length > 50) {
-          newErrors.email = "Maximum limit reached";
+          newErrors.email = "Maximum limit reached.";
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) {
           newErrors.email = "Enter a valid email address";
         } else {

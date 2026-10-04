@@ -15,6 +15,17 @@ function RoleSelection() {
 
   const handleNext = () => {
     localStorage.setItem("selectedRole", role);
+    const isOAuthUser = localStorage.getItem("oauthUser") === "true";
+    if (isOAuthUser) {
+      localStorage.removeItem("oauthUser");
+      if (role === "business_owner") {
+        navigate("/setup-business");
+      } else {
+        navigate("/employee-invites");
+      }
+      return;
+    }
+
     navigate("/signup", { state: { role } });
   };
 

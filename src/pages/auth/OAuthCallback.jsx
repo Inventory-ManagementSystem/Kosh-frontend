@@ -1,7 +1,9 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { getGoogleJwt } from "../../api/googleApi";
 import { useAuth } from "../../context/AuthContext";
+import { getProfile } from "../../api/getProfileApi";
 
 function OAuthCallback() {
   const navigate = useNavigate();
@@ -11,22 +13,23 @@ function OAuthCallback() {
     const handleGoogleCallback = async () => {
       try {
         const response = await getGoogleJwt();
-
-        console.log("Google JWT response:", response);
-        console.log("Access token:", response.data.access);
-
-        login(response.data.access);
-
-        if (response.data.has_business === true) {
+        const accessToken = response.data.access;
+        const refreshToken = response.data.refresh;
+        login(accessToken, refreshToken);
+        const profile = await getProfile(accessToken);
+        const role = profile.data?.role;
+        if (role === "owner") {
           navigate("/dashboard", { replace: true });
+        } else if (role === "employee") {
+          navigate("/employee-dashboard", { replace: true });
         } else {
-          navigate("/setup-business", { replace: true });
+          localStorage.setItem("oauthUser", "true");
+          navigate("/role", { replace: true });
         }
       } catch (error) {
         console.error("Google login failed:", error);
       }
     };
-
     handleGoogleCallback();
   }, [login, navigate]);
 

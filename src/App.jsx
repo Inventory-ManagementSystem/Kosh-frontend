@@ -7,14 +7,20 @@ import OTPVerification from "./pages/auth/OTPVerification";
 import ResetPassword from "./pages/auth/ResetPassword";
 import SetupBusiness from "./pages/auth/SetUpBusiness";
 import SetupComplete from "./pages/auth/SetUpComplete";
-import Dashboard from "./pages/dashboard/Dashboard";
-import ProtectedRoute from "./components/auth/ProtectedRoute";
 import RegistrationOtp from "./pages/auth/RegistrationOtp";
 import OAuthCallback from "./pages/auth/OAuthCallback";
 import GitHubOAuthCallback from "./pages/auth/GitHubOAuthCallback";
-import AddEmployee from "./pages/dashboard/AddEmployee";
-import EmployeeInvites from "./pages/dashboard/EmployeeInvites";
-import EmployeeDashboard from "./pages/dashboard/EmployeeDashboard";
+
+import ProtectedRoute from "./components/auth/ProtectedRoute";
+
+import Dashboard from "./features/owner/pages/Dashboard";
+import AddEmployee from "./features/owner/pages/AddEmployee";
+
+import EmployeeInvites from "./features/employee/pages/EmployeeInvites";
+import EmployeeDashboard from "./features/employee/pages/EmployeeDashboard";
+
+import OwnerLayout from "./layouts/OwnerLayout";
+import ManageEmployee from "./features/owner/pages/ManageEmployee";
 
 function App() {
   return (
@@ -28,14 +34,21 @@ function App() {
         <Route path="/verify-otp" element={<OTPVerification />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/registration-otp" element={<RegistrationOtp />} />
+
         <Route element={<ProtectedRoute />}>
           <Route path="/setup-business" element={<SetupBusiness />} />
           <Route path="/complete-setup" element={<SetupComplete />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+
+          <Route element={<OwnerLayout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/employees" element={<ManageEmployee />} />
+            <Route path="/add-employee" element={<AddEmployee />} />
+          </Route>
+
           <Route path="/employee-invites" element={<EmployeeInvites />} />
-          <Route path="/add-employee" element={<AddEmployee />} />
           <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
         </Route>
+
         <Route path="/oauth/callback" element={<OAuthCallback />} />
         <Route path="/github/callback" element={<GitHubOAuthCallback />} />
       </Routes>

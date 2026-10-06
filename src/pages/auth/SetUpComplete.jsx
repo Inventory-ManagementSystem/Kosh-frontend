@@ -37,7 +37,7 @@ function SetupComplete() {
             Your business is ready to go
           </p>
           <div className="mt-6 sm:mt-7 w-full rounded-lg bg-[#07181e] px-4 sm:px-6 py-3 sm:py-4">
-            <p className="text-xs sm:text-sm leading-relaxed text-[#5bc46b]">
+            <p className="text-xs sm:text-sm  text-[#5bc46b]">
               You can now start using KOSH to manage your inventory, sales,
               invoices and more.
             </p>

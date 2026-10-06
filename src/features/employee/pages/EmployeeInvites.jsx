@@ -5,13 +5,13 @@ import { FiRefreshCw } from "react-icons/fi";
 import { FaCircleXmark } from "react-icons/fa6";
 import toast from "react-hot-toast";
 
-import logo from "../../assets/auth/logo.svg";
-import AuthDecoration from "../../components/auth/AuthDecoration";
+import logo from "../../../assets/auth/logo.svg";
+import AuthDecoration from "../../../components/auth/AuthDecoration";
+import { useAuth } from "../../../context/AuthContext";
 
-import { useAuth } from "../../context/AuthContext";
-import { getInvites } from "../../api/getInvitesApi";
-import { acceptInvite } from "../../api/acceptInviteApi";
-import { declineInvite } from "../../api/declineInviteApi";
+import { getInvites } from "../api/getInvitesApi";
+import { acceptInvite } from "../api/acceptInviteApi";
+import { declineInvite } from "../api/declineInviteApi";
 
 function EmployeeInvites() {
   const navigate = useNavigate();

@@ -1,9 +1,9 @@
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-import { logoutUser } from "../../api/logoutApi";
 
-import logo from "../../assets/auth/logo.svg";
-import AuthDecoration from "../../components/auth/AuthDecoration";
+import { useAuth } from "../../../context/AuthContext";
+import { logoutUser } from "../../../api/logoutApi";
+import logo from "../../../assets/auth/logo.svg";
+import AuthDecoration from "../../../components/auth/AuthDecoration";
 
 function EmployeeDashboard() {
   const { logout } = useAuth();
@@ -23,12 +23,12 @@ function EmployeeDashboard() {
   return (
     <main className="relative min-h-screen overflow-x-hidden bg-[#00010f] text-[#e6e6e8]">
       <div className="fixed left-0 top-0 z-50 h-16 w-full bg-[#00010f] min-[700px]:hidden">
-        <Link to="/" className="absolute left-8 top-7">
+        <Link to="/employee-dashboard" className="absolute left-8 top-7">
           <img src={logo} alt="KOSH" className="h-6 w-auto" />
         </Link>
       </div>
 
-      <Link to="/" className="absolute left-10 top-8">
+      <Link to="/employee-dashboard" className="absolute left-10 top-8">
         <img src={logo} alt="KOSH" className="h-7 w-auto" />
       </Link>
 

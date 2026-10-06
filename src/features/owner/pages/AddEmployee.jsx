@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-import { addEmployee } from "../../api/addEmployeeApi";
-
-import AuthDecoration from "../../components/auth/AuthDecoration";
-import logo from "../../assets/auth/logo.svg";
-import addEmployeeImage from "../../assets/auth/addEmployee.svg";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+
+import { useAuth } from "../../../context/AuthContext";
+import addEmployeeImage from "../../../assets/auth/addEmployee.svg";
+
+import { addEmployee } from "../api/addEmployeeApi";
 
 function AddEmployee() {
   const navigate = useNavigate();
@@ -84,7 +83,7 @@ function AddEmployee() {
     try {
       const data = await addEmployee(formData, accessToken);
       toast.success(data.message || "Employee invite sent successfully.");
-      navigate("/dashboard");
+      navigate("/employees");
     } catch (error) {
       toast.error(error.message || "Failed to send employee invite.");
     }
@@ -94,24 +93,10 @@ function AddEmployee() {
     Boolean(formData.email.trim()) && Boolean(formData.phone);
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-x-hidden bg-[#00010f] px-4 py-8 text-[#e6e6e8]">
-      <div className="fixed left-0 top-0 z-50 h-16 w-full bg-[#00010f] sm:hidden">
-        <Link to="/" className="absolute left-1/2 top-6 -translate-x-1/2">
-          <img src={logo} alt="KOSH" className="h-6 w-auto" />
-        </Link>
-      </div>
-      <Link to="/" className="fixed left-8 top-8 hidden sm:block">
-        <img src={logo} alt="KOSH" className="h-7 w-auto" />
-      </Link>
-      <AuthDecoration />
-      <div className="w-full max-w-4xl pt-20 sm:pt-0">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-extrabold sm:text-4xl">
-            Add your Employee
-          </h1>
-          <p className="mx-auto mt-2 max-w-sm text-sm text-[#9697a1]">
-            Make your inventory accessible to your staff/employees
-          </p>
+    <main className="relative flex min-h-screen items-center justify-center overflow-x-hidden px-4 py-2 text-[#e6e6e8]">
+      <div className="w-full max-w-4xl pt-10 sm:pt-0">
+        <div className="mb-8 text-left">
+          <h1 className="text-3xl font-extrabold sm:text-4xl">Add Employee</h1>
         </div>
         <div className="mx-auto w-full max-w-md rounded-lg border border-[#2b2c40] bg-[#000112] p-6 sm:p-8 lg:flex lg:max-w-4xl lg:items-center lg:p-10">
           <form

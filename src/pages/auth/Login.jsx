@@ -16,7 +16,6 @@ import GoogleButton from "../../components/auth/GoogleButton";
 import GithubButton from "../../components/auth/GithubButton";
 
 import { loginUser } from "../../api/loginApi";
-import { getProfile } from "../../api/getProfileApi";
 
 function Login() {
   const navigate = useNavigate();
@@ -136,17 +135,20 @@ function Login() {
 
       login(response.data.access);
       localStorage.removeItem("loginFormData");
-      const profile = await getProfile(response.data.access);
-      const role = profile.data?.role;
+
+      const role = response.data.role;
       const selectedRole = localStorage.getItem("selectedRole");
-      if (role === "employee") {
+
+      if (role === "owner") {
+        if (response.data.has_business === true) {
+          navigate("/dashboard");
+        } else {
+          navigate("/setup-business");
+        }
+      } else if (role === "employee") {
         navigate("/employee-dashboard");
-      } else if (selectedRole === "employee") {
+      } else if (role === null && selectedRole === "employee") {
         navigate("/employee-invites");
-      } else if (response.data.has_business === true) {
-        navigate("/dashboard");
-      } else {
-        navigate("/setup-business");
       }
     } catch (error) {
       console.log("Login Failed", error.message);

@@ -1,7 +1,7 @@
+// import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiPlus, FiSearch } from "react-icons/fi";
 
-// import { useAuth } from "../../../context/AuthContext";
 // import { getEmployees } from "../api/getEmployeeApi";
 
 // import EmployeeTable from "../components/EmployeeTable";
@@ -9,7 +9,6 @@ import { FiPlus, FiSearch } from "react-icons/fi";
 
 function ManageEmployees() {
   const navigate = useNavigate();
-  // const { accessToken } = useAuth();
 
   // const [employees, setEmployees] = useState([]);
   // const [search, setSearch] = useState("");
@@ -21,7 +20,9 @@ function ManageEmployees() {
   //     try {
   //       setLoading(true);
   //       setError("");
-  //       const response = await getEmployees(accessToken);
+
+  //       const response = await getEmployees();
+
   //       setEmployees(response.data.employees || []);
   //     } catch (error) {
   //       setError(error.message || "Unable to load employees.");
@@ -31,11 +32,10 @@ function ManageEmployees() {
   //   };
 
   //   fetchEmployees();
-  // }, [accessToken]);
+  // }, []);
 
   // const filteredEmployees = employees.filter((employee) => {
   //   const value = search.toLowerCase();
-
   //   return (
   //     employee?.name?.toLowerCase().includes(value) ||
   //     employee?.email?.toLowerCase().includes(value) ||
@@ -52,16 +52,13 @@ function ManageEmployees() {
         <h1 className="font-['Google_Sans_Flex'] text-2xl font-semibold sm:text-3xl">
           Manage Employees
         </h1>
-
         <p className="mt-2 text-sm text-[#9697a1]">
           Manage your inventory accessible to your staff/employees.
         </p>
       </div>
-
       <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex h-10 w-full max-w-[320px] items-center gap-2 rounded-xl bg-[#10111f] px-3">
           <FiSearch size={16} className="shrink-0 text-[#9697a1]" />
-
           <input
             type="text"
             // value={search}
@@ -70,7 +67,6 @@ function ManageEmployees() {
             className="w-full bg-transparent text-sm text-[#e6e6e8] outline-none placeholder:text-[#9697a1]"
           />
         </div>
-
         <button
           type="button"
           onClick={() => navigate("/add-employee")}
@@ -80,14 +76,13 @@ function ManageEmployees() {
           Add Employee
         </button>
       </div>
-
-      {/* <div className="overflow-hidden rounded-2xl bg-[#10111f]/10">
+      <div className="overflow-hidden rounded-2xl bg-[#10111f]/10">
         <div className="border-b border-[#2b2c40] px-5 py-4">
           <h2 className="text-base font-medium text-[#e6e6e8]">
             Employee Details
           </h2>
         </div>
-        {loading && <EmployeeTableSkeleton />}
+        {/* {loading && <EmployeeTableSkeleton />}
         {!loading && error && (
           <div className="px-5 py-8 text-sm text-[#d14d4d]">{error}</div>
         )}
@@ -98,8 +93,8 @@ function ManageEmployees() {
         )}
         {!loading && !error && filteredEmployees.length > 0 && (
           <EmployeeTable employees={filteredEmployees} />
-        )}
-      </div> */}
+        )} */}
+      </div>
     </div>
   );
 }

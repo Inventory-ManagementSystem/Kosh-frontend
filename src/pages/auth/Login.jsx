@@ -133,7 +133,7 @@ function Login() {
         password: formData.password,
       });
 
-      login(response.data.access);
+      login(response.data.access, response.data.role);
       localStorage.removeItem("loginFormData");
 
       const role = response.data.role;

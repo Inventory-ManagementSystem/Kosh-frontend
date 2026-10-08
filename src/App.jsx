@@ -10,6 +10,7 @@ import SetupComplete from "./pages/auth/SetUpComplete";
 import RegistrationOtp from "./pages/auth/RegistrationOtp";
 import OAuthCallback from "./pages/auth/OAuthCallback";
 import GitHubOAuthCallback from "./pages/auth/GitHubOAuthCallback";
+import HomePage from "./pages/auth/HomePage";
 
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
@@ -26,7 +27,7 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/role" element={<RoleSelection />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />

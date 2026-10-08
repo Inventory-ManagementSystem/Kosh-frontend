@@ -19,8 +19,10 @@ export const AuthProvider = ({ children }) => {
   const restored = useRef(false);
 
   const login = useCallback((access, userRole) => {
+    console.log("LOGIN CONTEXT CALLED");
     setAccessToken(access);
     setRole(userRole);
+    setLoading(false);
   }, []);
 
   const logout = useCallback(() => {
@@ -40,6 +42,7 @@ export const AuthProvider = ({ children }) => {
         console.log("New access token received");
         setAccessToken(access);
         const profile = await getProfile(access);
+        console.log("Profile received:", profile);
         setRole(profile.data.role);
       } catch (error) {
         console.log("Refresh failed:", error);

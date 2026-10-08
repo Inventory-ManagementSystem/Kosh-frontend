@@ -139,7 +139,15 @@ function Login() {
       const role = response.data.role;
       const selectedRole = localStorage.getItem("selectedRole");
 
-      if (role === "owner") {
+      if (selectedRole === "business_owner") {
+        if (response.data.has_business === true) {
+          navigate("/dashboard");
+        } else {
+          navigate("/setup-business");
+        }
+      } else if (selectedRole === "employee") {
+        navigate("/employee-invites");
+      } else if (role === "owner") {
         if (response.data.has_business === true) {
           navigate("/dashboard");
         } else {
@@ -147,9 +155,8 @@ function Login() {
         }
       } else if (role === "employee") {
         navigate("/employee-dashboard");
-      } else if (role === null && selectedRole === "employee") {
-        navigate("/employee-invites");
       }
+      localStorage.removeItem("selectedRole");
     } catch (error) {
       console.log("Login Failed", error.message);
       setErrors({

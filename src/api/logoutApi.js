@@ -1,12 +1,9 @@
 const LOGOUT_API_URL = import.meta.env.VITE_LOGOUT_API_URL;
 
-export const logoutUser = async (refreshToken) => {
+export const logoutUser = async () => {
   const response = await fetch(LOGOUT_API_URL, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ refresh: refreshToken }),
+    credentials: "include",
   });
 
   const data = await response.json();

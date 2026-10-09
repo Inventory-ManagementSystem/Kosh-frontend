@@ -4,11 +4,11 @@ import { useAuth } from "../../../context/AuthContext";
 import { logoutUser } from "../../../api/logoutApi";
 
 function OwnerTopbar() {
-  const { refreshToken, logout } = useAuth();
+  const { logout } = useAuth();
 
   const handleLogout = async () => {
     try {
-      await logoutUser(refreshToken);
+      await logoutUser();
     } catch (error) {
       console.error(error);
     } finally {

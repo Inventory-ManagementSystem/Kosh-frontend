@@ -9,6 +9,7 @@ import {
 } from "react";
 import { refreshAccessToken } from "../api/refreshTokenApi";
 import { getProfile } from "../api/getProfileApi";
+import { logoutUser } from "../api/logoutApi";
 
 const AuthContext = createContext(null);
 
@@ -25,9 +26,14 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const logout = useCallback(() => {
-    setAccessToken(null);
-    setRole(null);
+  const logout = useCallback(async () => {
+    try {
+      await logoutUser();
+    } finally {
+      setAccessToken(null);
+      setRole(null);
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {

@@ -20,8 +20,10 @@ function RoleSelection() {
       localStorage.removeItem("oauthUser");
       if (role === "business_owner") {
         navigate("/setup-business");
-      } else {
+      } else if (role === "employee") {
         navigate("/employee-invites");
+      } else if (role === "supplier") {
+        navigate("/setup-supplier");
       }
       return;
     }
@@ -44,7 +46,7 @@ function RoleSelection() {
                 Workplace.
               </span>
             </h1>
-            <div className="mt-8 flex gap-4">
+            <div className="mt-8 flex w-full max-w-[316px] flex-col gap-2.5">
               <RoleCard
                 title="Business Owner"
                 active={role === "business_owner"}
@@ -54,6 +56,11 @@ function RoleSelection() {
                 title="Employee"
                 active={role === "employee"}
                 onSelect={() => setRole("employee")}
+              />
+              <RoleCard
+                title="Supplier"
+                active={role === "supplier"}
+                onSelect={() => setRole("supplier")}
               />
             </div>
             <div className="mt-5 flex gap-4">

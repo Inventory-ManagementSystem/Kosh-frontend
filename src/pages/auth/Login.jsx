@@ -138,8 +138,13 @@ function Login() {
 
       const role = response.data.role;
       const selectedRole = localStorage.getItem("selectedRole");
-
-      if (selectedRole === "business_owner") {
+      if (selectedRole === "supplier") {
+        if (response.data.role === null) {
+          navigate("/setup-supplier");
+        } else {
+          navigate("/supplier-dashboard");
+        }
+      } else if (selectedRole === "business_owner") {
         if (response.data.has_business === true) {
           navigate("/dashboard");
         } else {

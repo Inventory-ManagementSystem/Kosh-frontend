@@ -11,6 +11,8 @@ import RegistrationOtp from "./pages/auth/RegistrationOtp";
 import OAuthCallback from "./pages/auth/OAuthCallback";
 import GitHubOAuthCallback from "./pages/auth/GitHubOAuthCallback";
 import HomePage from "./pages/auth/HomePage";
+import SetupSupplier from "./pages/auth/SetUpSupplier";
+import SupplierDashboard from "./features/supplier/pages/SupplierDashboard";
 
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
@@ -39,6 +41,9 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/setup-business" element={<SetupBusiness />} />
           <Route path="/complete-setup" element={<SetupComplete />} />
+          <Route path="/setup-supplier" element={<SetupSupplier />} />
+
+          <Route path="/supplier-dashboard" element={<SupplierDashboard />} />
 
           <Route element={<OwnerLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />

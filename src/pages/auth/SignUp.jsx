@@ -19,8 +19,16 @@ function Signup() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const role = location.state?.role || "business_owner";
-  const roleName = role === "employee" ? "Employee/Staff" : "Business Owner";
+  const role =
+    location.state?.role ||
+    localStorage.getItem("selectedRole") ||
+    "business_owner";
+  const roleName =
+    role === "employee"
+      ? "Employee/Staff"
+      : role === "supplier"
+        ? "Supplier"
+        : "Business Owner";
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);

@@ -20,6 +20,9 @@
   --autofill-text: #e6e6e8;
   --success-background: #07181e;
   --accent-hover-color: #c5cdeb;
+  --dashboard-glow: #6effff;
+  --sidebar-active-background: #171827;
+  --sidebar-hover-background: #10111f;
 }
 
 body {

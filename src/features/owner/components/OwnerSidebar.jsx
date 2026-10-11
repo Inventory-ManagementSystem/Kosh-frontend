@@ -54,7 +54,7 @@ function OwnerSidebar({ collapsed, setCollapsed }) {
     <aside
       className={`
           fixed left-0 top-18 z-50 min-h-screen
-          bg-[#00010f]
+          bg-(--page-background)
           transition-all
           ${collapsed ? "w-18" : "w-57.5"}
         `}
@@ -75,8 +75,8 @@ function OwnerSidebar({ collapsed, setCollapsed }) {
                       ${collapsed ? "justify-center" : "gap-3 px-3"}
                       ${
                         isActive
-                          ? "bg-[#171827] text-[#e6e6e8]"
-                          : "text-[#9697a1] hover:bg-[#10111f] hover:text-[#e6e6e8]"
+                          ? "bg-(--sidebar-active-background) text-(--text-color)"
+                          : "text-(--secondary-text-color) hover:bg-(--sidebar-hover-background) hover:text-(--text-color)"
                       }
                       `
                   }
@@ -99,10 +99,10 @@ function OwnerSidebar({ collapsed, setCollapsed }) {
             onClick={() => setCollapsed(!collapsed)}
             className={`
                 flex h-11 w-full items-center rounded-xl
-                text-[#9697a1]
+                text-(--secondary-text-color)
                 transition-colors
-                hover:bg-[#10111f]
-                hover:text-[#e6e6e8]
+                hover:bg-(--sidebar-hover-background)
+                hover:text-(--text-color)
                 ${collapsed ? "justify-center" : "gap-3 px-3"}
               `}
           >

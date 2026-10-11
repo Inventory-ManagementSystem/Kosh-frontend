@@ -4,13 +4,18 @@ import { Outlet } from "react-router-dom";
 import OwnerSidebar from "../features/owner/components/OwnerSidebar";
 import OwnerTopbar from "../features/owner/components/OwnerTopbar";
 import logo from "../assets/auth/logo.svg";
+import { useTheme } from "../context/ThemeContext";
 
 function OwnerLayout() {
   const [collapsed, setCollapsed] = useState(false);
+  const { themes } = useTheme();
 
   return (
-    <div className="min-h-screen bg-[#00010f] text-[#e6e6e8]">
-      <div className="fixed left-0 top-0 z-50 flex h-18 w-57.5 items-center px-5 bg-[#00010f]">
+    <div
+      className="dashboard min-h-screen bg-(--page-background) text-(--text-color)"
+      data-theme={themes.owner}
+    >
+      <div className="fixed left-0 top-0 z-50 flex h-18 w-57.5 items-center px-5 bg-(--page-background)">
         <img src={logo} alt="KOSH" className="h-7 w-auto shrink-0" />
       </div>
       <OwnerTopbar />
@@ -31,7 +36,7 @@ function OwnerLayout() {
               absolute left-1/2 top-1/3
               h-97.5 w-93
               rounded-full
-              bg-[#6EFFFF]
+              bg-(--dashboard-glow)
               opacity-20
               blur-[225px]
             "

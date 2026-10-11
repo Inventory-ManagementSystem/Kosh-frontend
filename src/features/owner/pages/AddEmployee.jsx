@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 import { useAuth } from "../../../context/AuthContext";
 import addEmployeeImage from "../../../assets/auth/addEmployee.svg";
@@ -39,13 +40,13 @@ function AddEmployee() {
     } else if (name === "phone") {
       if (!value.trim()) {
         setErrors({ ...errors, phone: "Phone number is required" });
-      } else if (!/^\+?\d*$/.test(value)) {
+      } else if (!/^\d*$/.test(value)) {
         setErrors({
           ...errors,
-          phone: "Phone number can contain only digits and an optional +",
+          phone: "Phone number can contain only digits",
         });
-      } else if (!/^\+?\d{10,15}$/.test(value)) {
-        setErrors({ ...errors, phone: "Phone number must be 10-15 digits" });
+      } else if (!/^\d{10}$/.test(value)) {
+        setErrors({ ...errors, phone: "Phone number must be of 10 digits" });
       } else {
         setErrors({ ...errors, phone: "" });
       }
@@ -68,8 +69,8 @@ function AddEmployee() {
 
     if (!formData.phone.trim()) {
       newErrors.phone = "Phone number is required";
-    } else if (!/^\+?\d{10,15}$/.test(formData.phone)) {
-      newErrors.phone = "Phone number must be 10-15 digits";
+    } else if (!/^\d{10}$/.test(formData.phone)) {
+      newErrors.phone = "Phone number must be of 10 digits";
     }
     setErrors(newErrors);
     return !Object.values(newErrors).some((error) => error);
@@ -95,6 +96,13 @@ function AddEmployee() {
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-x-hidden px-4 py-2 text-[#e6e6e8]">
       <div className="w-full max-w-4xl pt-10 sm:pt-0">
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="absolute left-3 top-3 z-10 cursor-pointer text-(--icon-accent-color)"
+        >
+          <IoMdArrowRoundBack size={20} />
+        </button>
         <div className="mb-8 text-left">
           <h1 className="text-3xl font-extrabold sm:text-4xl">Add Employee</h1>
         </div>
@@ -140,7 +148,7 @@ function AddEmployee() {
                 id="phone"
                 type="tel"
                 name="phone"
-                maxLength={15}
+                maxLength={10}
                 value={formData.phone}
                 onChange={handleChange}
                 placeholder="Enter employee's phone number"

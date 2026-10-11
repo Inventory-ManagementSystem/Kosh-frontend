@@ -69,7 +69,7 @@ function SetupSupplier() {
         }
         return "";
       case "phoneNumber":
-        if (!/^[6-9]\d{9}$/.test(value)) {
+        if (!/^\d{10}$/.test(value)) {
           return "Enter a valid 10-digit phone number";
         }
         return "";
@@ -183,32 +183,32 @@ function SetupSupplier() {
   };
 
   const inputClass = (field) =>
-    `w-full rounded-md border bg-[#00010f] px-4 py-3 text-sm text-[#e6e6e8] outline-none transition placeholder:text-[#9697a1] ${
+    `w-full rounded-md border bg-[var(--input-background)] px-4 py-3 text-sm text-[var(--text-color)] outline-none transition placeholder:text-[var(--secondary-text-color)] ${
       errors[field] && touched[field]
-        ? "border-[#d14d4d]"
-        : "border-[#2b2c40] focus:border-[#b4bedd]"
+        ? "border-[var(--error-color)]"
+        : "border-[var(--border-color)] focus:border-[var(--accent-color)]"
     }`;
 
   const selectClass = (field) =>
-    `${inputClass(field)} ${formData[field] ? "" : "text-[#9697a1]"}`;
+    `${inputClass(field)} ${formData[field] ? "" : "text-[var(--secondary-text-color)]"}`;
 
-  const labelClass = "mb-2 block text-sm font-medium text-[#e6e6e8]";
+  const labelClass = "mb-2 block text-sm font-medium text-[var(--text-color)]";
 
   const renderError = (field) =>
     touched[field] && errors[field] ? (
-      <p className="mt-2 text-xs leading-5 text-[#d14d4d]">{errors[field]}</p>
+      <p className="mt-2 text-xs text-(--error-color)">{errors[field]}</p>
     ) : null;
 
   return (
-    <main className="relative min-h-screen overflow-x-hidden bg-[#00010f] text-[#e6e6e8]">
-      <div className="fixed left-0 top-0 z-50 h-16 w-full bg-[#00010f] min-[700px]:hidden">
-        <Link to="/" className="absolute left-8 top-7">
+    <main className="relative min-h-screen overflow-x-hidden bg-(--page-background) text-(--text-color)">
+      <div className="fixed left-0 top-0 z-50 h-16 w-full bg-(--page-background) min-[700px]:hidden">
+        <Link to="/login" className="absolute left-8 top-7">
           <img src={logo} alt="KOSH" className="h-6 w-auto" />
         </Link>
       </div>
 
       <Link
-        to="/"
+        to="/login"
         className="absolute left-10 top-8 z-10 hidden min-[700px]:block"
       >
         <img src={logo} alt="KOSH" className="h-7 w-auto" />
@@ -223,7 +223,7 @@ function SetupSupplier() {
           </h1>
         </div>
 
-        <section className="relative mx-auto w-full max-w-xl rounded-lg border border-[#2b2c40] bg-[#111222] p-6 sm:p-8 lg:flex lg:max-w-4xl lg:items-center lg:p-10">
+        <section className="relative mx-auto w-full max-w-xl rounded-lg border border-(--border-color) bg-(--card-background) p-6 sm:p-8 lg:flex lg:max-w-4xl lg:items-center lg:p-10">
           <form
             noValidate
             onSubmit={handleSubmit}
@@ -338,7 +338,7 @@ function SetupSupplier() {
               {renderError("category")}
 
               {categories.length === 0 && !categoriesLoading && apiError && (
-                <p className="mt-2 text-xs leading-5 text-[#d14d4d]">
+                <p className="mt-2 text-xs leading-5 text-(--error-color)">
                   {apiError}
                 </p>
               )}
@@ -425,7 +425,7 @@ function SetupSupplier() {
             </div>
 
             {apiError && categories.length > 0 && (
-              <p className="mb-4 text-sm leading-5 text-[#d14d4d]">
+              <p className="mb-4 text-sm leading-5 text-(--error-color)">
                 {apiError}
               </p>
             )}
@@ -433,7 +433,7 @@ function SetupSupplier() {
             <button
               type="submit"
               disabled={loading || categoriesLoading || categories.length === 0}
-              className="w-full rounded-md bg-[#b4bedd] py-3 text-sm font-semibold text-[#00010f] transition duration-200 hover:bg-[#c7d0eb] disabled:cursor-not-allowed disabled:opacity-60"
+              className="w-full rounded-md bg-(--accent-color) py-3 text-sm font-semibold text-[#00010f] transition duration-200 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading ? "Setting up..." : "Continue"}
             </button>

@@ -278,8 +278,8 @@ function Signup() {
   };
 
   return (
-    <main className="relative min-h-screen overflow-x-hidden bg-[#00010f] text-[#e6e6e8]">
-      <div className="fixed left-0 top-0 z-50 h-16 w-full bg-[#00010f] min-[700px]:hidden">
+    <main className="relative min-h-screen overflow-x-hidden bg-(--page-background) text-(--text-color)">
+      <div className="fixed left-0 top-0 z-50 h-16 w-full bg-(--page-background) min-[700px]:hidden">
         <Link to="/" className="absolute left-8 top-7">
           <img src={logo} alt="KOSH" className="h-6 w-auto" />
         </Link>
@@ -293,15 +293,15 @@ function Signup() {
         <div className="mb-4 text-center min-[700px]:mb-5">
           <p className="font-['Google_Sans_Flex'] text-xl font-semibold min-[700px]:text-2xl">
             Create account as{" "}
-            <span className="font-bold text-[#b4bedd]">{roleName}</span>
+            <span className="font-bold text-(--accent-color)">{roleName}</span>
           </p>
         </div>
 
-        <div className="relative mx-auto w-full max-w-xl rounded-lg border border-[#2b2c40] bg-[#000112] p-6 sm:p-8 lg:flex lg:max-w-4xl lg:items-center lg:p-10">
+        <div className="relative mx-auto w-full max-w-xl rounded-lg border border-(--border-color) bg-(--card-background) p-6 sm:p-8 lg:flex lg:max-w-4xl lg:items-center lg:p-10">
           <button
             type="button"
             onClick={() => navigate(-1)}
-            className="absolute left-3 top-3 z-10 cursor-pointer text-[#b4bedd]"
+            className="absolute left-3 top-3 z-10 cursor-pointer text-(--icon-accent-color)"
           >
             <IoMdArrowRoundBack size={20} />
           </button>
@@ -313,7 +313,7 @@ function Signup() {
             <div className="mb-5">
               <label
                 htmlFor="name"
-                className="text-sm font-medium text-[#e6e6e8]"
+                className="text-sm font-medium text-(--text-color)"
               >
                 Full Name
               </label>
@@ -327,24 +327,26 @@ function Signup() {
                 onBlur={() => setFocusedField(null)}
                 onChange={handleChange}
                 placeholder="Your Name"
-                className={`mt-2 w-full rounded-md border bg-[#00010f] px-4 py-3 text-sm text-[#e6e6e8] caret-[#b4bedd] outline-none transition placeholder:text-[#9697a1] ${
+                className={`mt-2 w-full rounded-md border bg-(--card-background) px-4 py-3 text-sm text-(--text-color) caret-(--accent-color) outline-none transition placeholder:text-(--secondary-text-color) ${
                   errors.name
-                    ? "border-[#d14d4d]"
+                    ? "border-(--error-color)"
                     : focusedField === "name"
-                      ? "border-[#b4bedd]"
-                      : "border-[#2b2c40]"
+                      ? "border-(--accent-color)"
+                      : "border-(--border-color)"
                 }`}
               />
 
               {errors.name && (
-                <p className="mt-2 text-xs text-[#d14d4d]">{errors.name}</p>
+                <p className="mt-2 text-xs text-(--error-color)">
+                  {errors.name}
+                </p>
               )}
             </div>
 
             <div className="mb-5">
               <label
                 htmlFor="email"
-                className="mb-2 block text-sm font-medium text-[#e6e6e8]"
+                className="mb-2 block text-sm font-medium text-(--text-color)"
               >
                 Email
               </label>
@@ -359,24 +361,26 @@ function Signup() {
                 onFocus={() => setFocusedField("email")}
                 onBlur={() => setFocusedField(null)}
                 placeholder="Enter Email"
-                className={`w-full rounded-md border bg-[#00010f] px-4 py-3 caret-[#b4bedd] text-sm text-[#e6e6e8] outline-none transition placeholder:text-[#9697a1] ${
+                className={`w-full rounded-md border bg-(--card-background) px-4 py-3 caret-[#b4bedd] text-sm text-[#e6e6e8] outline-none transition placeholder:text-[#9697a1] ${
                   errors.email
-                    ? "border-[#d14d4d]"
+                    ? "border-(--error-color)"
                     : focusedField === "email"
-                      ? "border-[#b4bedd]"
-                      : "border-[#2b2c40]"
+                      ? "border-(--accent-color)"
+                      : "border-(--border-color)"
                 }`}
               />
 
               {errors.email && (
-                <p className="mt-2 text-xs text-[#d14d4d]">{errors.email}</p>
+                <p className="mt-2 text-xs text-(--error-color)">
+                  {errors.email}
+                </p>
               )}
             </div>
 
             <div className="mb-5">
               <label
                 htmlFor="password"
-                className="mb-2 block text-sm font-medium text-[#e6e6e8]"
+                className="mb-2 block text-sm font-medium text-(--text-color)"
               >
                 Password
               </label>
@@ -392,33 +396,35 @@ function Signup() {
                   onFocus={() => setFocusedField("password")}
                   onBlur={() => setFocusedField(null)}
                   placeholder="Create a strong password"
-                  className={`w-full rounded-md border bg-[#00010f] px-4 caret-[#b4bedd] py-3 pr-12 text-sm text-[#e6e6e8] outline-none transition placeholder:text-[#9697a1] ${
+                  className={`w-full rounded-md border bg-(--card-background) px-4 caret-(--accent-color) py-3 pr-12 text-sm text-(--text-color) outline-none transition placeholder:text-(--secondary-text-color) ${
                     errors.password
-                      ? "border-[#d14d4d]"
+                      ? "border-(--error-color)"
                       : focusedField === "password"
-                        ? "border-[#b4bedd]"
-                        : "border-[#2b2c40]"
+                        ? "border-(--accent-color)"
+                        : "border-(--border-color)"
                   }`}
                 />
 
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9697a1] transition hover:text-[#e6e6e8]"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-(--icon-color) transition hover:text-(--icon-accent-color)"
                 >
                   {showPassword ? <BsEye /> : <BsEyeSlash />}
                 </button>
               </div>
 
               {errors.password && (
-                <p className="mt-2 text-xs text-[#d14d4d]">{errors.password}</p>
+                <p className="mt-2 text-xs text-(--error-color)">
+                  {errors.password}
+                </p>
               )}
             </div>
 
             <div className="mb-5">
               <label
                 htmlFor="confirmPassword"
-                className="mb-2 block text-sm font-medium text-[#e6e6e8]"
+                className="mb-2 block text-sm font-medium text-(--text-color)"
               >
                 Confirm Password
               </label>
@@ -434,39 +440,41 @@ function Signup() {
                   onFocus={() => setFocusedField("confirmPassword")}
                   onBlur={() => setFocusedField(null)}
                   placeholder="Confirm password"
-                  className={`w-full rounded-md border bg-[#00010f] caret-[#b4bedd] px-4 py-3 pr-12 text-sm text-[#e6e6e8] outline-none transition placeholder:text-[#9697a1] ${
+                  className={`w-full rounded-md border bg-(--card-background) caret-(--accent-color) px-4 py-3 pr-12 text-sm text-(--text-color) outline-none transition placeholder:text-(--secondary-text-color) ${
                     errors.confirmPassword
-                      ? "border-[#d14d4d]"
+                      ? "border-(--error-color)"
                       : focusedField === "confirmPassword"
-                        ? "border-[#b4bedd]"
-                        : "border-[#2b2c40]"
+                        ? "border-(--accent-color)"
+                        : "border-(--border-color)"
                   }`}
                 />
 
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9697a1] transition hover:text-[#e6e6e8]"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-(--icon-color) transition hover:text-(--icon-accent-color)"
                 >
                   {showConfirmPassword ? <BsEye /> : <BsEyeSlash />}
                 </button>
               </div>
 
               {errors.confirmPassword && (
-                <p className="mt-2 text-xs text-[#d14d4d]">
+                <p className="mt-2 text-xs text-(--error-color)">
                   {errors.confirmPassword}
                 </p>
               )}
             </div>
 
             {apiError && (
-              <p className="mb-4 text-center text-xs text-[#d14d4d]">
+              <p className="mb-4 text-center text-xs text-(--error-color)">
                 {apiError}
               </p>
             )}
             <AuthButton isFormFilled={isFormFilled}>Create Account</AuthButton>
 
-            <div className="my-5 text-center text-xs text-[#9697a1]">OR</div>
+            <div className="my-5 text-center text-xs text-(--secondary-text-color)">
+              OR
+            </div>
 
             <div className="flex gap-5">
               <GoogleButton onClick={googleLogin} className="w-1/2" />
@@ -480,24 +488,24 @@ function Signup() {
                 <img src={createaccount} alt="SignUp illustration" />
               </div>
             </div>
-            <p className="mt-6 text-sm text-[#9697a1]">
+            <p className="mt-6 text-sm text-(--secondary-text-color)">
               Already have an account?{" "}
               <button
                 type="button"
                 onClick={() => navigate("/login")}
-                className=" text-[#b4bedd] underline underline-offset-4 transition hover:text-[#e6e6e8]"
+                className=" text-(--accent-color) underline underline-offset-4 transition hover:text-(--text-color)"
               >
                 Login
               </button>
             </p>
           </div>
 
-          <div className="mt-6 text-center text-sm text-[#9697a1] lg:hidden">
+          <div className="mt-6 text-center text-sm text-(--secondary-text-color) lg:hidden">
             Already have an account?{" "}
             <button
               type="button"
               onClick={() => navigate("/login")}
-              className="text-[#b4bedd] underline underline-offset-4 transition hover:text-[#e6e6e8]"
+              className="text-(--accent-color) underline underline-offset-4 transition hover:text-(--text-color)"
             >
               Login
             </button>

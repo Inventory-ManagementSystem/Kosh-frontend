@@ -132,8 +132,8 @@ function RegistrationOTP() {
   };
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center bg-[#00010f] px-4 py-8 text-[#e6e6e8]">
-      <div className="fixed left-0 top-0 z-50 h-16 w-full bg-[#00010f] sm:hidden">
+    <main className="relative flex min-h-screen items-center justify-center bg-(--page-background) px-4 py-8 text-(--text-color)">
+      <div className="fixed left-0 top-0 z-50 h-16 w-full bg-(--page-background) sm:hidden">
         <Link to="/" className="absolute left-1/2 top-6 -translate-x-1/2">
           <img src={logo} alt="KOSH" className="h-6 w-auto" />
         </Link>
@@ -149,7 +149,7 @@ function RegistrationOTP() {
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-extrabold sm:text-4xl">Verify OTP</h1>
 
-          <p className="mx-auto mt-2 max-w-sm text-sm text-[#9697a1]">
+          <p className="mx-auto mt-2 max-w-sm text-sm text-(--secondary-text-color)">
             Enter the 6-digit OTP sent to your email address.
           </p>
         </div>
@@ -168,25 +168,27 @@ function RegistrationOTP() {
                 onChange={(e) => handleChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
                 onPaste={(e) => handlePaste(e, index)}
-                className={`h-12 min-w-0 rounded-md border bg-[#00010f] text-center text-lg font-semibold text-[#e6e6e8] outline-none transition sm:h-14 sm:w-12 ${
+                className={`h-12 min-w-0 rounded-md border bg-(--input-background) text-center text-lg font-semibold text-(--input-background) outline-none transition sm:h-14 sm:w-12 ${
                   error
-                    ? "border-[#d14d4d] focus:border-[#d14d4d]"
-                    : "border-[#2b2c40] focus:border-[#b4bedd]"
+                    ? "border-(--error-color) focus:border-(--error-color)"
+                    : "border-(--border-color) focus:border-(--accent-color)"
                 }`}
               />
             ))}
           </div>
 
           {error && (
-            <p className="mt-4 text-center text-xs text-[#d14d4d]">{error}</p>
+            <p className="mt-4 text-center text-xs text-(--error-color)">
+              {error}
+            </p>
           )}
 
-          <p className="mt-5 text-center text-sm text-[#9697a1]">
+          <p className="mt-5 text-center text-sm text-(--secondary-text-color)">
             Didn't receive the code?{" "}
             <button
               type="button"
               onClick={handleResend}
-              className="text-[#b4bedd] transition hover:text-[#e6e6e8]"
+              className="text-(--accent-color) transition hover:text-(--text-color)"
             >
               Resend OTP
             </button>

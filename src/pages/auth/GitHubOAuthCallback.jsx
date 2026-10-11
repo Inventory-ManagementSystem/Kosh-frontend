@@ -35,7 +35,7 @@ function GitHubOAuthCallback() {
   }, [login, navigate]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#00010f] text-[#e6e6e8]">
+    <div className="flex min-h-screen items-center justify-center bg-(--page-background) text-r(--text-color)">
       Signing you in...
     </div>
   );

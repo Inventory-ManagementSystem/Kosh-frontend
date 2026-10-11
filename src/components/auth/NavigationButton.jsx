@@ -10,8 +10,8 @@ function NavigationButton({
       onClick={onClick}
       className={`h-9 w-24 cursor-pointer rounded-md text-xs font-bold transition sm:h-10 sm:w-28 ${
         isFormFilled
-          ? "bg-[#b4bedd] text-[#000119] hover:bg-[#95a3cf]"
-          : "bg-[#2b2c40] text-[#9697a1]"
+          ? "bg-(--accent-color) text-(--page-background) hover:bg-(--accent-hover-color)"
+          : "bg-(--border-color) text-(--secondary-text-color)"
       }`}
     >
       {children}

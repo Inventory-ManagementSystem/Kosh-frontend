@@ -91,8 +91,8 @@ function ResetPassword() {
   };
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center bg-[#00010f] px-4 py-8 text-[#e6e6e8]">
-      <div className="fixed left-0 top-0 z-50 h-16 w-full bg-[#00010f] sm:hidden">
+    <main className="relative flex min-h-screen items-center justify-center bg-(--page-background) px-4 py-8 text-(--text-color)">
+      <div className="fixed left-0 top-0 z-50 h-16 w-full bg-(--page-background) sm:hidden">
         <Link to="/" className="absolute left-1/2 top-6 -translate-x-1/2">
           <img src={logo} alt="KOSH" className="h-6 w-auto" />
         </Link>
@@ -108,12 +108,12 @@ function ResetPassword() {
             Reset Password
           </h1>
 
-          <p className="mx-auto mt-2 max-w-sm text-sm text-[#9697a1]">
+          <p className="mx-auto mt-2 max-w-sm text-sm text-(--secondary-text-color)">
             Create a new password for your account.
           </p>
         </div>
 
-        <div className="mx-auto w-full max-w-md rounded-lg border border-[#2b2c40] bg-[#000112] p-6 sm:p-8 lg:flex lg:max-w-4xl lg:items-center lg:p-10">
+        <div className="mx-auto w-full max-w-md rounded-lg border border-(--border-color) bg-(--card-background) p-6 sm:p-8 lg:flex lg:max-w-4xl lg:items-center lg:p-10">
           <form
             noValidate
             onSubmit={handleSubmit}
@@ -122,7 +122,7 @@ function ResetPassword() {
             <div className="mb-5">
               <label
                 htmlFor="password"
-                className="mb-2 block text-sm font-medium text-[#e6e6e8]"
+                className="mb-2 block text-sm font-medium text-(--text-color)"
               >
                 New Password
               </label>
@@ -136,31 +136,33 @@ function ResetPassword() {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Enter new password"
-                  className={`w-full rounded-md border bg-[#00010f] px-4 py-3 pr-11 text-sm text-[#e6e6e8] outline-none transition placeholder:text-[#9697a1] ${
+                  className={`w-full rounded-md border bg-(--input-background) px-4 py-3 pr-11 text-sm text-[#e6e6e8] outline-none transition placeholder:text-[#9697a1] ${
                     errors.password
-                      ? "border-[#d14d4d] focus:border-[#d14d4d]"
-                      : "border-[#2b2c40] focus:border-[#b4bedd]"
+                      ? "border-(--error-color) focus:border-(--error-color)"
+                      : "border-(--border-color) focus:border-(--accent-color)"
                   }`}
                 />
 
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-[#9697a1] transition hover:text-[#e6e6e8]"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-(--icon-color transition hover:text-(--icon-accent-color)"
                 >
                   {showPassword ? <BsEyeSlash /> : <BsEye />}
                 </button>
               </div>
 
               {errors.password && (
-                <p className="mt-2 text-xs text-[#d14d4d]">{errors.password}</p>
+                <p className="mt-2 text-xs text-(--error-color)">
+                  {errors.password}
+                </p>
               )}
             </div>
 
             <div className="mb-6">
               <label
                 htmlFor="confirmPassword"
-                className="mb-2 block text-sm font-medium text-[#e6e6e8]"
+                className="mb-2 block text-sm font-medium text-(--text-color)"
               >
                 Confirm Password
               </label>
@@ -174,24 +176,24 @@ function ResetPassword() {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   placeholder="Confirm your new password"
-                  className={`w-full rounded-md border bg-[#00010f] px-4 py-3 pr-11 text-sm text-[#e6e6e8] outline-none transition placeholder:text-[#9697a1] ${
+                  className={`w-full rounded-md border bg-(--input-background) px-4 py-3 pr-11 text-sm text-(--text-color) outline-none transition placeholder:text-(--secondary-text-color) ${
                     errors.confirmPassword
-                      ? "border-[#d14d4d] focus:border-[#d14d4d]"
-                      : "border-[#2b2c40] focus:border-[#b4bedd]"
+                      ? "border-(--error-color) focus:border-(--error-color)"
+                      : "border-(--border-color) focus:border-(--accent-color)"
                   }`}
                 />
 
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-[#9697a1] transition hover:text-[#e6e6e8]"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-(--icon-color) transition hover:text-(--icon-accent-color)"
                 >
                   {showConfirmPassword ? <BsEyeSlash /> : <BsEye />}
                 </button>
               </div>
 
               {errors.confirmPassword && (
-                <p className="mt-2 text-xs text-[#d14d4d]">
+                <p className="mt-2 text-xs text-(--error-color)">
                   {errors.confirmPassword}
                 </p>
               )}
@@ -199,7 +201,7 @@ function ResetPassword() {
 
             <button
               type="submit"
-              className="w-full rounded-md bg-[#2b2c40] py-3 text-sm font-semibold text-[#9697a1] transition duration-200 hover:bg-[#b4bedd] hover:text-[#000119]"
+              className="w-full rounded-md bg-(--border-color) py-3 text-sm font-semibold text-(--secondary-text-color) transition duration-200 hover:bg-(--accent-color) hover:text-(--page-background)"
             >
               Reset Password
             </button>

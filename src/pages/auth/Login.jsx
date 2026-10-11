@@ -175,8 +175,8 @@ function Login() {
   const isFormFilled =
     Boolean(formData.email.trim()) && Boolean(formData.password);
   return (
-    <main className="relative min-h-screen overflow-x-hidden bg-[#00010f] text-[#e6e6e8]">
-      <div className="fixed left-0 top-0 z-50 h-16 w-full bg-[#00010f] min-[700px]:hidden">
+    <main className="relative min-h-screen overflow-x-hidden bg-(--page-background) text-(--text-color)">
+      <div className="fixed left-0 top-0 z-50 h-16 w-full bg-(--page-background) min-[700px]:hidden">
         <Link to="/" className="absolute left-8 top-7">
           <img src={logo} alt="KOSH" className="h-6 w-auto" />
         </Link>
@@ -188,15 +188,15 @@ function Login() {
       <div className="flex min-h-screen flex-col items-center justify-center px-4 pt-20 min-[700px]:px-6 min-[700px]:pt-8">
         <div className="mb-4 text-center min-[700px]:mb-5">
           <p className="font-['Google_Sans_Flex'] text-xl font-semibold min-[700px]:text-2xl">
-            Welcome to <span className="text-[#b4bedd]">KOSH</span>
+            Welcome to <span className="text-(--accent-color)">KOSH</span>
           </p>
         </div>
 
-        <div className="relative mx-auto w-full max-w-xl rounded-lg border border-[#2b2c40] bg-[#000112] p-6 sm:p-8 lg:flex lg:max-w-4xl lg:items-center lg:p-10">
+        <div className="relative mx-auto w-full max-w-xl rounded-lg border border-(--border-color) bg-(--card-background) p-6 sm:p-8 lg:flex lg:max-w-4xl lg:items-center lg:p-10">
           <button
             type="button"
             onClick={() => navigate(-1)}
-            className="absolute left-3 top-3 z-10 cursor-pointer text-[#b4bedd]"
+            className="absolute left-3 top-3 z-10 cursor-pointer text-(--icon-accent-color)"
           >
             <IoMdArrowRoundBack size={20} />
           </button>
@@ -208,7 +208,7 @@ function Login() {
             <div className="mb-5">
               <label
                 htmlFor="email"
-                className="mb-2 block text-sm font-medium text-[#e6e6e8]"
+                className="mb-2 block text-sm font-medium text-(--text-color)"
               >
                 Email
               </label>
@@ -220,21 +220,23 @@ function Login() {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Enter your email"
-                className={`w-full rounded-md border bg-[#00010f] px-4 py-3 text-sm text-[#e6e6e8] outline-none transition placeholder:text-[#9697a1] ${
+                className={`w-full rounded-md border bg-(--input-background) px-4 py-3 text-sm text-(--text-color) outline-none transition placeholder:text-(--secondary-text-color) ${
                   errors.email
-                    ? "border-[#d14d4d] focus:border-[#d14d4d]"
-                    : "border-[#2b2c40] focus:border-[#b4bedd]"
+                    ? "border-(--error-color) focus:border-(--error-color)"
+                    : "border-(--border-color) focus:border-(--accent-color)"
                 }`}
               />
               {errors.email && (
-                <p className="mt-2 text-xs text-[#d14d4d]">{errors.email}</p>
+                <p className="mt-2 text-xs text-(--error-color)">
+                  {errors.email}
+                </p>
               )}
             </div>
 
             <div className="mb-4">
               <label
                 htmlFor="password"
-                className="mb-2 block text-sm font-medium text-[#e6e6e8]"
+                className="mb-2 block text-sm font-medium text-(--text-color)"
               >
                 Password
               </label>
@@ -248,27 +250,29 @@ function Login() {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Enter your password"
-                  className={`w-full rounded-md border bg-[#00010f] px-4 py-3 pr-12 text-sm text-[#e6e6e8] outline-none transition placeholder:text-[#9697a1] ${
+                  className={`w-full rounded-md border bg-(--input-background) px-4 py-3 pr-12 text-sm text-(--text-color) outline-none transition placeholder:text-(--secondary-text-color) ${
                     errors.password
-                      ? "border-[#d14d4d] focus:border-[#d14d4d]"
-                      : "border-[#2b2c40] focus:border-[#b4bedd]"
+                      ? "border-(--error-color) focus:border-(--error-color)"
+                      : "border-(--border-color) focus:border-(--accent-color)"
                   }`}
                 />
 
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9697a1] transition hover:text-[#e6e6e8]"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-(--icon-color) transition hover:text-(--icon-accent-color)"
                 >
                   {showPassword ? <BsEyeSlash /> : <BsEye />}
                 </button>
               </div>
               {errors.password && (
-                <p className="mt-2 text-xs text-[#d14d4d]">{errors.password}</p>
+                <p className="mt-2 text-xs text-(--error-color)">
+                  {errors.password}
+                </p>
               )}
             </div>
             {errors.general && (
-              <p className="mb-4 text-center text-xs text-[#d14d4d]">
+              <p className="mb-4 text-center text-xs text-(--error-color)">
                 {errors.general}
               </p>
             )}
@@ -276,14 +280,16 @@ function Login() {
               <button
                 type="button"
                 onClick={() => navigate("/forgot-password")}
-                className="text-xs text-[#b4bedd] transition hover:text-[#e6e6e8] underline underline-offset-4"
+                className="text-xs text-(--accent-color) transition hover:text-(--text-color) underline underline-offset-4"
               >
                 Forgot Password?
               </button>
             </div>
 
             <AuthButton isFormFilled={isFormFilled}>Login</AuthButton>
-            <div className="my-5 text-center text-xs text-[#9697a1]">OR</div>
+            <div className="my-5 text-center text-xs text-(--secondary-text-color)">
+              OR
+            </div>
 
             <div className="flex gap-5">
               <GoogleButton onClick={googleLogin} className="w-1/2" />
@@ -297,12 +303,12 @@ function Login() {
                 <img src={loginsvg} alt="LogIn illustration" />
               </div>
             </div>
-            <p className="mt-6 text-sm text-[#9697a1]">
+            <p className="mt-6 text-sm text-(--secondary-text-color)">
               Don't have an account?{" "}
               <button
                 type="button"
                 onClick={() => navigate("/role")}
-                className=" text-[#b4bedd] underline underline-offset-4 transition hover:text-[#e6e6e8]"
+                className=" text-(--accent-color) underline underline-offset-4 transition hover:text-(--text-color)"
               >
                 SignUp
               </button>

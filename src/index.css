@@ -2,10 +2,31 @@
 @import url("https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700;800&display=swap");
 @import "tailwindcss";
 
+:root {
+  color-scheme: dark;
+  --page-background: #00010f;
+  --card-background: #2b2c4066;
+  --input-background: #2b2c4066;
+  --decoration-background: #2b2c4066;
+  --border-color: #2b2c40;
+  --icon-border-color: #6b6c7a;
+  --icon-accent-color: #b4bedd;
+  --text-color: #e6e6e8;
+  --secondary-text-color: #9697a1;
+  --accent-color: #b4bedd;
+  --icon-color: #6b6c7a;
+  --error-color: #d14d4d;
+  --autofill-background: #2b2c40;
+  --autofill-text: #e6e6e8;
+  --success-background: #07181e;
+  --accent-hover-color: #c5cdeb;
+}
+
 body {
   font-family: "Inter", sans-serif;
 }
 input:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0 500px #00010f inset;
-  -webkit-text-fill-color: #e6e6e8;
+  -webkit-box-shadow: 0 0 0 500px var(--autofill-background) inset;
+  -webkit-text-fill-color: var(--autofill-text);
+  caret-color: var(--autofill-text);
 }

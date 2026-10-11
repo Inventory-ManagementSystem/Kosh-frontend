@@ -76,8 +76,8 @@ function SetupBusiness() {
   };
 
   return (
-    <main className="relative min-h-screen overflow-x-hidden bg-[#00010f] text-[#e6e6e8]">
-      <div className="fixed left-0 top-0 z-50 h-16 w-full bg-[#00010f] min-[700px]:hidden">
+    <main className="relative min-h-screen overflow-x-hidden bg-(--page-background) text-(--text-color)">
+      <div className="fixed left-0 top-0 z-50 h-16 w-full bg-(--page-background) min-[700px]:hidden">
         <Link to="/" className="absolute left-8 top-7">
           <img src={logo} alt="KOSH" className="h-6 w-auto" />
         </Link>
@@ -92,11 +92,11 @@ function SetupBusiness() {
           <p className="font-['Google_Sans_Flex'] text-xl font-semibold min-[700px]:text-2xl">
             Let's Setup Your Business
           </p>
-          <p className="mt-2 text-sm text-[#b4bedd] min-[700px]:text-base">
+          <p className="mt-2 text-sm text-(--accent-color) min-[700px]:text-base">
             Tell us about your business to get started
           </p>
         </div>
-        <div className="relative mx-auto w-full max-w-xl rounded-lg border border-[#2b2c40] bg-[#000112] p-6 sm:p-8 lg:flex lg:max-w-4xl lg:items-center lg:p-10">
+        <div className="relative mx-auto w-full max-w-xl rounded-lg border border-(--border-color) bg-(--card-background) p-6 sm:p-8 lg:flex lg:max-w-4xl lg:items-center lg:p-10">
           <form
             noValidate
             onSubmit={handleSubmit}
@@ -105,7 +105,7 @@ function SetupBusiness() {
             <div className="mb-5">
               <label
                 htmlFor="businessName"
-                className="mb-2 block text-sm font-medium text-[#e6e6e8]"
+                className="mb-2 block text-sm font-medium text-(--text-color)"
               >
                 Business Name
               </label>
@@ -117,14 +117,14 @@ function SetupBusiness() {
                 value={formData.businessName}
                 onChange={handleChange}
                 placeholder="Enter your business name"
-                className={`w-full rounded-md border bg-[#00010f] px-4 py-3 text-sm text-[#e6e6e8] outline-none transition placeholder:text-[#9697a1] ${
+                className={`w-full rounded-md border bg-(--input-background) px-4 py-3 text-sm text-(--text-color) outline-none transition placeholder:text-(--secondary-text-color) ${
                   errors.businessName
-                    ? "border-[#d14d4d]"
-                    : "border-[#2b2c40] focus:border-[#b4bedd]"
+                    ? "border-(--error-color)"
+                    : "border-(--border-color) focus:border-(--accent-color)"
                 }`}
               />
               {errors.businessName && (
-                <p className="mt-2 text-xs text-[#d14d4d]">
+                <p className="mt-2 text-xs text-(--error-color)">
                   {errors.businessName}
                 </p>
               )}
@@ -132,7 +132,7 @@ function SetupBusiness() {
             <div className="mb-5">
               <label
                 htmlFor="businessType"
-                className="mb-2 block text-sm font-medium text-[#e6e6e8]"
+                className="mb-2 block text-sm font-medium text-(--text-color)"
               >
                 Business Type
               </label>
@@ -141,12 +141,14 @@ function SetupBusiness() {
                 name="businessType"
                 value={formData.businessType}
                 onChange={handleChange}
-                className={`w-full rounded-md border bg-[#00010f] px-4 py-3 text-sm outline-none transition ${
-                  formData.businessType ? "text-[#e6e6e8]" : "text-[#9697a1]"
+                className={`w-full rounded-md border bg-(--input-background) px-4 py-3 text-sm outline-none transition ${
+                  formData.businessType
+                    ? "text-(--text-color)"
+                    : "text-(--secondary-text-color)"
                 } ${
                   errors.businessType
-                    ? "border-[#d14d4d]"
-                    : "border-[#2b2c40] focus:border-[#b4bedd]"
+                    ? "border-(--error-color)"
+                    : "border-(--border-color) focus:border-(--accent-color)"
                 }`}
               >
                 <option value="">Select business type</option>
@@ -158,7 +160,7 @@ function SetupBusiness() {
                 <option value="other">Other</option>
               </select>
               {errors.businessType && (
-                <p className="mt-2 text-xs text-[#d14d4d]">
+                <p className="mt-2 text-xs text-(--error-color)">
                   {errors.businessType}
                 </p>
               )}
@@ -166,7 +168,7 @@ function SetupBusiness() {
             <div className="mb-6">
               <label
                 htmlFor="city"
-                className="mb-2 block text-sm font-medium text-[#e6e6e8]"
+                className="mb-2 block text-sm font-medium text-(--text-color)"
               >
                 City
               </label>
@@ -175,12 +177,14 @@ function SetupBusiness() {
                 name="city"
                 value={formData.city}
                 onChange={handleChange}
-                className={`w-full rounded-md border bg-[#00010f] px-4 py-3 text-sm outline-none transition ${
-                  formData.city ? "text-[#e6e6e8]" : "text-[#9697a1]"
+                className={`w-full rounded-md border bg-(--input-background) px-4 py-3 text-sm outline-none transition ${
+                  formData.city
+                    ? "text-(--text-color)"
+                    : "text-(--secondary-text-color)"
                 } ${
                   errors.city
-                    ? "border-[#d14d4d]"
-                    : "border-[#2b2c40] focus:border-[#b4bedd]"
+                    ? "border-(--error-color)"
+                    : "border-(--border-color) focus:border-(--accent-color)"
                 }`}
               >
                 <option value="">Select city</option>
@@ -197,12 +201,14 @@ function SetupBusiness() {
                 <option value="other">Other</option>
               </select>
               {errors.city && (
-                <p className="mt-2 text-xs text-[#d14d4d]">{errors.city}</p>
+                <p className="mt-2 text-xs text-(--error-color)">
+                  {errors.city}
+                </p>
               )}
             </div>
             <button
               type="submit"
-              className="w-full rounded-md bg-[#2b2c40] py-3 text-sm font-semibold text-[#9697a1] transition duration-200 hover:bg-[#b4bedd] hover:text-[#000119]"
+              className="w-full rounded-md bg-(--border-color) py-3 text-sm font-semibold text-(--secondary-text-color) transition duration-200 hover:bg-(--accent-hover-color) hover:text-(--page-background)"
             >
               Next
             </button>

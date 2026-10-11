@@ -50,7 +50,7 @@ function ForgotPassword() {
         <div className="mb-8 text-center">
           <p className="mt-2 text-2xl">Forgot Password</p>
         </div>
-        <div className="mx-auto w-full max-w-md rounded-lg border border-[#2b2c40] bg-[#000112] p-6 sm:p-8 lg:flex lg:max-w-4xl lg:items-center lg:p-10">
+        <div className="mx-auto w-full max-w-md rounded-lg border border-(--border-color) bg-(--card-background) p-6 sm:p-8 lg:flex lg:max-w-4xl lg:items-center lg:p-10">
           <form
             noValidate
             onSubmit={handleSubmit}
@@ -59,7 +59,7 @@ function ForgotPassword() {
             <div className="mb-6">
               <label
                 htmlFor="email"
-                className="mb-2 block text-sm font-medium text-[#e6e6e8]"
+                className="mb-2 block text-sm font-medium text-(--text-color)"
               >
                 Email
               </label>
@@ -71,13 +71,15 @@ function ForgotPassword() {
                 value={email}
                 onChange={handleChange}
                 placeholder="Enter your email"
-                className={`w-full rounded-md border bg-[#00010f] px-4 py-3 text-sm text-[#e6e6e8] outline-none transition placeholder:text-[#9697a1] ${
+                className={`w-full rounded-md border bg-(--input-background) px-4 py-3 text-sm text-(--text-color) outline-none transition placeholder:text-(--secondary-text-color) ${
                   error
-                    ? "border-[#d14d4d] focus:border-[#d14d4d]"
-                    : "border-[#2b2c40] focus:border-[#b4bedd]"
+                    ? "border-(--error-color) focus:border-(--error-color)"
+                    : "border-(--border-color) focus:border-(--accent-color)"
                 }`}
               />
-              {error && <p className="mt-2 text-xs text-[#d14d4d]">{error}</p>}
+              {error && (
+                <p className="mt-2 text-xs text-(--error-color)">{error}</p>
+              )}
             </div>
             <div className="mt-6 flex gap-4">
               <BackButton onClick={() => navigate("/login")}>Back</BackButton>

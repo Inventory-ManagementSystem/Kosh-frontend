@@ -30,7 +30,6 @@ function OwnerLayout() {
               pointer-events-none
               absolute left-1/2 top-1/3
               h-97.5 w-93
-              
               rounded-full
               bg-[#6EFFFF]
               opacity-20

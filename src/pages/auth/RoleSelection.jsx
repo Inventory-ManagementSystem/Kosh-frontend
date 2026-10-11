@@ -32,7 +32,7 @@ function RoleSelection() {
   };
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#00010f] text-[#e6e6e8]">
+    <main className="relative min-h-screen overflow-hidden bg-(--page-background) text-(--text-color)">
       <AuthDecorations />
       <Link to="/" className="fixed left-8 top-8 z-50">
         <img src={logo} alt="KOSH" className="h-6 w-auto sm:h-7" />
@@ -42,7 +42,7 @@ function RoleSelection() {
           <div className="w-full max-w-md">
             <h1 className="font-['Google_Sans_Flex'] text-4xl font-medium sm:text-5xl">
               Choose your
-              <span className="font-['Google_Sans_Flex'] block font-extrabold text-[#b4bedd]">
+              <span className="font-['Google_Sans_Flex'] block font-extrabold text-(--accent-color)">
                 Workplace.
               </span>
             </h1>
@@ -76,7 +76,7 @@ function RoleSelection() {
               alt="KOSH workplace"
               className="w-full max-w-lg"
             />
-            <div className="mt-5 flex h-10 w-70 items-center justify-center rounded-full bg-[#16172b] text-[12px] text-[#9697a1]">
+            <div className="mt-5 flex h-10 w-70 items-center justify-center rounded-full bg-(--card-background) text-[12px] text-(--secondary-text-color)">
               Inventory&nbsp;&nbsp;•&nbsp;&nbsp;Stock&nbsp;&nbsp;•&nbsp;&nbsp;Invoice&nbsp;&nbsp;•&nbsp;&nbsp;Payment
             </div>
           </div>

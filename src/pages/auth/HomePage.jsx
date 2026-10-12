@@ -1,11 +1,12 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import AuthLoadingScreen from "../../components/auth/AuthLoadingScreen";
 
 function HomePage() {
   const { isAuthenticated, role, loading } = useAuth();
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <AuthLoadingScreen />;
   }
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;

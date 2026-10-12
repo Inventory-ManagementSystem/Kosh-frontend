@@ -172,7 +172,7 @@ function SetupSupplier() {
         },
         accessToken,
       );
-      navigate("/supplier-dashboard");
+      navigate("/complete-setup");
     } catch (error) {
       setApiError(
         error.message || "Agency registration failed. Please try again.",

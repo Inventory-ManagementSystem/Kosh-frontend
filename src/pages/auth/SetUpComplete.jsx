@@ -1,18 +1,37 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import { IoCheckmarkOutline } from "react-icons/io5";
+import toast from "react-hot-toast";
 
+import { useAuth } from "../../context/AuthContext";
 import logo from "../../assets/auth/logo.svg";
 import AuthDecorations from "../../components/auth/AuthDecoration";
 
 function SetupComplete() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const handleDashboard = () => {
-    if (location.state?.employee) {
-      navigate("/employee-dashboard");
-    } else {
-      navigate("/dashboard");
+  const [loading, setLoading] = useState(false);
+  const { refreshProfile } = useAuth();
+
+  const handleDashboard = async () => {
+    try {
+      setLoading(true);
+      const profile = await refreshProfile();
+      const role = profile.role;
+      if (role === "owner") {
+        navigate("/dashboard", { replace: true });
+      } else if (role === "employee") {
+        navigate("/employee-dashboard", { replace: true });
+      } else if (role === "supplier") {
+        navigate("/supplier-dashboard", { replace: true });
+      } else {
+        navigate("/role", { replace: true });
+      }
+    } catch (error) {
+      console.log("Failed to fetch updated profile:", error);
+      toast.error("Unable to load your profile. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -44,9 +63,10 @@ function SetupComplete() {
           </div>
           <button
             onClick={handleDashboard}
+            disabled={loading}
             className="mt-6 sm:mt-7 px-6 sm:px-8 py-2 sm:py-2.5 rounded-md bg-(--accent-color) text-xs sm:text-sm font-bold text-(--page-background) hover:bg-(--accent-hover-color) transition-colors"
           >
-            Go to Dashboard
+            {loading ? "Loading..." : "Go to Dashboard"}
           </button>
         </div>
       </div>

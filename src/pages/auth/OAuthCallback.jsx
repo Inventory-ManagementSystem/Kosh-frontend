@@ -14,14 +14,16 @@ function OAuthCallback() {
       try {
         const response = await getGoogleJwt();
         const accessToken = response.data.access;
-        const refreshToken = response.data.refresh;
-        login(accessToken, refreshToken);
         const profile = await getProfile(accessToken);
-        const role = profile.data?.role;
+        const role = profile.data.role;
+        login(accessToken, role || null);
+
         if (role === "owner") {
           navigate("/dashboard", { replace: true });
         } else if (role === "employee") {
           navigate("/employee-dashboard", { replace: true });
+        } else if (role === "supplier") {
+          navigate("/supplier-dashboard", { replace: true });
         } else {
           localStorage.setItem("oauthUser", "true");
           navigate("/role", { replace: true });

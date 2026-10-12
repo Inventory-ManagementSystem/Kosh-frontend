@@ -26,6 +26,15 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
+  const refreshProfile = useCallback(async () => {
+    if (!accessToken) {
+      return;
+    }
+    const profile = await getProfile(accessToken);
+    setRole(profile.data.role);
+    return profile.data;
+  }, [accessToken]);
+
   const logout = useCallback(async () => {
     try {
       await logoutUser();
@@ -69,8 +78,9 @@ export const AuthProvider = ({ children }) => {
       logout,
       loading,
       role,
+      refreshProfile,
     }),
-    [accessToken, login, logout, loading, role],
+    [accessToken, login, logout, loading, role, refreshProfile],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 import { getGithubJwt } from "../../api/githubApi";
 import { useAuth } from "../../context/AuthContext";
@@ -14,20 +15,23 @@ function GitHubOAuthCallback() {
       try {
         const response = await getGithubJwt();
         const accessToken = response.data.access;
-        const refreshToken = response.data.refresh;
-        login(accessToken, refreshToken);
         const profile = await getProfile(accessToken);
         const role = profile.data?.role;
+        login(accessToken, role);
         if (role === "owner") {
           navigate("/dashboard", { replace: true });
         } else if (role === "employee") {
           navigate("/employee-dashboard", { replace: true });
+        } else if (role === "supplier") {
+          navigate("/supplier-dashboard", { replace: true });
         } else {
           localStorage.setItem("oauthUser", "true");
           navigate("/role", { replace: true });
         }
       } catch (error) {
         console.error("GitHub login failed:", error);
+        toast.error("GitHub login failed. Please try again.");
+        navigate("/login", { replace: true });
       }
     };
 
@@ -35,7 +39,7 @@ function GitHubOAuthCallback() {
   }, [login, navigate]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-(--page-background) text-r(--text-color)">
+    <div className="flex min-h-screen items-center justify-center bg-(--page-background) text-(--text-color)">
       Signing you in...
     </div>
   );

@@ -33,3 +33,9 @@ input:-webkit-autofill {
   -webkit-text-fill-color: var(--autofill-text);
   caret-color: var(--autofill-text);
 }
+* {
+  scrollbar-width: none;
+}
+*::-webkit-scrollbar {
+  display: none;
+}

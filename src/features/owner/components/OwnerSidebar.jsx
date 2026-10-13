@@ -41,7 +41,7 @@ const navItems = [
   },
   {
     label: "Warehouse",
-    path: "null",
+    path: "/warehouse",
     icon: FaWarehouse,
   },
   {
@@ -86,7 +86,7 @@ const navItems = [
   },
   {
     label: "Manage Suppliers",
-    path: "null",
+    path: "/suppliers",
     icon: BsPersonLinesFill,
   },
 ];

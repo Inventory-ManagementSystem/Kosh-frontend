@@ -24,6 +24,8 @@ import EmployeeDashboard from "./features/employee/pages/EmployeeDashboard";
 
 import OwnerLayout from "./layouts/OwnerLayout";
 import ManageEmployee from "./features/owner/pages/ManageEmployee";
+import ManageSuppliers from "./features/owner/pages/ManageSupplier";
+import AddSupplier from "./features/owner/pages/AddSupplier";
 
 function App() {
   return (
@@ -49,6 +51,8 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/employees" element={<ManageEmployee />} />
             <Route path="/add-employee" element={<AddEmployee />} />
+            <Route path="/suppliers" element={<ManageSuppliers />} />
+            <Route path="/add-supplier" element={<AddSupplier />} />
           </Route>
 
           <Route path="/employee-invites" element={<EmployeeInvites />} />

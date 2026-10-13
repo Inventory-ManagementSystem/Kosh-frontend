@@ -1,0 +1,174 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { FiPlus, FiSearch } from "react-icons/fi";
+import toast from "react-hot-toast";
+
+import { useAuth } from "../../../context/AuthContext";
+import PeopleTable from "./PeopleTable";
+
+function ManagePeople({
+  title,
+  description,
+  searchPlaceholder,
+  addButtonLabel,
+  addRoute,
+  detailsTitle,
+  columns,
+  loadItems,
+  removeItem,
+  Skeleton,
+  getStatusClass,
+  emptyMessage,
+  searchEmptyMessage,
+}) {
+  const navigate = useNavigate();
+  const { accessToken, loading: authLoading } = useAuth();
+
+  const [items, setItems] = useState([]);
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [deletingId, setDeletingId] = useState(null);
+
+  useEffect(() => {
+    if (authLoading) return;
+
+    const fetchItems = async () => {
+      if (!accessToken) {
+        setError("Your session has expired. Please log in again.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setError("");
+
+        const data = await loadItems(accessToken);
+        setItems(data);
+      } catch (error) {
+        setError(error.message || `Unable to load ${title.toLowerCase()}`);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchItems();
+  }, [accessToken, authLoading, loadItems, title]);
+
+  const handleDelete = async (item) => {
+    const isPending = item.rowType === "invite";
+
+    const confirmed = window.confirm(
+      isPending
+        ? "Are you sure you want to cancel this invitation?"
+        : `Are you sure you want to remove this ${title.toLowerCase().replace("manage ", "").replace(/s$/, "")}?`,
+    );
+
+    if (!confirmed) return;
+
+    const itemKey = item.id;
+    setDeletingId(itemKey);
+
+    try {
+      await removeItem(item, accessToken);
+
+      setItems((current) =>
+        current.filter(
+          (currentItem) =>
+            !(
+              currentItem.rowType === item.rowType && currentItem.id === item.id
+            ),
+        ),
+      );
+
+      toast.success(
+        isPending ? "Invitation cancelled." : "Record removed successfully.",
+      );
+    } catch (error) {
+      toast.error(error.message || "Unable to complete the action.");
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  const filteredItems = items.filter((item) => {
+    const searchableValues = columns
+      .map((column) => item[column.key] ?? "")
+      .join(" ");
+
+    return searchableValues.toLowerCase().includes(search.toLowerCase());
+  });
+
+  return (
+    <div>
+      <div className="mb-8">
+        <h1 className="font-['Google_Sans_Flex'] text-2xl font-semibold text-(--text-color) sm:text-3xl">
+          {title}
+        </h1>
+
+        <p className="mt-2 text-sm text-(--secondary-text-color)">
+          {description}
+        </p>
+      </div>
+
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex h-10 w-full max-w-[320px] items-center gap-2 rounded-xl bg-(--input-background) px-3">
+          <FiSearch
+            size={16}
+            className="shrink-0 text-(--secondary-text-color)"
+          />
+
+          <input
+            type="text"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder={searchPlaceholder}
+            className="w-full bg-transparent text-sm text-(--text-color) outline-none placeholder:text-(--secondary-text-color)"
+          />
+        </div>
+
+        <button
+          type="button"
+          onClick={() => navigate(addRoute)}
+          className="flex h-10 items-center justify-center gap-2 rounded-xl bg-(--accent-color) px-4 text-sm font-semibold text-[#00010f] transition hover:opacity-90"
+        >
+          {addButtonLabel}
+          <FiPlus size={16} />
+        </button>
+      </div>
+
+      <div className="overflow-hidden rounded-xl border border-(--border-color) bg-(--card-background)">
+        <div className="border-b border-(--border-color) px-4 py-3 sm:px-5">
+          <h2 className="text-base font-medium text-(--text-color)">
+            {detailsTitle}
+          </h2>
+        </div>
+
+        {loading && <Skeleton />}
+
+        {!loading && error && (
+          <div className="px-5 py-8 text-sm text-(--error-color)">{error}</div>
+        )}
+
+        {!loading && !error && filteredItems.length === 0 && (
+          <div className="px-5 py-10 text-center text-sm text-(--secondary-text-color)">
+            {search ? searchEmptyMessage : emptyMessage}
+          </div>
+        )}
+
+        {!loading && !error && filteredItems.length > 0 && (
+          <PeopleTable
+            items={filteredItems}
+            columns={columns}
+            onDelete={handleDelete}
+            deletingId={deletingId}
+            getStatusClass={getStatusClass}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default ManagePeople;

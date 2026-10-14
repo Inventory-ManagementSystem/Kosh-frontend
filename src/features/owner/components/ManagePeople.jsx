@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiPlus, FiSearch } from "react-icons/fi";
+import { FiSearch } from "react-icons/fi";
+import { FaCirclePlus } from "react-icons/fa6";
 import toast from "react-hot-toast";
 
 import { useAuth } from "../../../context/AuthContext";
@@ -134,7 +135,7 @@ function ManagePeople({
           className="flex h-10 items-center justify-center gap-2 rounded-xl bg-(--accent-color) px-4 text-sm font-semibold text-[#00010f] transition hover:opacity-90"
         >
           {addButtonLabel}
-          <FiPlus size={16} />
+          <FaCirclePlus size={16} />
         </button>
       </div>
 

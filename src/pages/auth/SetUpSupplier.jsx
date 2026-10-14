@@ -162,9 +162,9 @@ function SetupSupplier() {
     try {
       await registerSupplier(
         {
-          business_name: formData.businessName.trim(),
-          category: Number(formData.category),
-          phone_number: formData.phoneNumber,
+          company_name: formData.businessName.trim(),
+          categories: [Number(formData.category)],
+          phone: formData.phoneNumber,
           gstin: formData.gstin.trim().toUpperCase(),
           pincode: formData.pincode,
           city: formData.city,

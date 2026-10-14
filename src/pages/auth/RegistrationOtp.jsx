@@ -168,7 +168,7 @@ function RegistrationOTP() {
                 onChange={(e) => handleChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
                 onPaste={(e) => handlePaste(e, index)}
-                className={`h-12 min-w-0 rounded-md border bg-(--input-background) text-center text-lg font-semibold text-(--input-background) outline-none transition sm:h-14 sm:w-12 ${
+                className={`h-12 min-w-0 rounded-md border bg-(--input-background) text-center text-lg font-semibold text-(--text-color) outline-none transition sm:h-14 sm:w-12 ${
                   error
                     ? "border-(--error-color) focus:border-(--error-color)"
                     : "border-(--border-color) focus:border-(--accent-color)"

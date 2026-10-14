@@ -6,6 +6,7 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import OTPVerification from "./pages/auth/OTPVerification";
 import ResetPassword from "./pages/auth/ResetPassword";
 import SetupBusiness from "./pages/auth/SetUpBusiness";
+import SetupWarehouse from "./pages/auth/SetUpWarehouse";
 import SetupComplete from "./pages/auth/SetUpComplete";
 import RegistrationOtp from "./pages/auth/RegistrationOtp";
 import OAuthCallback from "./pages/auth/OAuthCallback";
@@ -26,6 +27,7 @@ import OwnerLayout from "./layouts/OwnerLayout";
 import ManageEmployee from "./features/owner/pages/ManageEmployee";
 import ManageSuppliers from "./features/owner/pages/ManageSupplier";
 import AddSupplier from "./features/owner/pages/AddSupplier";
+import Warehouse from "./features/owner/pages/Warehouse";
 
 function App() {
   return (
@@ -42,6 +44,7 @@ function App() {
 
         <Route element={<ProtectedRoute />}>
           <Route path="/setup-business" element={<SetupBusiness />} />
+          <Route path="/setup-warehouse" element={<SetupWarehouse />} />
           <Route path="/complete-setup" element={<SetupComplete />} />
           <Route path="/setup-supplier" element={<SetupSupplier />} />
 
@@ -53,6 +56,7 @@ function App() {
             <Route path="/add-employee" element={<AddEmployee />} />
             <Route path="/suppliers" element={<ManageSuppliers />} />
             <Route path="/add-supplier" element={<AddSupplier />} />
+            <Route path="/warehouse" element={<Warehouse />} />
           </Route>
 
           <Route path="/employee-invites" element={<EmployeeInvites />} />

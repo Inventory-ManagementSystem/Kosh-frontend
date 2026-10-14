@@ -69,7 +69,7 @@ function SetupBusiness() {
         },
         accessToken,
       );
-      navigate("/complete-setup");
+      navigate("/setup-warehouse");
     } catch (error) {
       console.error("Business registration failed:", error);
     }

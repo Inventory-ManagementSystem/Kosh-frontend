@@ -9,6 +9,8 @@ const getErrorMessage = (data, fallback) => {
 };
 
 const SUPPLIERS_API_URL = import.meta.env.VITE_SUPPLIERS_API_URL;
+const SUPPLIER_CATEGORIES_API_URL = import.meta.env
+  .VITE_SUPPLIER_CATEGORIES_API_URL;
 
 export const getSuppliers = async (accessToken) => {
   const response = await fetch(SUPPLIERS_API_URL, {
@@ -50,6 +52,21 @@ export const deleteSuppliers = async (accessToken, id) => {
   const data = await response.json();
   if (!response.ok) {
     throw new Error(getErrorMessage(data, "Failed to delete supplier."));
+  }
+  return data;
+};
+
+export const getSupplierCategories = async (accessToken) => {
+  const response = await fetch(SUPPLIER_CATEGORIES_API_URL, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    credentials: "include",
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to fetch supplier categories");
   }
   return data;
 };

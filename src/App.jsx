@@ -28,6 +28,8 @@ import ManageEmployee from "./features/owner/pages/ManageEmployee";
 import ManageSuppliers from "./features/owner/pages/ManageSupplier";
 import AddSupplier from "./features/owner/pages/AddSupplier";
 import Warehouse from "./features/owner/pages/Warehouse";
+import RFQAlerts from "./features/owner/pages/RFQAlerts";
+import AddProduct from "./features/owner/pages/AddProduct";
 
 function App() {
   return (
@@ -57,6 +59,8 @@ function App() {
             <Route path="/suppliers" element={<ManageSuppliers />} />
             <Route path="/add-supplier" element={<AddSupplier />} />
             <Route path="/warehouse" element={<Warehouse />} />
+            <Route path="/add-products" element={<AddProduct />} />
+            <Route path="/rfq-alerts" element={<RFQAlerts />} />
           </Route>
 
           <Route path="/employee-invites" element={<EmployeeInvites />} />

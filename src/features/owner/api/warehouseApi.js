@@ -47,9 +47,8 @@ export const addProducts = async (accessToken, formData) => {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
     },
-    body: JSON.stringify(formData),
+    body: formData,
   });
   const data = await response.json();
   if (!response.ok) {
@@ -100,6 +99,25 @@ export const getCategories = async (accessToken) => {
   const data = await response.json();
   if (!response.ok) {
     throw new Error(getErrorMessage(data, "Failed to fetch categories."));
+  }
+  return data;
+};
+
+export const createCategory = async (accessToken, name) => {
+  const response = await fetch(import.meta.env.VITE_CATEGORIES_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify({ name }),
+  });
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.errors?.name?.[0] || data.message || "Failed to create category.",
+    );
   }
   return data;
 };

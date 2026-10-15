@@ -35,7 +35,7 @@ function Warehouse() {
         setProducts(productsRes.data.results || []);
 
         const categoriesRes = await getCategories(accessToken);
-        setCategories(categoriesRes.data.data || []);
+        setCategories(categoriesRes.data || []);
       } catch (error) {
         console.error("Failed to fetch warehouse inventory:", error);
       } finally {
@@ -95,7 +95,7 @@ function Warehouse() {
             <option value="all">All Categories</option>
 
             {categories.map((category) => (
-              <option key={category.id} value={String(category.id)}>
+              <option key={category.id} value={category.id}>
                 {category.name}
               </option>
             ))}

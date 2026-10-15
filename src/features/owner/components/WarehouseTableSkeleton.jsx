@@ -1,4 +1,4 @@
-function WarehouseTableSkeleton() {
+function WarehouseTableSkeleton({ showDelete = true }) {
   return (
     <div className="animate-pulse overflow-x-auto px-3 pb-3 pt-4 sm:px-4">
       <table className="w-full min-w-175 table-fixed text-left">
@@ -10,7 +10,9 @@ function WarehouseTableSkeleton() {
             <th className="px-3 py-3 font-medium">STOCK</th>
             <th className="px-3 py-3 font-medium">PRICE</th>
             <th className="px-3 py-3 text-center font-medium">STATUS</th>
-            <th className="px-3 py-3 text-center font-medium">DELETE</th>
+            {showDelete && (
+              <th className="px-3 py-3 text-center font-medium">DELETE</th>
+            )}
           </tr>
         </thead>
 
@@ -44,9 +46,11 @@ function WarehouseTableSkeleton() {
                 <div className="mx-auto h-5 w-16 rounded-full bg-(--border-color)" />
               </td>
 
-              <td className="px-3 py-4">
-                <div className="mx-auto h-3 w-3 rounded bg-(--border-color)" />
-              </td>
+              {showDelete && (
+                <td className="px-3 py-4">
+                  <div className="mx-auto h-3 w-3 rounded bg-(--border-color)" />
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

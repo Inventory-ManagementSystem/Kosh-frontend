@@ -1,6 +1,6 @@
 import { FiTrash2 } from "react-icons/fi";
 
-function WarehouseTable({ items, onDelete, deletingId }) {
+function WarehouseTable({ items, onDelete, deletingId, showDelete = true }) {
   const getStatusClass = (status) => {
     if (status === "In Stock") {
       return "bg-[#26af41]/30 text-[#5fba71]";
@@ -23,8 +23,8 @@ function WarehouseTable({ items, onDelete, deletingId }) {
           <col className="w-[15%]" />
           <col className="w-[10%]" />
           <col className="w-[12%]" />
-          <col className="w-[15%]" />
-          <col className="w-[12%]" />
+          <col className={showDelete ? "w-[15%]" : "w-[27%]"} />
+          {showDelete && <col className="w-[12%]" />}
         </colgroup>
 
         <thead>
@@ -35,9 +35,11 @@ function WarehouseTable({ items, onDelete, deletingId }) {
             <th className="px-3 py-3 font-medium">Stock</th>
             <th className="px-3 py-3 font-medium">Price</th>
             <th className="px-3 py-3 text-center font-medium">Status</th>
-            <th className="rounded-r-lg px-3 py-3 text-center font-medium">
-              Delete
-            </th>
+            {showDelete && (
+              <th className="rounded-r-lg px-3 py-3 text-center font-medium">
+                Delete
+              </th>
+            )}
           </tr>
         </thead>
 
@@ -80,17 +82,19 @@ function WarehouseTable({ items, onDelete, deletingId }) {
                 </span>
               </td>
 
-              <td className="px-3 py-3.5 text-center">
-                <button
-                  type="button"
-                  title="Delete product"
-                  disabled={deletingId === item.id}
-                  onClick={() => onDelete(item)}
-                  className="inline-flex items-center justify-center rounded p-1 text-(--secondary-text-color) transition hover:bg-red-500/10 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  <FiTrash2 size={13} />
-                </button>
-              </td>
+              {showDelete && (
+                <td className="px-3 py-3.5 text-center">
+                  <button
+                    type="button"
+                    title="Delete product"
+                    disabled={deletingId === item.id}
+                    onClick={() => onDelete?.(item)}
+                    className="inline-flex items-center justify-center rounded p-1 text-(--secondary-text-color) transition hover:bg-red-500/10 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <FiTrash2 size={13} />
+                  </button>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

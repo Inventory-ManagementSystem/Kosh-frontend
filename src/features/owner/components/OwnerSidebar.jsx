@@ -1,5 +1,4 @@
 import { NavLink } from "react-router-dom";
-import { useEffect, useRef } from "react";
 
 import { MdDashboard } from "react-icons/md";
 import { TbAlertTriangleFilled } from "react-icons/tb";
@@ -18,105 +17,31 @@ import { BsPersonLinesFill } from "react-icons/bs";
 import { CgPushLeft } from "react-icons/cg";
 import { CgPushRight } from "react-icons/cg";
 
-const navItems = [
-  {
-    label: "Dashboard",
-    path: "/dashboard",
-    icon: MdDashboard,
-  },
-  {
-    label: "RFQ & Alerts",
-    path: "null",
-    icon: TbAlertTriangleFilled,
-  },
-  {
-    label: "Manage Quotation",
-    path: "null",
-    icon: TbClipboardListFilled,
-  },
-  {
-    label: "PO & Invoice",
-    path: "null",
-    icon: RiFileList3Fill,
-  },
-  {
-    label: "Warehouse",
-    path: "/warehouse",
-    icon: FaWarehouse,
-  },
-  {
-    label: "Add Product",
-    path: "null",
-    icon: AiFillProduct,
-  },
-  {
-    label: "Orders",
-    path: "null",
-    icon: FaCartShopping,
-  },
-  {
-    label: "Create GRN",
-    path: "null",
-    icon: IoMdListBox,
-  },
-  {
-    label: "Report",
-    path: "null",
-    icon: BiSolidReport,
-  },
-  {
-    label: "Received Stock",
-    path: "null",
-    icon: BsArchiveFill,
-  },
-  {
-    label: "Dispatch Stock",
-    path: "null",
-    icon: BiSolidSend,
-  },
-  {
-    label: "Kosh AI",
-    path: "null",
-    icon: MdPersonAddAlt1,
-  },
-  {
-    label: "Manage Employees",
-    path: "/employees",
-    icon: BsPeopleFill,
-  },
-  {
-    label: "Manage Suppliers",
-    path: "/suppliers",
-    icon: BsPersonLinesFill,
-  },
+export const navItems = [
+  { label: "Dashboard", path: "/dashboard", icon: MdDashboard },
+  { label: "RFQ & Alerts", path: "/rfq-alerts", icon: TbAlertTriangleFilled },
+  { label: "Manage Quotation", path: null, icon: TbClipboardListFilled },
+  { label: "PO & Invoice", path: null, icon: RiFileList3Fill },
+  { label: "Warehouse", path: "/warehouse", icon: FaWarehouse },
+  { label: "Add Product", path: null, icon: AiFillProduct },
+  { label: "Orders", path: null, icon: FaCartShopping },
+  { label: "Create GRN", path: null, icon: IoMdListBox },
+  { label: "Report", path: null, icon: BiSolidReport },
+  { label: "Received Stock", path: null, icon: BsArchiveFill },
+  { label: "Dispatch Stock", path: null, icon: BiSolidSend },
+  { label: "Kosh AI", path: null, icon: MdPersonAddAlt1 },
+  { label: "Manage Employees", path: "/employees", icon: BsPeopleFill },
+  { label: "Manage Suppliers", path: "/suppliers", icon: BsPersonLinesFill },
 ];
 
 function OwnerSidebar({ collapsed, setCollapsed }) {
-  const sidebarRef = useRef(null);
-  useEffect(() => {
-    const handleOutsideClick = (event) => {
-      if (
-        sidebarRef.current &&
-        !sidebarRef.current.contains(event.target) &&
-        !collapsed
-      ) {
-        setCollapsed(true);
-      }
-    };
-    document.addEventListener("pointerdown", handleOutsideClick);
-    return () => {
-      document.removeEventListener("pointerdown", handleOutsideClick);
-    };
-  }, [collapsed, setCollapsed]);
-
   return (
     <aside
-      ref={sidebarRef}
       className={`
-        fixed left-0 top-18 z-50
+        fixed left-0 top-18 z-40
+        hidden lg:block
         h-[calc(100vh-4.5rem)]
         overflow-y-auto overflow-x-hidden
-        [scrollbar-one]
         [&::-webkit-scrollbar]:hidden
         bg-(--page-background)
         transition-all duration-300
@@ -129,33 +54,55 @@ function OwnerSidebar({ collapsed, setCollapsed }) {
             {navItems.map((item, index) => {
               const Icon = item.icon;
 
-              return (
+              const itemClass = `
+                flex h-9 items-center rounded-lg
+                transition-colors duration-200
+                ${collapsed ? "justify-center" : "gap-3 px-3"}
+                text-(--secondary-text-color)
+                hover:bg-(--sidebar-hover-background)
+                hover:text-(--text-color)
+              `;
+
+              return item.path ? (
                 <NavLink
-                  key={item.path}
+                  key={item.label}
                   to={item.path}
                   title={collapsed ? item.label : undefined}
                   style={{
                     marginTop: [1, 4, 11].includes(index) ? "24px" : undefined,
                   }}
                   className={({ isActive }) => `
-                    flex h-9 items-center rounded-lg
-                    transition-colors duration-200
-                    ${collapsed ? "justify-center" : "gap-3 px-3"}
+                    ${itemClass}
                     ${
                       isActive
                         ? "bg-(--sidebar-active-background) text-(--text-color)"
-                        : "text-(--secondary-text-color) hover:bg-(--sidebar-hover-background) hover:text-(--text-color)"
+                        : ""
                     }
                   `}
                 >
                   <Icon size={17} className="shrink-0" />
-
                   {!collapsed && (
                     <span className="whitespace-nowrap text-xs font-medium">
                       {item.label}
                     </span>
                   )}
                 </NavLink>
+              ) : (
+                <div
+                  key={item.label}
+                  title={collapsed ? item.label : undefined}
+                  style={{
+                    marginTop: [1, 4, 11].includes(index) ? "24px" : undefined,
+                  }}
+                  className={itemClass}
+                >
+                  <Icon size={17} className="shrink-0" />
+                  {!collapsed && (
+                    <span className="whitespace-nowrap text-xs font-medium">
+                      {item.label}
+                    </span>
+                  )}
+                </div>
               );
             })}
           </div>
@@ -164,7 +111,7 @@ function OwnerSidebar({ collapsed, setCollapsed }) {
         <div className="sticky bottom-0 bg-(--page-background) p-3">
           <button
             type="button"
-            onClick={() => setCollapsed(!collapsed)}
+            onClick={() => setCollapsed((previous) => !previous)}
             title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
             className={`
               flex h-10 w-full items-center rounded-lg
@@ -176,7 +123,6 @@ function OwnerSidebar({ collapsed, setCollapsed }) {
             `}
           >
             {collapsed ? <CgPushRight size={18} /> : <CgPushLeft size={18} />}
-
             {!collapsed && (
               <span className="whitespace-nowrap text-xs font-medium">
                 Collapse/Expand

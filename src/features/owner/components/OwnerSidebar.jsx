@@ -23,7 +23,7 @@ export const navItems = [
   { label: "Manage Quotation", path: null, icon: TbClipboardListFilled },
   { label: "PO & Invoice", path: null, icon: RiFileList3Fill },
   { label: "Warehouse", path: "/warehouse", icon: FaWarehouse },
-  { label: "Add Product", path: null, icon: AiFillProduct },
+  { label: "Add Product", path: "/add-products", icon: AiFillProduct },
   { label: "Orders", path: null, icon: FaCartShopping },
   { label: "Create GRN", path: null, icon: IoMdListBox },
   { label: "Report", path: null, icon: BiSolidReport },

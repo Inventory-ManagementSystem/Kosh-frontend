@@ -1,4 +1,4 @@
-# KOSH - Inventory and Invoice Management System
+# KOSH -Automated Invoice and Inventory Monitoring System
 
 KOSH is an inventory and invoice management system designed to help businesses manage their inventory, invoices, and users through a centralized web application.
 

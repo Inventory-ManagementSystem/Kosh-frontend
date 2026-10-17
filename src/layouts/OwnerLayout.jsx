@@ -23,7 +23,6 @@ function OwnerLayout() {
       <main
         className={`
           min-h-screen
-          ml-18
           pt-18
           transition-all
           ${collapsed ? "lg:ml-18" : "lg:ml-57.5"}

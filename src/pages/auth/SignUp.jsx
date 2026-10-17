@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect,useMemo, useRef  } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { IoMdArrowRoundBack } from "react-icons/io";
@@ -14,10 +14,12 @@ import GithubButton from "../../components/auth/GithubButton";
 import { regUser } from "../../api/regApi";
 import { googleLogin } from "../../api/googleApi";
 import { githubLogin } from "../../api/githubApi";
+import { debounce } from "../../utils/debounce";
 
 function Signup() {
   const navigate = useNavigate();
   const location = useLocation();
+  const isSubmitting = useRef(false);
 
   const role =
     location.state?.role ||
@@ -254,28 +256,46 @@ function Signup() {
     Boolean(formData.password) &&
     Boolean(formData.confirmPassword);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) {
-      return;
-    }
-    setApiError("");
-    try {
-      await regUser({
-        name: formData.name.trim(),
-        email: formData.email,
-        password: formData.password,
-      });
-      localStorage.removeItem("signupFormData");
-      sessionStorage.setItem("registrationName", formData.name);
-      sessionStorage.setItem("registrationEmail", formData.email);
-      sessionStorage.setItem("registrationRole", role);
-      navigate("/registration-otp");
-    } catch (error) {
-      console.error("Registration failed:", error.message);
-      setApiError(error.message);
-    }
-  };
+  const debouncedRegister = useMemo(
+  () =>
+    debounce(async (data) => {
+      try {
+        await regUser({
+          name: data.name.trim(),
+          email: data.email,
+          password: data.password,
+        });
+
+        localStorage.removeItem("signupFormData");
+
+        sessionStorage.setItem("registrationName", data.name);
+        sessionStorage.setItem("registrationEmail", data.email);
+        sessionStorage.setItem("registrationRole", role);
+
+        navigate("/registration-otp");
+      } catch (error) {
+        console.error("Registration failed:", error.message);
+
+        setApiError(
+          error.status === 429
+            ? "Too many registration attempts. Please try again later."
+            : error.message,
+        );
+      } finally {
+        isSubmitting.current = false;
+      }
+    }, 500),
+  [navigate, role],
+);
+
+const handleSubmit = (e) => {
+  e.preventDefault();
+  if (isSubmitting.current || !validateForm()) {
+    return;
+  }
+  isSubmitting.current = true;
+  debouncedRegister(formData);
+};
 
   return (
     <main className="relative min-h-screen overflow-x-hidden bg-(--page-background) text-(--text-color)">

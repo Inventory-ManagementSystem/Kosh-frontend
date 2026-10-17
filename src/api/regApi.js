@@ -11,14 +11,17 @@ export const regUser = async (userData) => {
 
   const data = await response.json();
   if (!response.ok) {
-    const errorMessage =
-      data.errors?.email?.[0] ||
-      data.errors?.name?.[0] ||
-      data.errors?.password?.[0] ||
-      data.message ||
-      "Registration failed";
-    throw new Error(errorMessage);
+    const error = new Error(
+      response.status === 429
+        ? "Too many registration attempts. Please try again later."
+        : data.errors?.email?.[0] ||
+            data.errors?.name?.[0] ||
+            data.errors?.password?.[0] ||
+            data.message ||
+            "Registration failed",
+    );
+    error.status = response.status;
+    throw error;
   }
-
   return data;
 };

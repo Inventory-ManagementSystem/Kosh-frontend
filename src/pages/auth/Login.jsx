@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect , useMemo } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -16,6 +16,7 @@ import GoogleButton from "../../components/auth/GoogleButton";
 import GithubButton from "../../components/auth/GithubButton";
 
 import { loginUser } from "../../api/loginApi";
+import { debounce } from "../../utils/debounce";
 
 function Login() {
   const navigate = useNavigate();
@@ -122,15 +123,12 @@ function Login() {
     return !newErrors.email && !newErrors.password;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) {
-      return;
-    }
+  const debouncedLogin=useMemo(()=>
+  debounce(async(data)=>{
     try {
       const response = await loginUser({
-        email: formData.email,
-        password: formData.password,
+        email: data.email,
+        password: data.password,
       });
 
       login(response.data.access, response.data.role);
@@ -164,12 +162,30 @@ function Login() {
       localStorage.removeItem("selectedRole");
     } catch (error) {
       console.log("Login Failed", error.message);
-      setErrors({
-        email: "",
-        password: "",
-        general: error.message,
-      });
+      if (error.status === 429) {
+    setErrors({
+      email: "",
+      password: "",
+      general: "Too many login attempts. Please try again later.",
+    });
+  } else {
+    setErrors({
+      email: "",
+      password: "",
+      general: error.message,
+    });
+  }
     }
+  },500),
+[login,navigate]
+);
+
+  const handleSubmit =(e) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
+    debouncedLogin(formData);
   };
 
   const isFormFilled =

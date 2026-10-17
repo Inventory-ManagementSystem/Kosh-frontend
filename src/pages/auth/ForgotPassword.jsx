@@ -1,6 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useState, useMemo, useRef } from "react";
+import { useNavigate, Link } from "react-router-dom";
 
 import forgotpass from "../../assets/auth/forgotpass.svg";
 import logo from "../../assets/auth/logo.svg";
@@ -10,46 +9,70 @@ import { forgotPwd } from "../../api/forgotPasswordApi";
 import NavigationButton from "../../components/auth/NavigationButton";
 import BackButton from "../../components/auth/BackButton";
 
+import { debounce } from "../../utils/debounce";
+
 function ForgotPassword() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-  const handleSubmit = async (e) => {
+  const isSubmitting = useRef(false);
+  const debouncedForgotPassword = useMemo(
+    () =>
+      debounce(async (userEmail) => {
+        try {
+          const data = await forgotPwd(userEmail);
+          console.log("OTP sent:", data);
+          navigate("/verify-otp", {
+            state: { email: userEmail },
+          });
+        } catch (error) {
+          console.log("Forgot password failed:", error.message);
+          setError(error.message);
+        } finally {
+          isSubmitting.current = false;
+        }
+      }, 500),
+    [navigate],
+  );
+
+  const handleSubmit = (e) => {
     e.preventDefault();
+    if (isSubmitting.current) {
+      return;
+    }
     if (!email.trim()) {
       setError("Email is required");
       return;
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       setError("Enter a valid email address");
       return;
     }
     setError("");
-    try {
-      const data = await forgotPwd(email);
-      console.log("OTP sent:", data);
-      navigate("/verify-otp", { state: { email } });
-    } catch (error) {
-      console.log("Forgot password failed:", error.message);
-      setError(error.message);
-    }
+    isSubmitting.current = true;
+    debouncedForgotPassword(email.trim());
   };
+
   const handleChange = (e) => {
     setEmail(e.target.value);
     setError("");
   };
+
   const isFormFilled = Boolean(email.trim());
 
   return (
     <main className="relative flex min-h-screen items-center justify-center bg-[#00010f] px-4 py-8 text-[#e6e6e8]">
-      <Link to="/" className="fixed  top-8 left-8 sm:left-15">
+      <Link to="/" className="fixed top-8 left-8 sm:left-15">
         <img src={logo} alt="KOSH" className="h-6 w-auto sm:h-7" />
       </Link>
+
       <AuthDecoration />
+
       <div className="w-full max-w-4xl">
         <div className="mb-8 text-center">
           <p className="mt-2 text-2xl">Forgot Password</p>
         </div>
+
         <div className="mx-auto w-full max-w-md rounded-lg border border-(--border-color) bg-(--card-background) p-6 sm:p-8 lg:flex lg:max-w-4xl lg:items-center lg:p-10">
           <form
             noValidate
@@ -63,6 +86,7 @@ function ForgotPassword() {
               >
                 Email
               </label>
+
               <input
                 id="email"
                 type="email"
@@ -77,14 +101,23 @@ function ForgotPassword() {
                     : "border-(--border-color) focus:border-(--accent-color)"
                 }`}
               />
+
               {error && (
-                <p className="mt-2 text-xs text-(--error-color)">{error}</p>
+                <p className="mt-2 text-xs text-(--error-color)">
+                  {error}
+                </p>
               )}
             </div>
-            <div className="mt-6 flex gap-4">
-              <BackButton onClick={() => navigate("/login")}>Back</BackButton>
 
-              <NavigationButton type="submit" isFormFilled={isFormFilled}>
+            <div className="mt-6 flex gap-4">
+              <BackButton onClick={() => navigate("/login")}>
+                Back
+              </BackButton>
+
+              <NavigationButton
+                type="submit"
+                isFormFilled={isFormFilled}
+              >
                 Send OTP
               </NavigationButton>
             </div>
@@ -92,7 +125,10 @@ function ForgotPassword() {
 
           <div className="hidden lg:flex lg:w-1/2 lg:items-center lg:justify-center lg:pl-8">
             <div className="flex h-72 w-full items-center justify-center rounded-lg">
-              <img src={forgotpass} alt="Forgot Password illustration" />
+              <img
+                src={forgotpass}
+                alt="Forgot Password illustration"
+              />
             </div>
           </div>
         </div>

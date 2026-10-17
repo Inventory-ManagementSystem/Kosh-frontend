@@ -11,6 +11,8 @@ const getErrorMessage = (data, fallback) => {
 const WAREHOUSE_API_URL = import.meta.env.VITE_WAREHOUSE_API_URL;
 const PRODUCTS_API_URL = import.meta.env.VITE_PRODUCTS_API_URL;
 const CATEGORIES_API_URL = import.meta.env.VITE_CATEGORIES_API_URL;
+const OUTLETS_API_URL = `${import.meta.env.VITE_BASE_URL}inventory/outlets/`;
+const DISPATCHES_API_URL = `${import.meta.env.VITE_BASE_URL}inventory/dispatches/`;
 
 export const getWarehouse = async (accessToken) => {
   const response = await fetch(WAREHOUSE_API_URL, {
@@ -119,5 +121,67 @@ export const createCategory = async (accessToken, name) => {
       data.errors?.name?.[0] || data.message || "Failed to create category.",
     );
   }
+  return data;
+};
+
+export const getOutlets = async (accessToken) => {
+  const response = await fetch(`${OUTLETS_API_URL}?is_active=true`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to load outlets.");
+  }
+
+  return data;
+};
+
+export const createOutlet = async (accessToken, outletData) => {
+  const response = await fetch(OUTLETS_API_URL, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(outletData),
+  });
+
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(
+      data.message ||
+        Object.values(data.errors || {}).flat().join(" ") ||
+        "Failed to create outlet."
+    );
+  }
+
+  return data;
+};
+
+export const createDispatch = async (accessToken, dispatchData) => {
+  const response = await fetch(DISPATCHES_API_URL, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(dispatchData),
+  });
+
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(
+      data.message ||
+        Object.values(data.errors || {}).flat().join(" ") ||
+        "Failed to dispatch stock."
+    );
+  }
+
   return data;
 };

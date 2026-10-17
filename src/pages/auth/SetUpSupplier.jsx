@@ -190,7 +190,7 @@ function SetupSupplier() {
     }`;
 
   const selectClass = (field) =>
-    `${inputClass(field)} ${formData[field] ? "" : "text-[var(--secondary-text-color)]"}`;
+    `${inputClass(field)} ${formData[field] ? "" : "text-[var(--secondary-text-color)] border-(--border-color) bg-(--dropdown-background)"}`;
 
   const labelClass = "mb-2 block text-sm font-medium text-[var(--text-color)]";
 

@@ -3,9 +3,15 @@ import { FiSearch } from "react-icons/fi";
 import { FaCirclePlus } from "react-icons/fa6";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../../context/AuthContext";
-import { getWarehouse, getProducts, getCategories } from "../api/warehouseApi";
+import {
+  getWarehouse,
+  getProducts,
+  getCategories,
+  deleteProducts,
+} from "../api/warehouseApi";
 import WarehouseTable from "../components/WarehouseTable";
 import WarehouseTableSkeleton from "../components/WarehouseTableSkeleton";
+import toast from "react-hot-toast";
 
 function Warehouse() {
   const navigate = useNavigate();
@@ -17,6 +23,9 @@ function Warehouse() {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [loading, setLoading] = useState(true);
+  
+const [deletingId, setDeletingId] = useState(null);
+
 
   useEffect(() => {
     const fetchWarehouseData = async () => {
@@ -62,10 +71,36 @@ function Warehouse() {
     return matchesSearch && matchesCategory;
   });
 
+  
+const handleDelete = async (product) => {
+  const confirmed = window.confirm(
+    `Are you sure you want to delete "${product.name}"?`
+  );
+
+  if (!confirmed) return;
+
+  try {
+    setDeletingId(product.id);
+    await deleteProducts(accessToken, product.id);
+    setProducts((prevProducts) =>
+      prevProducts.filter((item) => item.id !== product.id)
+    );
+    toast.success("Product deleted successfully");
+  } catch (error) {
+    console.error("Failed to delete product:", error);
+    toast.error(
+      error.response?.data?.message || "Failed to delete product"
+    );
+  } finally {
+    setDeletingId(null);
+  }
+};
+
+
   return (
     <div className="p-5 text-(--accent-color)">
       <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-3xl font-semibold">Warehouse</h1>
+        <h1 className="font-['Google_Sans_Flex'] text-3xl font-semibold">Warehouse</h1>
 
         <div className="text-left text-xs sm:text-right">
           <p className="text-base">{warehouse?.name}</p>
@@ -90,7 +125,7 @@ function Warehouse() {
           <select
             value={selectedCategory}
             onChange={(event) => setSelectedCategory(event.target.value)}
-            className="h-10 w-full rounded-xl border border-(--border-color) bg-(--input-background) px-3 text-sm text-(--text-color) outline-none sm:max-w-52"
+            className="h-10 w-full rounded-xl border border-(--border-color) bg-(--dropdown-background) px-3 text-sm text-(--text-color) outline-none sm:max-w-52"
           >
             <option value="all">All Categories</option>
 
@@ -105,7 +140,7 @@ function Warehouse() {
         <button
           type="button"
           onClick={() => navigate("/add-products")}
-          className="flex h-10 items-center justify-center gap-2 rounded-xl bg-(--accent-color) px-4 text-sm font-semibold text-[#00010f] transition hover:opacity-90"
+          className="flex h-10 w-50 items-center justify-center gap-2 rounded-xl bg-(--accent-color) px-4 text-sm font-semibold text-[#00010f] transition hover:opacity-90"
         >
           Add Product
           <FaCirclePlus size={16} />
@@ -118,7 +153,7 @@ function Warehouse() {
         {loading ? (
           <WarehouseTableSkeleton />
         ) : (
-          <WarehouseTable items={filteredProducts} />
+          <WarehouseTable items={filteredProducts}  onDelete={handleDelete} deletingId={deletingId}/>
         )}
       </section>
     </div>

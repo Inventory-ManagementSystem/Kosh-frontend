@@ -30,6 +30,7 @@ import AddSupplier from "./features/owner/pages/AddSupplier";
 import Warehouse from "./features/owner/pages/Warehouse";
 import RFQAlerts from "./features/owner/pages/RFQAlerts";
 import AddProduct from "./features/owner/pages/AddProduct";
+import DispatchStock from "./features/owner/pages/DispatchStock";
 
 function App() {
   return (
@@ -61,6 +62,7 @@ function App() {
             <Route path="/warehouse" element={<Warehouse />} />
             <Route path="/add-products" element={<AddProduct />} />
             <Route path="/rfq-alerts" element={<RFQAlerts />} />
+            <Route path="/dispatch-stock" element={<DispatchStock />} />
           </Route>
 
           <Route path="/employee-invites" element={<EmployeeInvites />} />

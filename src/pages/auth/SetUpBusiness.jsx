@@ -141,7 +141,7 @@ function SetupBusiness() {
                 name="businessType"
                 value={formData.businessType}
                 onChange={handleChange}
-                className={`w-full rounded-md border bg-(--input-background) px-4 py-3 text-sm outline-none transition ${
+                className={`w-full rounded-md border border-(--border-color) bg-(--dropdown-background) px-4 py-3 text-sm outline-none transition ${
                   formData.businessType
                     ? "text-(--text-color)"
                     : "text-(--secondary-text-color)"
@@ -177,7 +177,7 @@ function SetupBusiness() {
                 name="city"
                 value={formData.city}
                 onChange={handleChange}
-                className={`w-full rounded-md border bg-(--input-background) px-4 py-3 text-sm outline-none transition ${
+                className={`w-full rounded-md border border-(--border-color) bg-(--dropdown-background) px-4 py-3 text-sm outline-none transition ${
                   formData.city
                     ? "text-(--text-color)"
                     : "text-(--secondary-text-color)"

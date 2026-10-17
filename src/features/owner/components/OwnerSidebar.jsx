@@ -28,7 +28,7 @@ export const navItems = [
   { label: "Create GRN", path: null, icon: IoMdListBox },
   { label: "Report", path: null, icon: BiSolidReport },
   { label: "Received Stock", path: null, icon: BsArchiveFill },
-  { label: "Dispatch Stock", path: null, icon: BiSolidSend },
+  { label: "Dispatch Stock", path:"dispatch-stock" ,icon: BiSolidSend },
   { label: "Kosh AI", path: null, icon: MdPersonAddAlt1 },
   { label: "Manage Employees", path: "/employees", icon: BsPeopleFill },
   { label: "Manage Suppliers", path: "/suppliers", icon: BsPersonLinesFill },

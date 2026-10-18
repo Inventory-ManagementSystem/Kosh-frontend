@@ -13,6 +13,7 @@ const PRODUCTS_API_URL = import.meta.env.VITE_PRODUCTS_API_URL;
 const CATEGORIES_API_URL = import.meta.env.VITE_CATEGORIES_API_URL;
 const OUTLETS_API_URL = `${import.meta.env.VITE_BASE_URL}inventory/outlets/`;
 const DISPATCHES_API_URL = `${import.meta.env.VITE_BASE_URL}inventory/dispatches/`;
+const SUPPLIER_CATEGORIES_API_URL=import.meta.env.VITE_SUPPLIER_CATEGORIES_API_URL;
 
 export const getWarehouse = async (accessToken) => {
   const response = await fetch(WAREHOUSE_API_URL, {
@@ -92,7 +93,7 @@ export const updateWarehouse = async (accessToken, warehouseData) => {
 };
 
 export const getCategories = async (accessToken) => {
-  const response = await fetch(CATEGORIES_API_URL, {
+  const response = await fetch(SUPPLIER_CATEGORIES_API_URL, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,

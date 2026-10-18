@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  addProducts,
-  getCategories,
-  createCategory,
-} from "../api/warehouseApi";
+import { addProducts, getCategories } from "../api/warehouseApi";
 import toast from "react-hot-toast";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import BackButton from "../../../components/auth/BackButton";
@@ -27,10 +23,8 @@ function AddProduct() {
   });
 
   const [categories, setCategories] = useState([]);
-  const [showAddCategory, setShowAddCategory] = useState(false);
-  const [newCategory, setNewCategory] = useState("");
-  const [categoryLoading, setCategoryLoading] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -38,8 +32,7 @@ function AddProduct() {
         const response = await getCategories(accessToken);
         setCategories(response.data || []);
       } catch (error) {
-        toast.error("Failed to load categories.");
-        console.error("Failed to load categories:", error);
+        toast.error(error.message || "Failed to load categories.");
       }
     };
 
@@ -48,55 +41,77 @@ function AddProduct() {
     }
   }, [accessToken]);
 
+  const validateField = (name, value) => {
+    if (name === "name" && !value.trim()) {
+      return "Product name is required.";
+    }
+
+    if (name === "sku" && !value.trim()) {
+      return "SKU is required.";
+    }
+
+    if (name === "selling_price" || name === "cost_price") {
+      if (value === "") return "This field is required.";
+      if (!Number.isFinite(Number(value)) || Number(value) < 0) {
+        return "Value cannot be negative.";
+      }
+    }
+
+    if (name === "opening_stock" || name === "low_stock_alert_at") {
+      if (value === "") return "This field is required.";
+      if (!Number.isInteger(Number(value)) || Number(value) < 0) {
+        return "Enter a non-negative whole number.";
+      }
+    }
+
+    return "";
+  };
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
-    setFormData((previous) => ({
-      ...previous,
-      [name]: files ? files[0] : value,
-    }));
-  };
+    if (name === "image") {
+      const image = files?.[0];
 
-  const handleAddCategory = async () => {
-    const name = newCategory.trim();
-
-    if (!name) {
-      toast.error("Enter a category name.");
-      return;
-    }
-
-    const duplicate = categories.some(
-      (category) => category.name.toLowerCase() === name.toLowerCase(),
-    );
-
-    if (duplicate) {
-      toast.error("This category already exists.");
-      return;
-    }
-
-    setCategoryLoading(true);
-
-    try {
-      const response = await createCategory(accessToken, name);
-      const category = response.data;
-
-      setCategories((previous) => [...previous, category]);
+      if (image && !image.type.startsWith("image/")) {
+        setErrors((previous) => ({
+          ...previous,
+          image: "Please select a valid image.",
+        }));
+        e.target.value = "";
+        return;
+      }
 
       setFormData((previous) => ({
         ...previous,
-        category: category.id,
+        image: image || null,
       }));
 
-      setNewCategory("");
-      setShowAddCategory(false);
+      setErrors((previous) => ({
+        ...previous,
+        image: "",
+      }));
 
-      toast.success("Category added successfully!");
-    } catch (error) {
-      toast.error(error.message || "Failed to create category.");
-      console.error("Failed to create category:", error);
-    } finally {
-      setCategoryLoading(false);
+      return;
     }
+
+    if (
+      ["selling_price", "cost_price", "opening_stock", "low_stock_alert_at"].includes(name) &&
+      value !== "" &&
+      Number(value) < 0
+    ) {
+      return;
+    }
+
+    setFormData((previous) => ({
+      ...previous,
+      [name]: value,
+    }));
+
+    setErrors((previous) => ({
+      ...previous,
+      [name]: validateField(name, value),
+    }));
   };
 
   const isFormFilled =
@@ -105,12 +120,25 @@ function AddProduct() {
     formData.selling_price !== "" &&
     formData.cost_price !== "" &&
     formData.opening_stock !== "" &&
-    formData.low_stock_alert_at !== "";
+    formData.low_stock_alert_at !== "" &&
+    Object.values(errors).every((error) => !error);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!isFormFilled || loading) return;
+    if (loading) return;
+
+    const newErrors = {};
+
+    Object.entries(formData).forEach(([name, value]) => {
+      if (name !== "category" && name !== "image") {
+        newErrors[name] = validateField(name, value);
+      }
+    });
+
+    setErrors(newErrors);
+
+    if (Object.values(newErrors).some(Boolean)) return;
 
     setLoading(true);
 
@@ -144,7 +172,6 @@ function AddProduct() {
       navigate("/warehouse");
     } catch (error) {
       toast.error(error.message || "Failed to add product.");
-      console.error("Failed to add product:", error);
     } finally {
       setLoading(false);
     }
@@ -155,15 +182,19 @@ function AddProduct() {
   };
 
   const inputClass =
-    "mt-2 h-9 w-full rounded border border-(--border-color) bg-transparent px-3 text-xs text-(--text-color) outline-none focus:border-(--accent-color)";
+    "mt-2 h-9 w-full rounded border border-(--border-color) bg-(--dropdown-background) px-3 text-xs text-(--text-color) outline-none focus:border-(--accent-color)";
 
-  const labelClass = "text-[10px] font-medium uppercase text-(--text-color)";
+  const labelClass =
+    "text-[10px] font-medium uppercase text-(--text-color)";
+
+  const errorClass = "mt-1 text-xs text-red-500";
 
   return (
     <div className="min-h-full p-4 text-(--text-color) sm:p-6">
       <h1 className="text-3xl font-semibold">Add Product</h1>
 
       <form
+        noValidate
         onSubmit={handleSubmit}
         className="mt-5 rounded-xl bg-(--card-background) p-5 sm:p-6"
       >
@@ -173,95 +204,72 @@ function AddProduct() {
 
         <div className="grid grid-cols-1 gap-x-5 gap-y-5 sm:grid-cols-2">
           <div>
-            <label className={labelClass}>Product Name</label>
+            <label htmlFor="product-name" className={labelClass}>
+              Product Name
+            </label>
             <input
+              id="product-name"
               name="name"
               value={formData.name}
               onChange={handleChange}
               className={inputClass}
               placeholder="Enter product name"
-              required
             />
+            {errors.name && <p className={errorClass}>{errors.name}</p>}
           </div>
 
           <div>
-            <label className={labelClass}>SKU</label>
+            <label htmlFor="product-sku" className={labelClass}>
+              SKU
+            </label>
             <input
+              id="product-sku"
               name="sku"
               value={formData.sku}
               onChange={handleChange}
               className={inputClass}
               placeholder="Enter SKU"
-              required
             />
+            {errors.sku && <p className={errorClass}>{errors.sku}</p>}
           </div>
 
           <div>
-            <label className={labelClass}>Category</label>
-
+            <label htmlFor="product-category" className={labelClass}>
+              Category
+            </label>
             <select
+              id="product-category"
               name="category"
               value={formData.category}
-              onChange={(e) => {
-                if (e.target.value === "add_new") {
-                  setShowAddCategory(true);
-                  return;
-                }
-                setShowAddCategory(false);
-                setFormData((previous) => ({
-                  ...previous,
-                  category: e.target.value,
-                }));
-              }}
+              onChange={handleChange}
               className={inputClass}
             >
               <option value="">Select category</option>
-
               {categories.map((category) => (
                 <option key={category.id} value={category.id}>
                   {category.name}
                 </option>
               ))}
-
-              <option value="add_new">+ Add Category</option>
             </select>
-
-            {showAddCategory && (
-              <div className="mt-3 flex items-center gap-2">
-                <input
-                  type="text"
-                  value={newCategory}
-                  onChange={(e) => setNewCategory(e.target.value)}
-                  className={inputClass}
-                  placeholder="Enter category name"
-                  disabled={categoryLoading}
-                />
-
-                <button
-                  type="button"
-                  onClick={handleAddCategory}
-                  disabled={categoryLoading}
-                  className="mt-2 shrink-0 rounded border border-(--border-color) px-3 py-2 text-xs transition hover:border-(--accent-color) disabled:opacity-50"
-                >
-                  {categoryLoading ? "Adding..." : "Add"}
-                </button>
-              </div>
-            )}
           </div>
 
           <div>
-            <label className={labelClass}>Product Image</label>
-
+            <label htmlFor="product-image" className={labelClass}>
+              Product Image
+            </label>
             <label
               htmlFor="product-image"
-              className="mt-2 flex h-24 cursor-pointer flex-col items-center justify-center rounded border border-(--border-color) transition hover:border-(--accent-color)"
+              className="mt-2 flex h-9 cursor-pointer items-center gap-2 rounded border border-(--border-color) px-3 transition hover:border-(--accent-color)"
             >
-              <FaCloudUploadAlt size={26} className="text-(--accent-color)" />
-
-              <span className="mt-1 text-xs text-(--secondary-text-color)">
-                {formData.image ? formData.image.name : "Click to upload image"}
+              <FaCloudUploadAlt
+                size={20}
+                className="shrink-0 text-(--accent-color)"
+              />
+              <span className="min-w-0 truncate text-xs text-(--secondary-text-color)">
+                {formData.image
+                  ? formData.image.name
+                  : "Click to upload image"}
               </span>
-
               <input
                 id="product-image"
                 type="file"
@@ -271,11 +279,15 @@ function AddProduct() {
                 className="hidden"
               />
             </label>
+            {errors.image && <p className={errorClass}>{errors.image}</p>}
           </div>
 
           <div>
-            <label className={labelClass}>Selling Price</label>
+            <label htmlFor="selling-price" className={labelClass}>
+              Selling Price
+            </label>
             <input
+              id="selling-price"
               type="number"
               name="selling_price"
               value={formData.selling_price}
@@ -285,13 +297,18 @@ function AddProduct() {
               step="0.01"
               className={inputClass}
               placeholder="0.00"
-              required
             />
+            {errors.selling_price && (
+              <p className={errorClass}>{errors.selling_price}</p>
+            )}
           </div>
 
           <div>
-            <label className={labelClass}>Cost Price</label>
+            <label htmlFor="cost-price" className={labelClass}>
+              Cost Price
+            </label>
             <input
+              id="cost-price"
               type="number"
               name="cost_price"
               value={formData.cost_price}
@@ -301,13 +318,18 @@ function AddProduct() {
               step="0.01"
               className={inputClass}
               placeholder="0.00"
-              required
             />
+            {errors.cost_price && (
+              <p className={errorClass}>{errors.cost_price}</p>
+            )}
           </div>
 
           <div>
-            <label className={labelClass}>Opening Stock</label>
+            <label htmlFor="opening-stock" className={labelClass}>
+              Opening Stock
+            </label>
             <input
+              id="opening-stock"
               type="number"
               name="opening_stock"
               value={formData.opening_stock}
@@ -317,13 +339,18 @@ function AddProduct() {
               step="1"
               className={inputClass}
               placeholder="Enter opening stock"
-              required
             />
+            {errors.opening_stock && (
+              <p className={errorClass}>{errors.opening_stock}</p>
+            )}
           </div>
 
           <div>
-            <label className={labelClass}>Low Stock Alert At</label>
+            <label htmlFor="low-stock-alert" className={labelClass}>
+              Low Stock Alert At
+            </label>
             <input
+              id="low-stock-alert"
               type="number"
               name="low_stock_alert_at"
               value={formData.low_stock_alert_at}
@@ -333,19 +360,20 @@ function AddProduct() {
               step="1"
               className={inputClass}
               placeholder="Enter stock threshold"
-              required
             />
+            {errors.low_stock_alert_at && (
+              <p className={errorClass}>{errors.low_stock_alert_at}</p>
+            )}
           </div>
         </div>
 
         <div className="mt-8 flex justify-center gap-2">
           <BackButton onClick={() => navigate(-1)} />
-
           <NavigationButton
             type="submit"
             isFormFilled={isFormFilled && !loading}
           >
-            {loading ? "Adding..." : "Add Product"}
+            Add Product
           </NavigationButton>
         </div>
       </form>

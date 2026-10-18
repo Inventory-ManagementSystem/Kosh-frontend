@@ -136,8 +136,8 @@ function Login() {
 
       const role = response.data.role;
       const selectedRole = localStorage.getItem("selectedRole");
-      if (selectedRole === "supplier") {
-        if (response.data.role === null) {
+      if (role === "supplier" || selectedRole === "supplier") {
+        if (role === null) {
           navigate("/setup-supplier");
         } else {
           navigate("/supplier-dashboard");

@@ -12,18 +12,12 @@ import RegistrationOtp from "./pages/auth/RegistrationOtp";
 import OAuthCallback from "./pages/auth/OAuthCallback";
 import GitHubOAuthCallback from "./pages/auth/GitHubOAuthCallback";
 import HomePage from "./pages/auth/HomePage";
-import SetupSupplier from "./pages/auth/SetUpSupplier";
-import SupplierDashboard from "./features/supplier/pages/SupplierDashboard";
 
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
+import OwnerLayout from "./layouts/OwnerLayout";
 import Dashboard from "./features/owner/pages/Dashboard";
 import AddEmployee from "./features/owner/pages/AddEmployee";
-
-import EmployeeInvites from "./features/employee/pages/EmployeeInvites";
-import EmployeeDashboard from "./features/employee/pages/EmployeeDashboard";
-
-import OwnerLayout from "./layouts/OwnerLayout";
 import ManageEmployee from "./features/owner/pages/ManageEmployee";
 import ManageSuppliers from "./features/owner/pages/ManageSupplier";
 import AddSupplier from "./features/owner/pages/AddSupplier";
@@ -31,6 +25,15 @@ import Warehouse from "./features/owner/pages/Warehouse";
 import RFQAlerts from "./features/owner/pages/RFQAlerts";
 import AddProduct from "./features/owner/pages/AddProduct";
 import DispatchStock from "./features/owner/pages/DispatchStock";
+
+import EmployeeLayout from "./layouts/EmployeeLayout";
+import EmployeeInvites from "./features/employee/pages/EmployeeInvites";
+import EmployeeDashboard from "./features/employee/pages/EmployeeDashboard";
+
+import SupplierLayout from "./layouts/SupplierLayout";
+import SetupSupplier from "./pages/auth/SetUpSupplier";
+import SupplierDashboard from "./features/supplier/pages/SupplierDashboard";
+import SupplierRFQs from "./features/supplier/pages/SupplierRfq";
 
 function App() {
   return (
@@ -51,8 +54,6 @@ function App() {
           <Route path="/complete-setup" element={<SetupComplete />} />
           <Route path="/setup-supplier" element={<SetupSupplier />} />
 
-          <Route path="/supplier-dashboard" element={<SupplierDashboard />} />
-
           <Route element={<OwnerLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/employees" element={<ManageEmployee />} />
@@ -66,7 +67,16 @@ function App() {
           </Route>
 
           <Route path="/employee-invites" element={<EmployeeInvites />} />
+          <Route element={<EmployeeLayout />}>
           <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
+          </Route>
+
+          <Route element={<SupplierLayout />}>
+          <Route path="/supplier-dashboard" element={<SupplierDashboard />} />
+          <Route path="/supplier-rfqs" element={<SupplierRFQs />} />
+          </Route>
+
+
         </Route>
 
         <Route path="/oauth/callback" element={<OAuthCallback />} />

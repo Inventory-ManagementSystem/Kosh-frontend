@@ -1,4 +1,4 @@
-import { useEffect,useState } from "react";
+import { useEffect,useState,useRef } from "react";
 import { NavLink } from "react-router-dom";
 
 import {
@@ -22,6 +22,7 @@ function OwnerTopbar() {
   const { accessToken } = useAuth();
   const { logout } = useAuth();
   const { themes, toggleTheme } = useTheme();
+  const notificationRef = useRef(null);
   const theme = themes.owner;
   const [unreadCount, setUnreadCount] = useState(0);
 
@@ -37,11 +38,13 @@ function OwnerTopbar() {
       console.error("Failed to fetch unread count:", error.message);
     }
   };
-  if (accessToken) {
     fetchUnreadCount();
-  } else {
-    setUnreadCount(0);
-  }
+    const interval=setInterval(()=>{
+      fetchUnreadCount();
+    },3000);
+    return()=>{
+      clearInterval(interval);
+    };
 }, [accessToken]);
 
   const handleLogout = async () => {
@@ -54,6 +57,18 @@ function OwnerTopbar() {
       logout();
     }
   };
+
+  useEffect(()=>{
+    const handleOutsideClick=(event)=>{
+      if(notificationRef.current && !notificationRef.current.contains(event.target)){
+        setNotificationsOpen(false);
+      }
+    };
+    document.addEventListener("pointerdown",handleOutsideClick);
+    return()=>{
+      document.removeEventListener("pointerdown",handleOutsideClick);
+    };
+  },[])
 
   return (
     <>
@@ -75,7 +90,7 @@ function OwnerTopbar() {
           </div>
 
           <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2">
-            <div className="relative">
+            <div className="relative" ref={notificationRef}>
             <button
               type="button"
               aria-label="Notifications"

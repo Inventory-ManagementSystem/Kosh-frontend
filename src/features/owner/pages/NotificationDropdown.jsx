@@ -11,6 +11,9 @@ function NotificationDropdown({ onUnreadCountChange }) {
   const [actionError, setActionError] = useState("");
 
   useEffect(()=>{
+    if (!accessToken) {
+    return;
+    }
     const fetchNotifications=async()=>{
         try{
             setError("");
@@ -21,9 +24,13 @@ function NotificationDropdown({ onUnreadCountChange }) {
             console.log(error.message||"Failed to load notifications");
         }
     };
-    if(accessToken){
         fetchNotifications();
-    }
+        const interval=setInterval(()=>{
+            fetchNotifications();
+        },15000);
+        return()=>{
+            clearInterval(interval);
+        };
   },[accessToken]);
 
   const refreshUnreadCount = async () => {
@@ -51,8 +58,7 @@ function NotificationDropdown({ onUnreadCountChange }) {
   const handleDelete = async (id) =>{
     try {
       setActionError("");
-      setDeletingId(id);
-      await deleteNotification(accessToken, id);
+      await deleteNotification(accessToken,id);
       setNotifications((previous) =>
         previous.filter((notification) => notification.id !== id),
       );

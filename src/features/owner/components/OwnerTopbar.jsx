@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect,useState } from "react";
 import { NavLink } from "react-router-dom";
 
 import {
@@ -10,18 +10,39 @@ import {
   FiMenu,
   FiX,
 } from "react-icons/fi";
+import { getUnreadCount } from "../api/notificationApi";
 
 import { useAuth } from "../../../context/AuthContext";
 import { logoutUser } from "../../../api/logoutApi";
 import { useTheme } from "../../../context/ThemeContext";
 import { navItems } from "./OwnerSidebar";
+import NotificationDropdown from "../pages/NotificationDropdown";
 
 function OwnerTopbar() {
+  const { accessToken } = useAuth();
   const { logout } = useAuth();
   const { themes, toggleTheme } = useTheme();
   const theme = themes.owner;
+  const [unreadCount, setUnreadCount] = useState(0);
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+
+  useEffect(() => {
+  const fetchUnreadCount = async () => {
+    try {
+      const count = await getUnreadCount(accessToken);
+      setUnreadCount(count);
+    } catch (error) {
+      console.error("Failed to fetch unread count:", error.message);
+    }
+  };
+  if (accessToken) {
+    fetchUnreadCount();
+  } else {
+    setUnreadCount(0);
+  }
+}, [accessToken]);
 
   const handleLogout = async () => {
     try {
@@ -38,7 +59,6 @@ function OwnerTopbar() {
     <>
       <header className="fixed left-0 right-0 top-0 z-50 h-18 bg-(--page-background) lg:left-57.5">
         <div className="flex h-full items-center justify-between gap-2 px-3 sm:px-6 lg:px-8">
-          {/* Search stays visible on all screens */}
           <div className="min-w-0 w-full max-w-[320px]">
             <div className="flex h-10 items-center gap-2 rounded-xl bg-(--input-background) px-3">
               <FiSearch
@@ -54,15 +74,23 @@ function OwnerTopbar() {
             </div>
           </div>
 
-          {/* Topbar actions */}
           <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2">
+            <div className="relative">
             <button
               type="button"
               aria-label="Notifications"
+              onClick={() => setNotificationsOpen((previous) => !previous)}
               className="flex h-10 w-9 items-center justify-center rounded-full text-(--secondary-text-color) hover:bg-(--input-background) hover:text-(--text-color) sm:w-10"
             >
               <FiBell size={18} />
+              {unreadCount > 0 && (
+               <span className="absolute -right-0.5 -top-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold leading-none text-white">
+               {unreadCount > 99 ? "99+" : unreadCount}
+               </span>
+              )}
             </button>
+            {notificationsOpen && <NotificationDropdown onUnreadCountChange={setUnreadCount}/>}
+            </div>
 
             <button
               type="button"
@@ -74,7 +102,6 @@ function OwnerTopbar() {
               {theme === "dark" ? <FiSun size={18} /> : <FiMoon size={18} />}
             </button>
 
-            {/* Desktop Logout */}
             <button
               type="button"
               onClick={handleLogout}
@@ -83,7 +110,6 @@ function OwnerTopbar() {
               Logout
             </button>
 
-            {/* Hamburger replaces Logout on small screens */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen((previous) => !previous)}
@@ -96,8 +122,6 @@ function OwnerTopbar() {
           </div>
         </div>
       </header>
-
-      {/* Mobile menu only; desktop sidebar stays separate */}
       {mobileMenuOpen && (
         <div className="fixed inset-x-0 bottom-0 top-18 z-40 overflow-y-auto border-t border-(--border-color) bg-(--page-background) lg:hidden">
           <nav className="space-y-1 px-3 py-4">
@@ -147,7 +171,6 @@ function OwnerTopbar() {
             })}
           </nav>
 
-          {/* Logout always comes last */}
           <div className="border-t border-(--border-color) p-3">
             <button
               type="button"

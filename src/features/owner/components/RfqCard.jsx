@@ -73,7 +73,7 @@ function RfqCard({
               <p className="mb-1.5 text-xs font-medium text-(--secondary-text-color)">
                 {item.label}
               </p>
-              <p className="break-words text-base font-medium text-(--text-color)">
+              <p className="break-words text-[14px] font-medium text-(--text-color)">
                 {item.value}
               </p>
             </div>

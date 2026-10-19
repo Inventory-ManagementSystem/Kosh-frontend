@@ -1,44 +1,64 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
-import {
-  getActiveAlerts,
-  getRFQs,
-  getRFQSummary,
-  cancelRFQ,
-} from "../api/procurementApi";
+import {getActiveAlerts,getRFQs,getRFQSummary,getRFQDetails,cancelRFQ,refreshAlerts} from "../api/procurementApi";
 import WarehouseTable from "../components/WarehouseTable";
 import WarehouseTableSkeleton from "../components/WarehouseTableSkeleton";
+import { BiSolidReport } from "react-icons/bi";
+import { GoAlertFill } from "react-icons/go";
+import { FiRefreshCw } from "react-icons/fi";
+import {FiChevronsLeft,FiChevronLeft,FiChevronRight,FiChevronsRight} from "react-icons/fi";
+import { toast } from "react-hot-toast";
+import RfqCard from "../components/RfqCard";
+
+const PAGE_SIZE = 5;
 
 function RFQAlerts() {
-  const { accessToken } = useAuth();
+  const { accessToken, role } = useAuth();
+
+  const isOwner =
+    role === "owner" || role === "business_owner";
 
   const [summary, setSummary] = useState({});
   const [rfqs, setRfqs] = useState([]);
   const [rfqTotalPages, setRfqTotalPages] = useState(1);
   const [rfqPage, setRfqPage] = useState(1);
-  const [alertPage, setAlertPage] = useState(1);
-  const [alertTotalPages, setAlertTotalPages] = useState(1);
   const [alerts, setAlerts] = useState([]);
+  const [alertTotalPages, setAlertTotalPages] = useState(1);
+  const [alertPage, setAlertPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [refreshingAlerts, setRefreshingAlerts] = useState(false);
   const [error, setError] = useState("");
-  const [cancellingId, setCancellingId] = useState(null);
+  const [cancellingId, setCancellingId] = useState(null)
+  const [expandedRfqId, setExpandedRfqId] = useState(null);
+  const [rfqDetails, setRfqDetails] = useState({});
+  const [detailsLoading, setDetailsLoading] = useState({});
+  const [detailsError, setDetailsError] = useState({});
 
   const loadData = async () => {
     try {
       setLoading(true);
       setError("");
-      const [summaryData, rfqData, alertData] = await Promise.all([
-        getRFQSummary(accessToken),
-        getRFQs(accessToken, rfqPage, 5),
-        getActiveAlerts(accessToken, alertPage, 5),
-      ]);
-      setSummary(summaryData.data || summaryData);
-      setRfqs(rfqData.data?.results || []);
-      setAlerts(alertData.data?.results || []);
-      setRfqTotalPages(rfqData.data?.total_pages || 1);
-      setAlertTotalPages(alertData.data?.total_pages || 1);
+
+      const [summaryData, rfqData, alertData] =
+        await Promise.all([
+          getRFQSummary(accessToken),
+          getRFQs(accessToken, rfqPage, PAGE_SIZE),
+          getActiveAlerts(accessToken, alertPage, PAGE_SIZE),
+        ]);
+
+      const rfqResponse = rfqData.data;
+      const alertResponse = alertData.data;
+
+      setSummary(summaryData.data);
+      setRfqs(rfqResponse.results);
+      setAlerts(alertResponse.results);
+
+      setRfqTotalPages(Math.max(1,Math.ceil((rfqResponse.count || 0) / PAGE_SIZE,)));
+      setAlertTotalPages(Math.max(1,Math.ceil((alertResponse.count || 0) / PAGE_SIZE)));
     } catch (err) {
-      setError(err.message || "Unable to load RFQ and alerts.");
+      setError(
+        err.message || "Unable to load RFQ and alerts.",
+      );
     } finally {
       setLoading(false);
     }
@@ -50,6 +70,37 @@ function RFQAlerts() {
     }
   }, [accessToken, rfqPage, alertPage]);
 
+  const handleRefreshAlerts = async () => {
+    try {
+      setRefreshingAlerts(true);
+      setError("");
+
+      const response = await refreshAlerts(accessToken);
+
+      const created = response.data?.created;
+      const activeAlerts = response.data?.active_alerts;
+
+      if (created > 0) {
+        toast.success(
+          `${created} new alert${
+            created === 1 ? "" : "s"
+          } created. ${activeAlerts} active alerts in total.`,
+        );
+      } else {
+        toast.success(
+          `No new alerts. ${activeAlerts} active alerts in total.`,
+        );
+      }
+      await loadData();
+    } catch (err) {
+      toast.error(
+        err.message || "Failed to refresh alerts.",
+      );
+    } finally {
+      setRefreshingAlerts(false);
+    }
+  };
+
   const handleCancel = async (id) => {
     const confirmed = window.confirm(
       "Are you sure you want to cancel this RFQ?",
@@ -57,13 +108,75 @@ function RFQAlerts() {
     if (!confirmed) return;
     try {
       setCancellingId(id);
+      setError("");
       await cancelRFQ(accessToken, id);
-      await loadData();
+      toast.success("RFQ cancelled successfully.");
+      if (rfqs.length === 1 && rfqPage > 1) {
+        setRfqPage((prev) => prev - 1);
+      } else {
+        await loadData();
+      }
     } catch (err) {
       setError(err.message || "Failed to cancel RFQ.");
     } finally {
       setCancellingId(null);
     }
+  };
+
+  const fetchRfqDetails = async (id) => {
+    try {
+      setDetailsLoading((prev) => ({
+        ...prev,
+        [id]: true,
+      }));
+      setDetailsError((prev) => ({
+        ...prev,
+        [id]: "",
+      }));
+      const response = await getRFQDetails(
+        accessToken,
+        id,
+      );
+      setRfqDetails((prev) => ({
+        ...prev,
+        [id]: response.data || response,
+      }));
+    } catch (err) {
+      setDetailsError((prev) => ({
+        ...prev,
+        [id]:
+          err.message || "Failed to fetch RFQ details.",
+      }));
+    } finally {
+      setDetailsLoading((prev) => ({
+        ...prev,
+        [id]: false,
+      }));
+    }
+  };
+
+  const handleToggleRfq = async (rfq) => {
+    if (expandedRfqId === rfq.id) {
+      setExpandedRfqId(null);
+      return;
+    }
+    setExpandedRfqId(rfq.id);
+    if (
+      rfqDetails[rfq.id] ||
+      detailsLoading[rfq.id]
+    ) {
+      return;
+    }
+    await fetchRfqDetails(rfq.id);
+  };
+
+  const handleRetryRfq = (id) => {
+    setRfqDetails((prev) => {
+      const updated = { ...prev };
+      delete updated[id];
+      return updated;
+    });
+    fetchRfqDetails(id);
   };
 
   const formattedAlerts = alerts.map((alert) => ({
@@ -72,14 +185,17 @@ function RFQAlerts() {
     sku: alert.sku,
     category_name: alert.category,
     quantity: alert.required_stock,
-    price: null,
+    price: alert.cost_price,
     status: alert.stock_status,
   }));
 
   if (loading && !rfqs.length && !alerts.length) {
     return (
       <div className="p-6 text-(--accent-color)">
-        <h1 className="mb-5 text-3xl font-semibold">RFQ & Alerts</h1>
+        <h1 className="mb-5 text-3xl font-semibold">
+          RFQ & Alerts
+        </h1>
+
         <WarehouseTableSkeleton showDelete={false} />
       </div>
     );
@@ -87,14 +203,12 @@ function RFQAlerts() {
 
   return (
     <div className="space-y-6 p-4 text-(--accent-color) sm:p-6">
-      <div>
-        <h1 className="font-['Google_Sans_Flex'] text-3xl font-semibold">
-          RFQ & Alerts
-        </h1>
-      </div>
+      <h1 className="font-['Google_Sans_Flex'] text-3xl font-semibold">
+        RFQ & Alerts
+      </h1>
 
       {error && (
-        <div className="rounded-lg bordertext-sm text-(--error-color)">
+        <div className="rounded-lg border border-(--border-color) p-3 text-sm text-(--error-color)">
           {error}
         </div>
       )}
@@ -108,47 +222,85 @@ function RFQAlerts() {
           title="Approved Quotations"
           value={summary.approved_quotations ?? 0}
         />
-        <SummaryCard title="Active Alerts" value={summary.active_alerts ?? 0} />
+        <SummaryCard
+          title="Active Alerts"
+          value={summary.active_alerts ?? 0}
+        />
       </div>
 
-      <section className="rounded-xl border border-(--border-color) p-4">
-        <h2 className="mb-4 text-base font-semibold">Requests for Quotation</h2>
+      <section className="rounded-xl border border-(--border-color) bg-(--card-background) p-2 sm:p-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 px-2 pt-2">
+          <h2 className="text-base font-semibold">
+            Active Alerts
+          </h2>
+          {isOwner && (
+            <button
+              type="button"
+              onClick={handleRefreshAlerts}
+              disabled={refreshingAlerts || loading}
+              className="inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition"
+            >
+              <FiRefreshCw size={15} className={refreshingAlerts ? "animate-spin" : ""}/>
+            </button>
+          )}
+        </div>
+        {alerts.length === 0 ? (
+          <p className="p-4 text-sm text-(--secondary-text-color)">
+            No active alerts found.
+          </p>
+        ) : (
+          <WarehouseTable
+            items={formattedAlerts}
+            showDelete={false}
+          />
+        )}
 
+        <Pagination
+          page={alertPage}
+          totalPages={alertTotalPages}
+          onChange={setAlertPage}
+        />
+      </section>
+
+      <section>
+        <h2 className="mb-4 font-['Google_Sans_Flex'] text-xl font-semibold">
+          All RFQ
+        </h2>
         {rfqs.length === 0 ? (
           <p className="py-6 text-sm text-(--secondary-text-color)">
             No RFQs found.
           </p>
         ) : (
           <div className="space-y-3">
-            {rfqs.map((rfq) => (
-              <div
-                key={rfq.id}
-                className="flex flex-col justify-between gap-3 rounded-lg border border-(--border-color) p-4 sm:flex-row sm:items-center"
-              >
-                <div>
-                  <p className="font-medium">
-                    {rfq.number || `RFQ #${rfq.id}`}
-                  </p>
-                  <p className="mt-1 text-sm text-(--secondary-text-color)">
-                    {rfq.product_name || "Product"} · Quantity:{" "}
-                    {rfq.quantity ?? "—"}
-                  </p>
-                  <p className="mt-1 text-xs text-(--secondary-text-color)">
-                    Status: {rfq.status || "—"}
-                  </p>
-                </div>
+            {rfqs.map((rfq) => {
+              const details = rfqDetails[rfq.id] || rfq;
 
-                {rfq.status === "open" && (
-                  <button
-                    onClick={() => handleCancel(rfq.id)}
-                    disabled={cancellingId === rfq.id}
-                    className="rounded-lg px-3 py-2 text-sm text-red-400"
-                  >
-                    {cancellingId === rfq.id ? "Cancelling..." : "Cancel RFQ"}
-                  </button>
-                )}
-              </div>
-            ))}
+              return (
+                <RfqCard
+                  key={rfq.id}
+                  rfq={rfq}
+                  details={{
+                    ...details,
+                    category:
+                      details.supply_category ||
+                      details.category ||
+                      "—",
+                    items: details.items || [],
+                  }}
+                  isExpand={expandedRfqId === rfq.id}
+                  onToggle={() => handleToggleRfq(rfq)}
+                  onCancel={() => handleCancel(rfq.id)}
+                  cancelling={cancellingId === rfq.id}
+                  detailsLoading={
+                    !!detailsLoading[rfq.id]
+                  }
+                  detailsError={
+                    detailsError[rfq.id] || ""
+                  }
+                  onRetry={() => handleRetryRfq(rfq.id)}
+                />
+              );
+            })}
           </div>
         )}
 
@@ -158,58 +310,146 @@ function RFQAlerts() {
           onChange={setRfqPage}
         />
       </section>
-
-      <section className="rounded-xl border border-(--border-color) bg-(--card-background) p-2 sm:p-4">
-        <h2 className="px-2 pt-2 text-base font-semibold">Active Alerts</h2>
-
-        {alerts.length === 0 ? (
-          <p className="p-4 text-sm text-(--secondary-text-color)">
-            No active alerts found.
-          </p>
-        ) : (
-          <WarehouseTable items={formattedAlerts} showDelete={false} />
-        )}
-
-        <Pagination
-          page={alertPage}
-          totalPages={alertTotalPages}
-          onChange={setAlertPage}
-        />
-      </section>
     </div>
   );
 }
 
 function SummaryCard({ title, value }) {
+  const isAlerts = title === "Active Alerts";
+
   return (
-    <div className="rounded-xl border border-(--border-color) bg-(--card-background) p-5">
-      <p className="text-xs text-(--secondary-text-color)">{title}</p>
-      <p className="mt-2 text-2xl font-semibold">{value}</p>
+    <div className="flex items-center justify-between rounded-xl border border-(--border-color) bg-(--card-background) p-5">
+      <div>
+        <p className="text-xs text-(--secondary-text-color)">
+          {title}
+        </p>
+
+        <p className="mt-2 text-2xl font-semibold">
+          {value}
+        </p>
+      </div>
+
+      {isAlerts ? (
+        <GoAlertFill
+          size={24}
+          className="ml-auto text-(--error-color)"
+        />
+      ) : (
+        <BiSolidReport
+          size={24}
+          className="text-(--accent-color)"
+        />
+      )}
     </div>
   );
 }
 
 function Pagination({ page, totalPages, onChange }) {
+  const getPages = () => {
+    if (totalPages <= 5) {
+      return Array.from(
+        { length: totalPages },
+        (_, index) => index + 1,
+      );
+    }
+
+    if (page <= 3) {
+      return [1, 2, 3, 4, "...", totalPages];
+    }
+
+    if (page >= totalPages - 2) {
+      return [
+        1,
+        "...",
+        totalPages - 3,
+        totalPages - 2,
+        totalPages - 1,
+        totalPages,
+      ];
+    }
+
+    return [
+      1,
+      "...",
+      page - 1,
+      page,
+      page + 1,
+      "...",
+      totalPages,
+    ];
+  };
+
+  const buttonClass =
+    "flex h-7 min-w-7 items-center justify-center rounded-md border border-(--border-color) px-2 text-xs transition disabled:cursor-not-allowed disabled:opacity-40";
+
   return (
-    <div className="mt-4 flex items-center justify-center gap-3 text-sm">
+    <div className="mt-4 flex flex-wrap items-center justify-center gap-1.5">
       <button
-        onClick={() => onChange(page - 1)}
+        type="button"
+        onClick={() => onChange(1)}
         disabled={page <= 1}
-        className="rounded-md border border-(--border-color) px-3 py-1.5 disabled:opacity-40"
+        aria-label="First page"
+        className={buttonClass}
       >
-        Previous
+        <FiChevronsLeft size={13} />
       </button>
 
-      <span className="text-(--secondary-text-color)">
-        Page {page} of {totalPages}
-      </span>
+      <button
+        type="button"
+        onClick={() => onChange(page - 1)}
+        disabled={page <= 1}
+        aria-label="Previous page"
+        className={buttonClass}
+      >
+        <FiChevronLeft size={13} />
+      </button>
+
+      {getPages().map((item, index) =>
+        item === "..." ? (
+          <span
+            key={`ellipsis-${index}`}
+            className="flex h-7 min-w-5 items-center justify-center text-xs text-(--secondary-text-color)"
+          >
+            ...
+          </span>
+        ) : (
+          <button
+            key={item}
+            type="button"
+            onClick={() => onChange(item)}
+            aria-label={`Page ${item}`}
+            aria-current={
+              page === item ? "page" : undefined
+            }
+            className={`${buttonClass} ${
+              page === item
+                ? "border-(--accent-color) bg-(--accent-color) font-semibold text-(--card-background)"
+                : "text-(--secondary-text-color) hover:text-(--accent-color)"
+            }`}
+          >
+            {item}
+          </button>
+        ),
+      )}
 
       <button
+        type="button"
         onClick={() => onChange(page + 1)}
         disabled={page >= totalPages}
-        className="rounded-md border border-(--border-color) px-3 py-1.5 disabled:opacity-40"
+        aria-label="Next page"
+        className={buttonClass}
       >
-        Next
+        <FiChevronRight size={13} />
+      </button>
+
+      <button
+        type="button"
+        onClick={() => onChange(totalPages)}
+        disabled={page >= totalPages}
+        aria-label="Last page"
+        className={buttonClass}
+      >
+        <FiChevronsRight size={13} />
       </button>
     </div>
   );

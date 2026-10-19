@@ -44,7 +44,7 @@ const [deletingId, setDeletingId] = useState(null);
         setProducts(productsRes.data.results || []);
 
         const categoriesRes = await getCategories(accessToken);
-        setCategories(categoriesRes.data || []);
+        setCategories(categoriesRes.data|| []);
       } catch (error) {
         console.error("Failed to fetch warehouse inventory:", error);
       } finally {
@@ -62,12 +62,8 @@ const [deletingId, setDeletingId] = useState(null);
     const matchesSearch =
       productName.includes(searchValue) || productSku.includes(searchValue);
 
-    const categoryId =
-      typeof product.category === "object"
-        ? product.category?.id
-        : product.category;
-    const matchesCategory =
-      selectedCategory === "all" || String(categoryId) === selectedCategory;
+    const categoryId = product.category ?? product.supply_category;
+    const matchesCategory =selectedCategory === "all" || String(categoryId) === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
@@ -128,7 +124,6 @@ const handleDelete = async (product) => {
             className="h-10 w-full rounded-xl border border-(--border-color) bg-(--dropdown-background) px-3 text-sm text-(--text-color) outline-none sm:max-w-52"
           >
             <option value="all">All Categories</option>
-
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name}
@@ -159,5 +154,6 @@ const handleDelete = async (product) => {
     </div>
   );
 }
+
 
 export default Warehouse;

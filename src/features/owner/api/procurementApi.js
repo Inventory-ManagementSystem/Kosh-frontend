@@ -87,3 +87,23 @@ export const cancelRFQ = async (accessToken, id) => {
   }
   return data;
 };
+
+
+export const refreshAlerts = async (accessToken) => {
+  const baseURL = import.meta.env.VITE_BASE_URL;
+  const response = await fetch(
+    `${baseURL}procurement/alerts/refresh/`,
+    {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    },
+  );
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to refresh alerts.");
+  }
+  return data;
+};

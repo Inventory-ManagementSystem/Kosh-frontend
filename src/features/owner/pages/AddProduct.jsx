@@ -137,28 +137,27 @@ function AddProduct() {
     });
 
     setErrors(newErrors);
-
     if (Object.values(newErrors).some(Boolean)) return;
-
     setLoading(true);
 
     const productData = new FormData();
-
     productData.append("name", formData.name.trim());
     productData.append("sku", formData.sku.trim().toUpperCase());
     productData.append("price", String(Number(formData.selling_price)));
     productData.append("cost_price", String(Number(formData.cost_price)));
     productData.append(
       "opening_quantity",
-      String(Number(formData.opening_stock)),
+      Number(formData.opening_stock),
     );
     productData.append(
       "low_stock_threshold",
-      String(Number(formData.low_stock_alert_at)),
+      Number(formData.low_stock_alert_at),
     );
-
+    const openingStock = Number(formData.opening_stock);
+    const lowStockThreshold = Number(formData.low_stock_alert_at);
+    productData.append("is_active", String(openingStock<=lowStockThreshold));
     if (formData.category !== "") {
-      productData.append("category", formData.category);
+      productData.append("supply_category", Number(formData.category));
     }
 
     if (formData.image) {

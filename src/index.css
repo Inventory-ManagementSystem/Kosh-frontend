@@ -24,6 +24,8 @@
   --sidebar-active-background: #171827;
   --sidebar-hover-background: #10111f;
   --dropdown-background: #101426;
+  --chat-ai-user-background: #4464c8;
+  --chat-ai-background: #2d2e48;
 }
 
 body {
@@ -38,5 +40,29 @@ input:-webkit-autofill {
   scrollbar-width: none;
 }
 *::-webkit-scrollbar {
+  display: none;
+}
+
+.kosh-chat-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--icon-border-color) transparent;
+}
+.kosh-chat-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.kosh-chat-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  margin-block: 8px;
+}
+.kosh-chat-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--icon-border-color);
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background-clip: content-box;
+}
+.kosh-chat-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: var(--accent-color);
+}
+.kosh-chat-scrollbar::-webkit-scrollbar-button {
   display: none;
 }

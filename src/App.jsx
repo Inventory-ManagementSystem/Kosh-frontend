@@ -25,6 +25,7 @@ import Warehouse from "./features/owner/pages/Warehouse";
 import RFQAlerts from "./features/owner/pages/RFQAlerts";
 import AddProduct from "./features/owner/pages/AddProduct";
 import DispatchStock from "./features/owner/pages/DispatchStock";
+import KoshAI from "./features/owner/pages/KoshAI";
 
 import EmployeeLayout from "./layouts/EmployeeLayout";
 import EmployeeInvites from "./features/employee/pages/EmployeeInvites";
@@ -64,6 +65,7 @@ function App() {
             <Route path="/add-products" element={<AddProduct />} />
             <Route path="/rfq-alerts" element={<RFQAlerts />} />
             <Route path="/dispatch-stock" element={<DispatchStock />} />
+            <Route path="/kosh-ai" element={<KoshAI />} />
           </Route>
 
           <Route path="/employee-invites" element={<EmployeeInvites />} />

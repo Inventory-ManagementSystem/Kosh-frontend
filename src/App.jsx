@@ -26,6 +26,8 @@ import RFQAlerts from "./features/owner/pages/RFQAlerts";
 import AddProduct from "./features/owner/pages/AddProduct";
 import DispatchStock from "./features/owner/pages/DispatchStock";
 import KoshAI from "./features/owner/pages/KoshAI";
+import ManageQuotation from "./features/owner/pages/ManageQuotation";
+import QuotationDetails from "./features/owner/pages/QuotationDetails";
 
 import EmployeeLayout from "./layouts/EmployeeLayout";
 import EmployeeInvites from "./features/employee/pages/EmployeeInvites";
@@ -66,19 +68,25 @@ function App() {
             <Route path="/rfq-alerts" element={<RFQAlerts />} />
             <Route path="/dispatch-stock" element={<DispatchStock />} />
             <Route path="/kosh-ai" element={<KoshAI />} />
+            <Route
+              path="/manage-quotation/:rfqId"
+              element={<ManageQuotation />}
+            />
+            <Route
+              path="/manage-quotation/:rfqId/quotation/:quotationId"
+              element={<QuotationDetails />}
+            />
           </Route>
 
           <Route path="/employee-invites" element={<EmployeeInvites />} />
           <Route element={<EmployeeLayout />}>
-          <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
+            <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
           </Route>
 
           <Route element={<SupplierLayout />}>
-          <Route path="/supplier-dashboard" element={<SupplierDashboard />} />
-          <Route path="/supplier-rfqs" element={<SupplierRFQs />} />
+            <Route path="/supplier-dashboard" element={<SupplierDashboard />} />
+            <Route path="/supplier-rfqs" element={<SupplierRFQs />} />
           </Route>
-
-
         </Route>
 
         <Route path="/oauth/callback" element={<OAuthCallback />} />

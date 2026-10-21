@@ -20,7 +20,11 @@ import { CgPushRight } from "react-icons/cg";
 export const navItems = [
   { label: "Dashboard", path: "/dashboard", icon: MdDashboard },
   { label: "RFQ & Alerts", path: "/rfq-alerts", icon: TbAlertTriangleFilled },
-  { label: "Manage Quotation", path: null, icon: TbClipboardListFilled },
+  {
+    label: "Manage Quotation",
+    path: "/rfq-alerts",
+    icon: TbClipboardListFilled,
+  },
   { label: "PO & Invoice", path: null, icon: RiFileList3Fill },
   { label: "Warehouse", path: "/warehouse", icon: FaWarehouse },
   { label: "Add Product", path: "/add-products", icon: AiFillProduct },
@@ -28,7 +32,7 @@ export const navItems = [
   { label: "Create GRN", path: null, icon: IoMdListBox },
   { label: "Report", path: null, icon: BiSolidReport },
   { label: "Received Stock", path: null, icon: BsArchiveFill },
-  { label: "Dispatch Stock", path:"dispatch-stock" ,icon: BiSolidSend },
+  { label: "Dispatch Stock", path: "/dispatch-stock", icon: BiSolidSend },
   { label: "Kosh AI", path: "/kosh-ai", icon: MdPersonAddAlt1 },
   { label: "Manage Employees", path: "/employees", icon: BsPeopleFill },
   { label: "Manage Suppliers", path: "/suppliers", icon: BsPersonLinesFill },

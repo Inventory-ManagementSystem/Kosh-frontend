@@ -10,10 +10,10 @@ const getErrorMessage = (data, fallback) => {
 
 const WAREHOUSE_API_URL = import.meta.env.VITE_WAREHOUSE_API_URL;
 const PRODUCTS_API_URL = import.meta.env.VITE_PRODUCTS_API_URL;
-const CATEGORIES_API_URL = import.meta.env.VITE_CATEGORIES_API_URL;
 const OUTLETS_API_URL = `${import.meta.env.VITE_BASE_URL}inventory/outlets/`;
 const DISPATCHES_API_URL = `${import.meta.env.VITE_BASE_URL}inventory/dispatches/`;
-const SUPPLIER_CATEGORIES_API_URL=import.meta.env.VITE_SUPPLIER_CATEGORIES_API_URL;
+const SUPPLIER_CATEGORIES_API_URL = import.meta.env
+  .VITE_SUPPLIER_CATEGORIES_API_URL;
 
 export const getWarehouse = async (accessToken) => {
   const response = await fetch(WAREHOUSE_API_URL, {
@@ -31,8 +31,24 @@ export const getWarehouse = async (accessToken) => {
   return data;
 };
 
-export const getProducts = async (accessToken) => {
-  const response = await fetch(PRODUCTS_API_URL, {
+export const getProducts = async (
+  accessToken,
+  page = 1,
+  pageSize = 10,
+  search = "",
+  category = "all",
+) => {
+  const params = new URLSearchParams({
+    page: String(page),
+    page_size: String(pageSize),
+  });
+  if (search.trim()) {
+    params.append("search", search.trim());
+  }
+  if (category && category !== "all") {
+    params.append("category", String(category));
+  }
+  const response = await fetch(`${PRODUCTS_API_URL}?${params.toString()}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -156,8 +172,10 @@ export const createOutlet = async (accessToken, outletData) => {
   if (!response.ok) {
     throw new Error(
       data.message ||
-        Object.values(data.errors || {}).flat().join(" ") ||
-        "Failed to create outlet."
+        Object.values(data.errors || {})
+          .flat()
+          .join(" ") ||
+        "Failed to create outlet.",
     );
   }
 
@@ -179,8 +197,10 @@ export const createDispatch = async (accessToken, dispatchData) => {
   if (!response.ok) {
     throw new Error(
       data.message ||
-        Object.values(data.errors || {}).flat().join(" ") ||
-        "Failed to dispatch stock."
+        Object.values(data.errors || {})
+          .flat()
+          .join(" ") ||
+        "Failed to dispatch stock.",
     );
   }
 

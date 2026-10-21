@@ -1,5 +1,6 @@
 import { GrContract, GrExpand } from "react-icons/gr";
 import { FiX } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 function RfqCard({
   rfq,
@@ -11,7 +12,9 @@ function RfqCard({
   detailsLoading,
   detailsError,
   onRetry,
+  onCardClick,
 }) {
+  const navigate = useNavigate();
   const summary = [
     { label: "Category", value: details.category || "—" },
     {
@@ -24,8 +27,32 @@ function RfqCard({
 
   const items = details.items || [];
 
+  const handleCardClick = () => {
+    if (onCardClick) {
+      onCardClick();
+      return;
+    }
+    navigate(`/manage-quotation/${rfq.id}`);
+  };
+
+  const handleCardKeyDown = (event) => {
+    if (event.target !== event.currentTarget) {
+      return;
+    }
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      handleCardClick();
+    }
+  };
+
   return (
-    <div className="w-full rounded-xl border border-(--border-color) bg-(--card-background) px-4 py-4 sm:px-5 sm:py-4">
+    <div
+      role="link"
+      tabIndex={0}
+      onClick={handleCardClick}
+      onKeyDown={handleCardKeyDown}
+      className="w-full cursor-pointer rounded-xl border border-(--border-color) bg-(--card-background) px-4 py-4 sm:px-5 sm:py-4"
+    >
       <div className="flex items-center justify-between gap-4">
         <div className="flex min-w-0 items-center gap-2">
           <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-green-400" />
@@ -38,22 +65,24 @@ function RfqCard({
         <div className="flex shrink-0 items-center gap-2">
           <button
             type="button"
-            onClick={onToggle}
+            onClick={(event) => {
+              event.stopPropagation();
+              onToggle();
+            }}
             aria-label={isExpand ? "Collapse RFQ" : "Expand RFQ"}
             aria-expanded={isExpand}
             className="flex h-7 w-7 items-center justify-center rounded text-(--secondary-text-color) transition hover:text-(--accent-color)"
           >
-            {isExpand ? (
-              <GrContract size={14} />
-            ) : (
-              <GrExpand size={14} />
-            )}
+            {isExpand ? <GrContract size={14} /> : <GrExpand size={14} />}
           </button>
 
           {rfq.status === "open" && (
             <button
               type="button"
-              onClick={onCancel}
+              onClick={(event) => {
+                event.stopPropagation();
+                onCancel();
+              }}
               disabled={cancelling}
               aria-label="Cancel RFQ"
               title="Cancel RFQ"
@@ -62,7 +91,6 @@ function RfqCard({
               <FiX size={17} />
             </button>
           )}
-
         </div>
       </div>
 
@@ -89,13 +117,17 @@ function RfqCard({
                 Loading RFQ details...
               </p>
             ) : detailsError ? (
-              <div className="py-4">
-                <p className="text-sm text-(--error-color)">
-                  {detailsError}
-                </p>
+              <div
+                className="py-4"
+                onClick={(event) => event.stopPropagation()}
+              >
+                <p className="text-sm text-(--error-color)">{detailsError}</p>
                 <button
                   type="button"
-                  onClick={onRetry}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onRetry();
+                  }}
                   className="mt-3 rounded-lg border border-(--border-color) px-3 py-2 text-sm"
                 >
                   Retry

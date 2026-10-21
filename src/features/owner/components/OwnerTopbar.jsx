@@ -1,4 +1,4 @@
-import { useEffect,useState,useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { NavLink } from "react-router-dom";
 
 import {
@@ -30,22 +30,22 @@ function OwnerTopbar() {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
 
   useEffect(() => {
-  const fetchUnreadCount = async () => {
-    try {
-      const count = await getUnreadCount(accessToken);
-      setUnreadCount(count);
-    } catch (error) {
-      console.error("Failed to fetch unread count:", error.message);
-    }
-  };
-    fetchUnreadCount();
-    const interval=setInterval(()=>{
-      fetchUnreadCount();
-    },3000);
-    return()=>{
-      clearInterval(interval);
+    const fetchUnreadCount = async () => {
+      try {
+        const count = await getUnreadCount(accessToken);
+        setUnreadCount(count);
+      } catch (error) {
+        console.error("Failed to fetch unread count:", error.message);
+      }
     };
-}, [accessToken]);
+    fetchUnreadCount();
+    // const interval=setInterval(()=>{
+    //   fetchUnreadCount();
+    // },3000);
+    return () => {
+      // clearInterval(interval);
+    };
+  }, [accessToken]);
 
   const handleLogout = async () => {
     try {
@@ -58,17 +58,20 @@ function OwnerTopbar() {
     }
   };
 
-  useEffect(()=>{
-    const handleOutsideClick=(event)=>{
-      if(notificationRef.current && !notificationRef.current.contains(event.target)){
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (
+        notificationRef.current &&
+        !notificationRef.current.contains(event.target)
+      ) {
         setNotificationsOpen(false);
       }
     };
-    document.addEventListener("pointerdown",handleOutsideClick);
-    return()=>{
-      document.removeEventListener("pointerdown",handleOutsideClick);
+    document.addEventListener("pointerdown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("pointerdown", handleOutsideClick);
     };
-  },[])
+  }, []);
 
   return (
     <>
@@ -91,20 +94,22 @@ function OwnerTopbar() {
 
           <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2">
             <div className="relative" ref={notificationRef}>
-            <button
-              type="button"
-              aria-label="Notifications"
-              onClick={() => setNotificationsOpen((previous) => !previous)}
-              className="flex h-10 w-9 items-center justify-center rounded-full text-(--secondary-text-color) hover:bg-(--input-background) hover:text-(--text-color) sm:w-10"
-            >
-              <FiBell size={18} />
-              {unreadCount > 0 && (
-               <span className="absolute -right-0.5 -top-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold leading-none text-white">
-               {unreadCount > 99 ? "99+" : unreadCount}
-               </span>
+              <button
+                type="button"
+                aria-label="Notifications"
+                onClick={() => setNotificationsOpen((previous) => !previous)}
+                className="flex h-10 w-9 items-center justify-center rounded-full text-(--secondary-text-color) hover:bg-(--input-background) hover:text-(--text-color) sm:w-10"
+              >
+                <FiBell size={18} />
+                {unreadCount > 0 && (
+                  <span className="absolute -right-0.5 -top-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold leading-none text-white">
+                    {unreadCount > 99 ? "99+" : unreadCount}
+                  </span>
+                )}
+              </button>
+              {notificationsOpen && (
+                <NotificationDropdown onUnreadCountChange={setUnreadCount} />
               )}
-            </button>
-            {notificationsOpen && <NotificationDropdown onUnreadCountChange={setUnreadCount}/>}
             </div>
 
             <button

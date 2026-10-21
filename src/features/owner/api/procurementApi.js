@@ -88,22 +88,84 @@ export const cancelRFQ = async (accessToken, id) => {
   return data;
 };
 
-
 export const refreshAlerts = async (accessToken) => {
   const baseURL = import.meta.env.VITE_BASE_URL;
-  const response = await fetch(
-    `${baseURL}procurement/alerts/refresh/`,
-    {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
+  const response = await fetch(`${baseURL}procurement/alerts/refresh/`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
-  );
+  });
   const data = await response.json();
   if (!response.ok) {
     throw new Error(data.message || "Failed to refresh alerts.");
   }
   return data;
+};
+
+export const getOrders = async (
+  accessToken,
+  page = 1,
+  pageSize = 8,
+  status = "",
+) => {
+  const params = new URLSearchParams({
+    page: String(page),
+    page_size: String(pageSize),
+  });
+  if (status) {
+    params.set("status", status);
+  }
+  const response = await fetch(
+    `${BASE_URL}procurement/orders/?${params.toString()}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Accept: "application/json",
+      },
+    },
+  );
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to fetch orders.");
+  }
+  return data.data;
+};
+
+export const getOrdersSummary = async (accessToken) => {
+  const totalData = await getOrders(accessToken, 1, 1);
+  const receivedData = await getOrders(accessToken, 1, 1, "received");
+  const activeStatuses = [
+    "awaiting_advance",
+    "issued",
+    "dispatched",
+    "partially_received",
+  ];
+  let pending = 0;
+  for (const status of activeStatuses) {
+    const data = await getOrders(accessToken, 1, 1, status);
+    pending += data.count || 0;
+  }
+  return {
+    total: totalData.count || 0,
+    completed: receivedData.count || 0,
+    pending,
+  };
+};
+
+export const getOrderDetails = async (accessToken, orderId) => {
+  const response = await fetch(`${BASE_URL}procurement/orders/${orderId}/`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      Accept: "application/json",
+    },
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to fetch order details.");
+  }
+  return data.data;
 };

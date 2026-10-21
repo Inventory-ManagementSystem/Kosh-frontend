@@ -28,7 +28,7 @@ export const navItems = [
   { label: "PO & Invoice", path: null, icon: RiFileList3Fill },
   { label: "Warehouse", path: "/warehouse", icon: FaWarehouse },
   { label: "Add Product", path: "/add-products", icon: AiFillProduct },
-  { label: "Orders", path: null, icon: FaCartShopping },
+  { label: "Orders", path: "/owner/orders", icon: FaCartShopping },
   { label: "Create GRN", path: null, icon: IoMdListBox },
   { label: "Report", path: null, icon: BiSolidReport },
   { label: "Received Stock", path: null, icon: BsArchiveFill },

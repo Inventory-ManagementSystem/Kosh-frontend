@@ -28,6 +28,8 @@ import DispatchStock from "./features/owner/pages/DispatchStock";
 import KoshAI from "./features/owner/pages/KoshAI";
 import ManageQuotation from "./features/owner/pages/ManageQuotation";
 import QuotationDetails from "./features/owner/pages/QuotationDetails";
+import AllOrders from "./features/owner/pages/AllOrders";
+import OrderDetails from "./features/owner/pages/OrderDetails";
 
 import EmployeeLayout from "./layouts/EmployeeLayout";
 import EmployeeInvites from "./features/employee/pages/EmployeeInvites";
@@ -76,6 +78,8 @@ function App() {
               path="/manage-quotation/:rfqId/quotation/:quotationId"
               element={<QuotationDetails />}
             />
+            <Route path="/owner/orders" element={<AllOrders />} />
+            <Route path="/owner/orders/:orderId" element={<OrderDetails />} />
           </Route>
 
           <Route path="/employee-invites" element={<EmployeeInvites />} />

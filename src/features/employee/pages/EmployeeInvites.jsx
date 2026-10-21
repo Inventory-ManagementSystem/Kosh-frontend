@@ -78,116 +78,142 @@ function EmployeeInvites() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#00010f] text-[#e6e6e8]">
+      <div className="relative min-h-screen overflow-x-hidden bg-(--background-color) text-(--text-color)">
         <AuthDecoration />
-        <div className="relative z-10 flex min-h-screen items-center justify-center">
-          <p className="text-sm text-[#9697a1]">Loading invites...</p>
+
+        <Link
+          to="/"
+          className="fixed left-4 top-5 z-20 sm:left-8 sm:top-7 lg:left-15"
+        >
+          <img src={logo} alt="KOSH" className="h-6 w-auto sm:h-7" />
+        </Link>
+
+        <div className="relative z-10 flex min-h-screen items-center justify-center px-4 pt-24">
+          <p className="text-sm text-(--secondary-text-color)">
+            Loading invites...
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#020313] text-white relative overflow-hidden">
-      <Link to="/" className="fixed  top-8 left-8 sm:left-15">
+    <div className="relative min-h-screen overflow-x-hidden bg-(--background-color) text-(--text-color)">
+      <Link
+        to="/"
+        className="fixed left-4 top-5 z-20 sm:left-8 sm:top-7 lg:left-15"
+      >
         <img src={logo} alt="KOSH" className="h-6 w-auto sm:h-7" />
       </Link>
+
       <AuthDecoration />
+
       <button
         type="button"
         onClick={() => navigate(-1)}
-        className="fixed left-8 top-20 z-10 text-[#b4bedd] transition hover:text-white sm:left-15"
+        aria-label="Go back"
+        className="fixed left-4 top-[4.25rem] z-20 text-(--secondary-text-color) transition hover:text-(--text-color) sm:left-8 sm:top-[4.75rem] lg:left-15"
       >
         <IoMdArrowRoundBack size={25} />
       </button>
+
       {invites.length === 0 ? (
-        <div className="flex min-h-screen flex-col items-center justify-center text-center">
-          <div className="mb-8 flex h-20 w-20 items-center justify-center rounded-full ">
-            <FaCircleXmark size={58} className="text-[#ff6b6b]" />
+        <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 pb-10 pt-28 text-center sm:pt-32">
+          <div className="mb-6 flex h-16 w-16 items-center justify-center sm:mb-8 sm:h-20 sm:w-20">
+            <FaCircleXmark
+              size={58}
+              className="max-h-full max-w-full text-(--error-color)"
+            />
           </div>
 
-          <h1 className="text-3xl font-semibold">Sorry, no invites...</h1>
+          <h1 className="text-2xl font-semibold sm:text-3xl">
+            Sorry, no invites...
+          </h1>
 
-          <p className="mt-3 max-w-[280px] text-sm text-[#9697a1]">
+          <p className="mt-3 max-w-[280px] text-sm text-(--secondary-text-color)">
             Ask your Business owner to send you an invite
           </p>
 
           <button
             type="button"
             onClick={fetchInvites}
-            className="mt-10 rounded-md bg-[#b4bedd] px-8 py-3 text-sm font-medium text-[#00010f] transition hover:bg-[#c5cde5]"
+            disabled={loading || actionLoading}
+            className="mt-8 rounded-md bg-(--accent-color) px-8 py-3 text-sm font-medium text-(--button-text-color) transition hover:opacity-90 disabled:opacity-50 sm:mt-10"
           >
             Check Again
           </button>
         </div>
       ) : (
-        <div className="mx-auto mt-8 w-full max-w-[465px]">
-          <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-semibold tracking-tight">
+        <main className="relative z-10 mx-auto w-full max-w-[465px] px-4 pb-8 pt-32 sm:px-6 sm:pt-36 md:pt-40">
+          <div className="flex items-center justify-between gap-3">
+            <h1 className="min-w-0 text-2xl font-semibold tracking-tight sm:text-3xl">
               Check your invites
             </h1>
 
             <button
               type="button"
               onClick={fetchInvites}
-              disabled={loading}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-[#111426] text-[#b4bedd] transition hover:bg-[#171a2d]"
+              disabled={loading || actionLoading}
+              aria-label="Refresh invites"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-(--card-background) text-(--secondary-text-color) transition hover:bg-(--sidebar-hover-background) disabled:cursor-not-allowed disabled:opacity-50"
             >
               <FiRefreshCw size={19} />
             </button>
           </div>
 
-          <div className="mt-8 space-y-4">
+          <div className="mt-6 space-y-3 sm:mt-8 sm:space-y-4">
             {invites.map((invite) => (
               <button
                 key={invite.id}
                 type="button"
                 onClick={() => setSelectedInvite(invite)}
-                className={`flex w-full items-center gap-4 rounded-xl border px-5 py-5 text-left transition ${
+                disabled={actionLoading}
+                aria-pressed={selectedInvite?.id === invite.id}
+                className={`flex w-full items-center gap-3 rounded-xl border px-4 py-4 text-left transition sm:gap-4 sm:px-5 sm:py-5 ${
                   selectedInvite?.id === invite.id
-                    ? "border-[#b4bedd] bg-[#111426]"
-                    : "border-[#2b2c40] bg-[#111426] hover:border-[#55586e]"
-                }`}
+                    ? "border-(--accent-color) bg-(--card-background)"
+                    : "border-(--border-color) bg-(--card-background) hover:border-(--accent-color)"
+                } disabled:cursor-not-allowed disabled:opacity-60`}
               >
                 <span
-                  className={`flex h-4 w-4 items-center justify-center rounded-full border ${
+                  className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border ${
                     selectedInvite?.id === invite.id
-                      ? "border-[#b4bedd]"
-                      : "border-[#9697a1]"
+                      ? "border-(--accent-color)"
+                      : "border-(--secondary-text-color)"
                   }`}
                 >
                   {selectedInvite?.id === invite.id && (
-                    <span className="h-2 w-2 rounded-full bg-[#b4bedd]" />
+                    <span className="h-2 w-2 rounded-full bg-(--accent-color)" />
                   )}
                 </span>
 
-                <span className="text-sm font-medium">
+                <span className="min-w-0 flex-1 break-words text-sm font-medium sm:text-base">
                   {invite.business_name}
                 </span>
               </button>
             ))}
           </div>
 
-          <div className="mt-8 flex items-center justify-between gap-5">
+          <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:gap-4">
             <button
               type="button"
               onClick={handleDecline}
               disabled={actionLoading || !selectedInvite}
-              className="w-full rounded-md border border-[#b4bedd] py-3 text-sm text-[#e6e6e8] transition hover:bg-[#111426] disabled:cursor-not-allowed disabled:opacity-40"
+              className="w-full rounded-md border border-(--border-color) px-4 py-3 text-sm text-(--text-color) transition hover:bg-(--sidebar-hover-background) disabled:cursor-not-allowed disabled:opacity-40"
             >
-              Ignore
+              {actionLoading ? "Please wait..." : "Ignore"}
             </button>
 
             <button
               type="button"
               onClick={handleAccept}
               disabled={actionLoading || !selectedInvite}
-              className="w-full rounded-md bg-[#b4bedd] py-3 text-sm font-medium text-[#00010f] transition hover:bg-[#c5cde5] disabled:cursor-not-allowed disabled:opacity-40"
+              className="w-full rounded-md bg-(--accent-color) px-4 py-3 text-sm font-medium text-(--button-text-color) transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
             >
-              Accept
+              {actionLoading ? "Please wait..." : "Accept"}
             </button>
           </div>
-        </div>
+        </main>
       )}
     </div>
   );

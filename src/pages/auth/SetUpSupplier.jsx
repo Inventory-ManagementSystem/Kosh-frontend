@@ -183,16 +183,16 @@ function SetupSupplier() {
   };
 
   const inputClass = (field) =>
-    `w-full rounded-md border bg-[var(--input-background)] px-4 py-3 text-sm text-[var(--text-color)] outline-none transition placeholder:text-[var(--secondary-text-color)] ${
+    `w-full rounded-md border bg-(--dropdown-background) px-4 py-3 text-sm text-(--text-color) outline-none transition placeholder:text-(--secondary-text-color) ${
       errors[field] && touched[field]
-        ? "border-[var(--error-color)]"
-        : "border-[var(--border-color)] focus:border-[var(--accent-color)]"
+        ? "border-(--error-color)"
+        : "border-(--border-color) focus:border-(--accent-color)"
     }`;
 
   const selectClass = (field) =>
-    `${inputClass(field)} ${formData[field] ? "" : "text-[var(--secondary-text-color)] border-(--border-color) bg-(--dropdown-background)"}`;
+    `${inputClass(field)} ${formData[field] ? "" : "text-(--secondary-text-color) border-(--border-color)"}`;
 
-  const labelClass = "mb-2 block text-sm font-medium text-[var(--text-color)]";
+  const labelClass = "mb-2 block text-sm font-medium text-(--text-color)";
 
   const renderError = (field) =>
     touched[field] && errors[field] ? (

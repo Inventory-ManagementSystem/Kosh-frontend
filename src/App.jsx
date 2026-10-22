@@ -36,6 +36,7 @@ import InvoiceDetail from "./features/owner/pages/InvoiceDetail";
 import EmployeeLayout from "./layouts/EmployeeLayout";
 import EmployeeInvites from "./features/employee/pages/EmployeeInvites";
 import EmployeeDashboard from "./features/employee/pages/EmployeeDashboard";
+import EmployeeWarehouse from "./features/employee/pages/EmployeeWarehouse";
 
 import SupplierLayout from "./layouts/SupplierLayout";
 import SetupSupplier from "./pages/auth/SetUpSupplier";
@@ -92,6 +93,7 @@ function App() {
           <Route path="/employee-invites" element={<EmployeeInvites />} />
           <Route element={<EmployeeLayout />}>
             <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
+            <Route path="/employee-warehouse" element={<EmployeeWarehouse />} />
           </Route>
 
           <Route element={<SupplierLayout />}>

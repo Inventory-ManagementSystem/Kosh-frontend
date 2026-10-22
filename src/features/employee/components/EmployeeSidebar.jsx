@@ -3,9 +3,21 @@ import { NavLink } from "react-router-dom";
 import { MdDashboard } from "react-icons/md";
 import { CgPushLeft } from "react-icons/cg";
 import { CgPushRight } from "react-icons/cg";
+import { FaWarehouse } from "react-icons/fa6";
+import { FaCartShopping } from "react-icons/fa6";
+import { IoMdListBox } from "react-icons/io";
+import { BiSolidReport } from "react-icons/bi";
+import { BiSolidSend } from "react-icons/bi";
+import { MdPersonAddAlt1 } from "react-icons/md";
 
 export const employeeNavItems = [
   { label: "Dashboard", path: "/employee-dashboard", icon: MdDashboard },
+  { label: "Warehouse", path: "/employee-warehouse", icon: FaWarehouse },
+  { label: "Orders", path: null, icon: FaCartShopping },
+  { label: "Create GRN", path: null, icon: IoMdListBox },
+  { label: "Report", path: null, icon: BiSolidReport },
+  { label: "Dispatch Stock", path: null, icon: BiSolidSend },
+  { label: "Kosh AI", path: null, icon: MdPersonAddAlt1 },
 ];
 
 function EmployeeSidebar({ collapsed, setCollapsed }) {
@@ -43,7 +55,7 @@ function EmployeeSidebar({ collapsed, setCollapsed }) {
                   to={item.path}
                   title={collapsed ? item.label : undefined}
                   style={{
-                    marginTop: [1, 4, 11].includes(index) ? "24px" : undefined,
+                    marginTop: [1, 4].includes(index) ? "24px" : undefined,
                   }}
                   className={({ isActive }) => `
                     ${itemClass}

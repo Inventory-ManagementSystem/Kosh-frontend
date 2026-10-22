@@ -35,7 +35,7 @@ function AddPersonForm({
     } else if (trimmedValue && name === "email") {
       if (/[^\x00-\x7F]/.test(trimmedValue)) {
         error = "Emojis are not allowed";
-      } else if (trimmedValue.length > 30) {
+      } else if (trimmedValue.length > 50) {
         error = "Maximum limit reached";
       } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedValue)) {
         error = "Enter a valid email address";
@@ -57,7 +57,7 @@ function AddPersonForm({
       } else if (field.name === "email") {
         if (/[^\x00-\x7F]/.test(value)) {
           newErrors[field.name] = "Emojis are not allowed";
-        } else if (value.length > 30) {
+        } else if (value.length > 50) {
           newErrors[field.name] = "Maximum limit reached";
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
           newErrors[field.name] = "Enter a valid email address";

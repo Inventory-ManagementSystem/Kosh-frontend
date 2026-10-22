@@ -44,6 +44,9 @@ function QuotationDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [rfqExpanded, setRfqExpanded] = useState(false);
+  const [advanceDue, setAdvanceDue] = useState(0);
+  const advance = Number(quotation?.advance_amount) || 0;
+  const balance = Number(quotation?.balance_amount) || 0;
 
   const loadData = useCallback(async () => {
     if (!accessToken || !rfqId || !quotationId) {
@@ -76,6 +79,7 @@ function QuotationDetails() {
 
       setRfq(rfqData);
       setQuotation(selected ?? null);
+      setAdvanceDue(Number(selected?.advance_amount) || 0);
 
       if (!selected) {
         setError("This quotation could not be found for the selected RFQ.");
@@ -127,9 +131,6 @@ function QuotationDetails() {
     (sum, item) => sum + Number(item.quantity ?? item.requested_quantity ?? 0),
     0,
   );
-
-  const advance = Number(quotation?.advance_amount) || 0;
-  const balance = Number(quotation?.balance_amount) || 0;
 
   if (loading) {
     return (
@@ -504,7 +505,7 @@ function QuotationDetails() {
                     </span>
 
                     <span className="text-sm font-semibold">
-                      {formatCurrency(advance)}
+                      {formatCurrency(advanceDue)}
                     </span>
                   </div>
 
@@ -512,8 +513,14 @@ function QuotationDetails() {
                     <AcceptAndPayButton
                       quotationId={quotationId}
                       advanceAmount={advance}
-                      onPaymentUpdate={() => {
-                        loadData();
+                      onPaymentUpdate={(statusData) => {
+                        const isPaid = statusData?.payments?.some(
+                          (payment) => payment.status === "paid",
+                        );
+
+                        if (isPaid) {
+                          setAdvanceDue(0);
+                        }
                       }}
                     />
                   </div>

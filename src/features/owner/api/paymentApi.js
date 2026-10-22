@@ -11,24 +11,59 @@ const sendRequest = async (url, accessToken, options = {}) => {
       ...options.headers,
     },
   });
+
   const data = await response.json();
+
   if (!response.ok || data.success === false) {
     const error = new Error(data.message || "Something went wrong.");
+
     error.code = data.code;
     error.status = response.status;
+
     throw error;
   }
+
   return data;
+};
+
+export const findPurchaseOrderByQuotationId = async (
+  accessToken,
+  quotationId,
+) => {
+  let page = 1;
+
+  while (true) {
+    const result = await sendRequest(
+      `${PROCUREMENT_URL}/orders/?page=${page}&page_size=50`,
+      accessToken,
+      { method: "GET" },
+    );
+
+    const orderData = result.data;
+    const orders = orderData?.results ?? [];
+
+    const existingOrder = orders.find(
+      (order) => String(order.quotation_id) === String(quotationId),
+    );
+
+    if (existingOrder) {
+      return existingOrder;
+    }
+
+    if (!orderData?.next || orders.length === 0) {
+      return null;
+    }
+    page += 1;
+  }
 };
 
 export const startAdvancePayment = async (accessToken, poId) => {
   const result = await sendRequest(
     `${PROCUREMENT_URL}/purchase-orders/${poId}/advance/`,
     accessToken,
-    {
-      method: "POST",
-    },
+    { method: "POST" },
   );
+
   return result.data;
 };
 
@@ -54,9 +89,8 @@ export const getAdvancePaymentStatus = async (accessToken, poId) => {
   const result = await sendRequest(
     `${PROCUREMENT_URL}/purchase-orders/${poId}/advance/`,
     accessToken,
-    {
-      method: "GET",
-    },
+    { method: "GET" },
   );
+
   return result.data;
 };

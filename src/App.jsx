@@ -37,6 +37,7 @@ import EmployeeLayout from "./layouts/EmployeeLayout";
 import EmployeeInvites from "./features/employee/pages/EmployeeInvites";
 import EmployeeDashboard from "./features/employee/pages/EmployeeDashboard";
 import EmployeeWarehouse from "./features/employee/pages/EmployeeWarehouse";
+import EmployeeOrders from "./features/employee/pages/EmployeeOrders";
 
 import SupplierLayout from "./layouts/SupplierLayout";
 import SetupSupplier from "./pages/auth/SetUpSupplier";
@@ -94,6 +95,7 @@ function App() {
           <Route element={<EmployeeLayout />}>
             <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
             <Route path="/employee-warehouse" element={<EmployeeWarehouse />} />
+            <Route path="/employee/orders" element={<EmployeeOrders />} />
           </Route>
 
           <Route element={<SupplierLayout />}>

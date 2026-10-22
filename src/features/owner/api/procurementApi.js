@@ -169,3 +169,51 @@ export const getOrderDetails = async (accessToken, orderId) => {
   }
   return data.data;
 };
+
+export const getInvoices = async (
+  accessToken,
+  page = 1,
+  pageSize = 10,
+  status = "",
+) => {
+  const params = new URLSearchParams({
+    page: String(page),
+    page_size: String(pageSize),
+  });
+  if (status) {
+    params.set("status", status);
+  }
+  const response = await fetch(
+    `${BASE_URL}procurement/invoices/?${params.toString()}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Accept: "application/json",
+      },
+    },
+  );
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to fetch invoices.");
+  }
+  return data.data;
+};
+
+export const getInvoiceDetails = async (accessToken, invoiceId) => {
+  const response = await fetch(
+    `${BASE_URL}procurement/invoices/${invoiceId}/`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Accept: "application/json",
+      },
+    },
+  );
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to fetch invoice details.");
+  }
+  return data.data;
+};

@@ -25,7 +25,7 @@ export const navItems = [
     path: "/rfq-alerts",
     icon: TbClipboardListFilled,
   },
-  { label: "PO & Invoice", path: null, icon: RiFileList3Fill },
+  { label: "PO & Invoice", path: "/owner/invoices", icon: RiFileList3Fill },
   { label: "Warehouse", path: "/warehouse", icon: FaWarehouse },
   { label: "Add Product", path: "/add-products", icon: AiFillProduct },
   { label: "Orders", path: "/owner/orders", icon: FaCartShopping },

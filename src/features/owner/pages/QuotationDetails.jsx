@@ -11,6 +11,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { getRFQDetails } from "../api/procurementApi";
 import { getQuotations } from "../api/quotationApi";
 import RfqCard from "../components/RfqCard";
+import AcceptAndPayButton from "../components/AcceptAndPayButton";
 
 const formatCurrency = (amount) =>
   new Intl.NumberFormat("en-IN", {
@@ -490,10 +491,32 @@ function QuotationDetails() {
                 </div>
 
                 <div className="mt-5 rounded-lg border border-(--border-color) p-3">
-                  <p className="text-xs font-medium">Payment</p>
+                  <p className="text-xs font-medium">Advance Payment</p>
+
                   <p className="mt-1 text-[11px] leading-5 text-(--secondary-text-color)">
-                    Payment processing is not connected yet.
+                    Accept this quotation to create a purchase order. If an
+                    advance is required, you can pay securely through Razorpay.
                   </p>
+
+                  <div className="mt-3 flex items-center justify-between gap-3">
+                    <span className="text-xs text-(--secondary-text-color)">
+                      Advance Due
+                    </span>
+
+                    <span className="text-sm font-semibold">
+                      {formatCurrency(advance)}
+                    </span>
+                  </div>
+
+                  <div className="mt-4">
+                    <AcceptAndPayButton
+                      quotationId={quotationId}
+                      advanceAmount={advance}
+                      onPaymentUpdate={() => {
+                        loadData();
+                      }}
+                    />
+                  </div>
                 </div>
               </aside>
             </div>

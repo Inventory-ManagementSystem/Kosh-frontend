@@ -40,3 +40,33 @@ export const getQuotations = async (accessToken, rfqId, options = {}) => {
   }
   return data;
 };
+
+const sendRequest = async (url, accessToken, options = {}) => {
+  const response = await fetch(url, {
+    ...options,
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${accessToken}`,
+      ...options.headers,
+    },
+  });
+  const data = await response.json();
+  if (!response.ok || data.success === false) {
+    const error = new Error(getErrorMessage(data, "Something went wrong."));
+    error.code = data.code;
+    error.status = response.status;
+    throw error;
+  }
+  return data;
+};
+
+export const acceptQuotation = async (accessToken, quotationId) => {
+  const data = await sendRequest(
+    `${PROCUREMENT_URL}/quotations/${quotationId}/accept/`,
+    accessToken,
+    {
+      method: "POST",
+    },
+  );
+  return data.data;
+};

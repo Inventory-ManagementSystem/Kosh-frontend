@@ -16,7 +16,11 @@ export const employeeNavItems = [
   { label: "Orders", path: "/employee/orders", icon: FaCartShopping },
   { label: "Create GRN", path: null, icon: IoMdListBox },
   { label: "Report", path: null, icon: BiSolidReport },
-  { label: "Dispatch Stock", path: null, icon: BiSolidSend },
+  {
+    label: "Dispatch Stock",
+    path: "employee/dispatch-stock",
+    icon: BiSolidSend,
+  },
   { label: "Kosh AI", path: null, icon: MdPersonAddAlt1 },
 ];
 

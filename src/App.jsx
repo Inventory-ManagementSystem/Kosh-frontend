@@ -38,6 +38,7 @@ import EmployeeInvites from "./features/employee/pages/EmployeeInvites";
 import EmployeeDashboard from "./features/employee/pages/EmployeeDashboard";
 import EmployeeWarehouse from "./features/employee/pages/EmployeeWarehouse";
 import EmployeeOrders from "./features/employee/pages/EmployeeOrders";
+import EmployeeDispatch from "./features/employee/pages/EmployeeDispatch";
 
 import SupplierLayout from "./layouts/SupplierLayout";
 import SetupSupplier from "./pages/auth/SetUpSupplier";
@@ -96,6 +97,10 @@ function App() {
             <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
             <Route path="/employee-warehouse" element={<EmployeeWarehouse />} />
             <Route path="/employee/orders" element={<EmployeeOrders />} />
+            <Route
+              path="employee/dispatch-stock"
+              element={<EmployeeDispatch />}
+            />
           </Route>
 
           <Route element={<SupplierLayout />}>

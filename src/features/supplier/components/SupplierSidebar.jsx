@@ -4,10 +4,20 @@ import { MdDashboard } from "react-icons/md";
 import { TbAlertTriangleFilled } from "react-icons/tb";
 import { CgPushLeft } from "react-icons/cg";
 import { CgPushRight } from "react-icons/cg";
+import { IoMdListBox } from "react-icons/io";
+import { MdAccountBalanceWallet } from "react-icons/md";
+import { MdPersonAddAlt1 } from "react-icons/md";
+import { BiSolidReport } from "react-icons/bi";
+import { FaClipboardList } from "react-icons/fa";
 
 export const supplierNavItems = [
   { label: "Dashboard", path: "/supplier-dashboard", icon: MdDashboard },
-  { label: "RFQ", path: "/supplier-rfqs", icon: TbAlertTriangleFilled },
+  { label: "New RFQ", path: "/supplier-rfqs", icon: TbAlertTriangleFilled },
+  { label: "Post Quotation", path: null, icon: FaClipboardList },
+  { label: "PO & Invoice", path: null, icon: IoMdListBox },
+  { label: "Report", path: null, icon: BiSolidReport },
+  { label: "Kosh AI", path: "/supplier/kosh-ai", icon: MdPersonAddAlt1 },
+  { label: "Account Details", path: null, icon: MdAccountBalanceWallet },
 ];
 
 function SupplierSidebar({ collapsed, setCollapsed }) {

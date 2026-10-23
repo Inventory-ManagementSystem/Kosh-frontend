@@ -45,6 +45,7 @@ import SupplierLayout from "./layouts/SupplierLayout";
 import SetupSupplier from "./pages/auth/SetUpSupplier";
 import SupplierDashboard from "./features/supplier/pages/SupplierDashboard";
 import SupplierRFQs from "./features/supplier/pages/SupplierRfq";
+import SupplierKoshAI from "./features/supplier/pages/SupplierKoshAI";
 
 function App() {
   return (
@@ -99,15 +100,16 @@ function App() {
             <Route path="/employee-warehouse" element={<EmployeeWarehouse />} />
             <Route path="/employee/orders" element={<EmployeeOrders />} />
             <Route
-              path="employee/dispatch-stock"
+              path="/employee/dispatch-stock"
               element={<EmployeeDispatch />}
             />
-            <Route path="employee/kosh-ai" element={<EmployeeKoshAI />} />
+            <Route path="/employee/kosh-ai" element={<EmployeeKoshAI />} />
           </Route>
 
           <Route element={<SupplierLayout />}>
             <Route path="/supplier-dashboard" element={<SupplierDashboard />} />
             <Route path="/supplier-rfqs" element={<SupplierRFQs />} />
+            <Route path="/supplier/kosh-ai" element={<SupplierKoshAI />} />
           </Route>
         </Route>
 

@@ -39,6 +39,7 @@ import EmployeeDashboard from "./features/employee/pages/EmployeeDashboard";
 import EmployeeWarehouse from "./features/employee/pages/EmployeeWarehouse";
 import EmployeeOrders from "./features/employee/pages/EmployeeOrders";
 import EmployeeDispatch from "./features/employee/pages/EmployeeDispatch";
+import EmployeeKoshAI from "./features/employee/pages/EmployeeKoshAI";
 
 import SupplierLayout from "./layouts/SupplierLayout";
 import SetupSupplier from "./pages/auth/SetUpSupplier";
@@ -101,6 +102,7 @@ function App() {
               path="employee/dispatch-stock"
               element={<EmployeeDispatch />}
             />
+            <Route path="employee/kosh-ai" element={<EmployeeKoshAI />} />
           </Route>
 
           <Route element={<SupplierLayout />}>

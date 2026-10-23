@@ -1,6 +1,6 @@
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-export const getSupplierRFQs = async (accessToken, page = 1, pageSize = 10) => {
+export const getSupplierRFQs = async (accessToken, page = 1, pageSize = 5) => {
   const response = await fetch(
     `${BASE_URL}procurement/supplier/rfqs/?page=${page}&page_size=${pageSize}`,
     {
@@ -10,11 +10,11 @@ export const getSupplierRFQs = async (accessToken, page = 1, pageSize = 10) => {
         "Content-Type": "application/json",
       },
       credentials: "include",
-    }
+    },
   );
   const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.message || "Failed to fetch RFQs");
+  if (!response.ok || data.success === false) {
+    throw new Error(data.message || "Failed to fetch supplier RFQs.");
   }
   return data.data;
 };
@@ -29,11 +29,11 @@ export const getSupplierRFQDetails = async (accessToken, invitationId) => {
         "Content-Type": "application/json",
       },
       credentials: "include",
-    }
+    },
   );
   const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.message || "Failed to fetch RFQ details");
+  if (!response.ok || data.success === false) {
+    throw new Error(data.message || "Failed to fetch RFQ details.");
   }
   return data.data;
 };
@@ -47,11 +47,11 @@ export const declineSupplierRFQ = async (accessToken, invitationId) => {
         Authorization: `Bearer ${accessToken}`,
       },
       credentials: "include",
-    }
+    },
   );
   const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.message || "Failed to decline RFQ");
+  if (!response.ok || data.success === false) {
+    throw new Error(data.message || "Failed to decline RFQ.");
   }
   return data;
 };

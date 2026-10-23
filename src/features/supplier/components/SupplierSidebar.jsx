@@ -17,7 +17,11 @@ export const supplierNavItems = [
   { label: "PO & Invoice", path: null, icon: IoMdListBox },
   { label: "Report", path: null, icon: BiSolidReport },
   { label: "Kosh AI", path: "/supplier/kosh-ai", icon: MdPersonAddAlt1 },
-  { label: "Account Details", path: null, icon: MdAccountBalanceWallet },
+  {
+    label: "Account Details",
+    path: "/account-details",
+    icon: MdAccountBalanceWallet,
+  },
 ];
 
 function SupplierSidebar({ collapsed, setCollapsed }) {

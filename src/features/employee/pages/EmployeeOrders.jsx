@@ -137,7 +137,7 @@ function EmployeeOrders() {
             aria-current={page === pageNumber ? "page" : undefined}
             className={`min-w-9 rounded-lg border px-3 py-2 text-sm transition ${
               page === pageNumber
-                ? "border-(--accent-color) bg-(--accent-color) text-[#00010f]"
+                ? "border-(--accent-color) bg-(--accent-color) text-(--page-background)"
                 : "border-(--border-color) text-(--text-color) hover:bg-(--input-background)"
             }`}
           >

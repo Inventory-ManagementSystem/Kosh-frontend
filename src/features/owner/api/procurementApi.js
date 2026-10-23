@@ -217,3 +217,21 @@ export const getInvoiceDetails = async (accessToken, invoiceId) => {
   }
   return data.data;
 };
+
+export const downloadInvoicePdf = async (accessToken, invoiceId) => {
+  const response = await fetch(
+    `${PROCUREMENT_URL}/invoices/${invoiceId}/pdf/`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Accept: "application/pdf",
+      },
+    },
+  );
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}));
+    throw new Error(getErrorMessage(data, "Failed to download invoice PDF."));
+  }
+  return await response.blob();
+};

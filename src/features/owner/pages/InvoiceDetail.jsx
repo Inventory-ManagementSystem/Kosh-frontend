@@ -4,7 +4,7 @@ import { FiArrowLeft, FiDownload } from "react-icons/fi";
 import toast from "react-hot-toast";
 
 import { useAuth } from "../../../context/AuthContext";
-import { getInvoiceDetails } from "../api/procurementApi";
+import { getInvoiceDetails, downloadInvoicePdf } from "../api/procurementApi";
 import logo from "../../../assets/auth/logo.svg";
 
 const formatCurrency = (value) =>
@@ -50,6 +50,7 @@ function InvoiceDetail() {
 
   const [invoice, setInvoice] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [downloading, setDownloading] = useState(false);
 
   const fetchInvoice = useCallback(async () => {
     if (!accessToken || !invoiceId) return;
@@ -99,6 +100,33 @@ function InvoiceDetail() {
   const supplier = invoice.supplier || {};
   const buyer = invoice.buyer || {};
 
+  const handleDownloadInvoice = async () => {
+    if (!accessToken || !invoiceId || downloading) return;
+    setDownloading(true);
+    try {
+      const blob = await downloadInvoicePdf(accessToken, invoiceId);
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      const supplierName =
+        invoice.supplier?.company_name || invoice.company_name || "Supplier";
+      const fileName = `${invoice.number || "Invoice"}-${supplierName}`
+        .replace(/[<>:"/\\|?*\x00-\x1F]/g, "-")
+        .trim();
+      link.href = url;
+      link.download = `${fileName}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      toast.success("Invoice downloaded successfully.");
+    } catch (error) {
+      console.error("Invoice download failed:", error);
+      toast.error(error.message || "Unable to download invoice.");
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen space-y-5 p-4 text-(--text-color) sm:p-6">
       <h1 className="text-2xl font-semibold text-(--accent-color) sm:text-3xl">
@@ -131,9 +159,11 @@ function InvoiceDetail() {
 
             <button
               type="button"
+              onClick={handleDownloadInvoice}
+              disabled={downloading}
               className="flex w-full items-center justify-center gap-2 rounded-md bg-(--accent-color) px-4 py-3 text-sm font-semibold text-[#00010f] transition hover:opacity-90"
             >
-              Download Invoice
+              {downloading ? "Downloading" : "Download Invoice"}
               <FiDownload size={16} />
             </button>
           </div>

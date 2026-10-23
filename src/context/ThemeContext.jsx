@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 const ThemeContext = createContext();
 
@@ -13,10 +13,16 @@ export function ThemeProvider({ children }) {
     supplier: getSavedTheme("supplier"),
   });
 
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", themes.owner);
+  }, [themes.owner]);
+
   const toggleTheme = (dashboard) => {
     setThemes((currentThemes) => {
       const newTheme = currentThemes[dashboard] === "dark" ? "light" : "dark";
+
       localStorage.setItem(`kosh-${dashboard}-theme`, newTheme);
+
       return {
         ...currentThemes,
         [dashboard]: newTheme,

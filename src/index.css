@@ -28,6 +28,32 @@
   --chat-ai-background: #2d2e48;
 }
 
+.dashboard[data-theme="light"] {
+  color-scheme: light;
+  --page-background: #f7f8fc;
+  --card-background: #b4bedd1a;
+  --input-background: #b4bedd1a;
+  --decoration-background: #b4bedd1a;
+  --border-color: #b4bedd;
+  --icon-border-color: #a0a7b5;
+  --icon-accent-color: #4056a1;
+  --text-color: #000119;
+  --secondary-text-color: #324479;
+  --accent-color: #324479;
+  --icon-color: #4861ad33;
+  --error-color: #c82828;
+  --autofill-background: #f0f2f7;
+  --autofill-text: #202436;
+  --success-background: #e7f6ed;
+  --accent-hover-color: #334887;
+  --dashboard-glow: #4861ad;
+  --sidebar-active-background: #e5e9f5;
+  --sidebar-hover-background: #edf0f7;
+  --dropdown-background: #ffffff;
+  --chat-ai-user-background: #45599b;
+  --chat-ai-background: #88c6ff;
+}
+
 body {
   font-family: "Inter", sans-serif;
 }

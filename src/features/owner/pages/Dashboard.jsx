@@ -1,6 +1,6 @@
 function Dashboard() {
   return (
-    <div className="min-h-screen">
+    <div className="dashboard min-h-screen">
       <div className="mb-8">
         <h1 className="font-['Google_Sans_Flex'] text-2xl font-semibold sm:text-3xl">
           Owner's Dashboard

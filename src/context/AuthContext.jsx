@@ -7,7 +7,7 @@ import {
   useState,
   useEffect,
 } from "react";
-import { refreshAccessToken } from "../api/refreshTokenApi";
+import { refreshAccessToken, setOnTokenRefresh } from "../api/refreshTokenApi";
 import { getProfile } from "../api/getProfileApi";
 import { logoutUser } from "../api/logoutApi";
 
@@ -44,6 +44,30 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     }
   }, []);
+  useEffect(() => {
+    setOnTokenRefresh(setAccessToken);
+    return () => {
+      setOnTokenRefresh(null);
+    };
+  }, []);
+  useEffect(() => {
+    if (!accessToken) {
+      return;
+    }
+    const timer = setTimeout(
+      async () => {
+        try {
+          await refreshAccessToken();
+        } catch (error) {
+          console.error("Scheduled token refresh failed:", error);
+        }
+      },
+      8 * 60 * 1000,
+    );
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [accessToken]);
 
   useEffect(() => {
     if (restored.current) {

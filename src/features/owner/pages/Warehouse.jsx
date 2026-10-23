@@ -252,7 +252,7 @@ function Warehouse() {
         <button
           type="button"
           onClick={() => navigate("/add-products")}
-          className="flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-(--accent-color) px-4 text-sm font-semibold text-[#00010f] transition hover:opacity-90 sm:w-50"
+          className="flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-(--accent-color) px-4 text-sm font-semibold text-(--page-background) transition hover:opacity-90 sm:w-50"
         >
           Add Product
           <FaCirclePlus size={16} />

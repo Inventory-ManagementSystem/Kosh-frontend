@@ -1,36 +1,30 @@
 import { refreshAccessToken } from "./refreshTokenApi";
 
-let refreshPromise = null;
 export const apiFetch = async (url, accessToken, options = {}) => {
-  let response = await fetch(url, {
-    ...options,
-    credentials: "include",
-    headers: {
-      ...options.headers,
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+  const makeRequest = (token) => {
+    const headers = new Headers(options.headers);
+    if (token) {
+      headers.set("Authorization", `Bearer ${token}`);
+    }
+    return fetch(url, {
+      ...options,
+      credentials: "include",
+      headers,
+    });
+  };
+  let response = await makeRequest(accessToken);
   if (response.status !== 401) {
     return response;
   }
   try {
-    if (!refreshPromise) {
-      refreshPromise = refreshAccessToken();
-    }
-    const newAccessToken = await refreshPromise;
-    response = await fetch(url, {
-      ...options,
-      credentials: "include",
-      headers: {
-        ...options.headers,
-        Authorization: `Bearer ${newAccessToken}`,
-      },
-    });
+    const newAccessToken = await refreshAccessToken();
+    response = await makeRequest(newAccessToken);
     return response;
-  } catch {
-    window.location.href = "/login";
-    throw new Error("Session expired");
-  } finally {
-    refreshPromise = null;
+  } catch (error) {
+    if ([400, 401, 403].includes(error.status)) {
+      window.location.href = "/login";
+    }
+
+    throw error;
   }
 };

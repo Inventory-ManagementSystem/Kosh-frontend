@@ -1,6 +1,10 @@
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-export async function sendAssistantMessage(message, accessToken, conversationId) {
+export async function sendAssistantMessage(
+  message,
+  accessToken,
+  conversationId,
+) {
   const body = {
     message,
   };
@@ -18,14 +22,12 @@ export async function sendAssistantMessage(message, accessToken, conversationId)
   });
   const data = await response.json();
   if (!response.ok) {
-    throw new Error(
-      data.message || "Failed to send message."
-    );
+    throw new Error(data.message || "Failed to send message.");
   }
   return data;
 }
 
-export async function deleteAssistantConversation(conversationId,accessToken) {
+export async function deleteAssistantConversation(conversationId, accessToken) {
   if (!conversationId) {
     return;
   }
@@ -37,12 +39,10 @@ export async function deleteAssistantConversation(conversationId,accessToken) {
         Authorization: `Bearer ${accessToken}`,
       },
       credentials: "include",
-    }
+    },
   );
   if (!response.ok) {
     const data = await response.json().catch(() => ({}));
-    throw new Error(
-      data.message || "Failed to delete conversation."
-    );
+    throw new Error(data.message || "Failed to delete conversation.");
   }
 }

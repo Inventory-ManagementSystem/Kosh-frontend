@@ -92,3 +92,13 @@ input:-webkit-autofill {
 .kosh-chat-scrollbar::-webkit-scrollbar-button {
   display: none;
 }
+
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+input[type="password"]::-webkit-credentials-auto-fill-button {
+  visibility: hidden;
+  display: none !important;
+  pointer-events: none;
+}

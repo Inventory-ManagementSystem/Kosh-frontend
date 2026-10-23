@@ -132,7 +132,7 @@ function ManagePeople({
         <button
           type="button"
           onClick={() => navigate(addRoute)}
-          className="flex h-10 items-center justify-center gap-2 rounded-xl bg-(--accent-color) px-4 text-sm font-semibold text-[#00010f] transition hover:opacity-90"
+          className="flex h-10 items-center justify-center gap-2 rounded-xl bg-(--accent-color) px-4 text-sm font-semibold text-(--page-background) transition hover:opacity-90"
         >
           {addButtonLabel}
           <FaCirclePlus size={16} />

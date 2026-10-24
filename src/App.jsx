@@ -34,6 +34,7 @@ import AllInvoices from "./features/owner/pages/AllInvoices";
 import InvoiceDetail from "./features/owner/pages/InvoiceDetail";
 import DispatchedOrders from "./features/owner/pages/DispatchedOrders";
 import CreateGRN from "./features/owner/pages/CreateGRN";
+import Reports from "./features/owner/pages/Reports";
 // import ReceivedStock from "./features/owner/pages/ReceivedStock";
 
 import EmployeeLayout from "./layouts/EmployeeLayout";
@@ -113,6 +114,7 @@ function App() {
             path="/goods-receipts/:id"
             element={<CreateGRN />}
           />
+          <Route path="/reports" element={<Reports />} />
           {/* <Route
             path="/received-stock"
             element={<ReceivedStock />}

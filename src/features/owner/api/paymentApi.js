@@ -94,3 +94,62 @@ export const getAdvancePaymentStatus = async (accessToken, poId) => {
 
   return result.data;
 };
+
+
+
+export const startBalancePayment = async (accessToken, invoiceId) => {
+  const response = await fetch(
+    `${import.meta.env.VITE_BASE_URL}procurement/invoices/${invoiceId}/balance/`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    },
+  );
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    const error = new Error(
+      result.message || "Unable to start final payment.",
+    );
+
+    error.code = result.code;
+    throw error;
+  }
+
+  return result.data;
+};
+
+export const verifyBalancePayment = async (
+  accessToken,
+  invoiceId,
+  paymentData,
+) => {
+  const response = await fetch(
+    `${import.meta.env.VITE_BASE_URL}procurement/invoices/${invoiceId}/balance/verify/`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(paymentData),
+    },
+  );
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    const error = new Error(
+      result.message || "Unable to verify final payment.",
+    );
+
+    error.code = result.code;
+    throw error;
+  }
+
+  return result.data;
+};

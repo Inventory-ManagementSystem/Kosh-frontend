@@ -11,7 +11,7 @@ function SupplierRfqCard({
   canDecline,
   detailsLoading,
   detailsError,
-  onRetry,
+  onCardClick
 }) {
   const formatDate = (date) => {
     if (!date) return "—";
@@ -48,23 +48,31 @@ function SupplierRfqCard({
   const items = details?.items || [];
 
   const handleCardKeyDown = (event) => {
-    if (event.target !== event.currentTarget) {
-      return;
-    }
-
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
+  if (event.target !== event.currentTarget) {
+    return;
+  }
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    if (onCardClick) {
+      onCardClick(rfq);
+    } else {
       onToggle(rfq);
     }
-  };
+  }
+};
 
   return (
     <div
       role="button"
       tabIndex={0}
-      onClick={() => onToggle(rfq)}
+      onClick={() => {
+        if (onCardClick) {
+          onCardClick(rfq);
+        } else {
+          onToggle(rfq);
+        }
+      }}
       onKeyDown={handleCardKeyDown}
-      aria-expanded={isExpand}
       className="w-full cursor-pointer rounded-xl border border-(--border-color) bg-(--card-background) px-4 py-4 sm:px-5 sm:py-4"
     >
       <div className="flex items-center justify-between gap-4">

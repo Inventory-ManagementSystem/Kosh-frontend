@@ -6,6 +6,7 @@ import {
   FiChevronsRight,
 } from "react-icons/fi";
 import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../../context/AuthContext";
 
@@ -20,6 +21,7 @@ import SupplierRfqCard from "../components/SupplierRfqCard";
 const PAGE_SIZE = 5;
 
 function SupplierRfq() {
+  const navigate = useNavigate();
   const { accessToken } = useAuth();
 
   const [rfqs, setRfqs] = useState([]);
@@ -197,7 +199,7 @@ function SupplierRfq() {
     <div className="space-y-5 p-4 text-(--accent-color) sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="font-['Google_Sans_Flex'] text-3xl font-semibold">
-          Supplier RFQs
+          All RFQs
         </h1>
       </div>
 
@@ -227,6 +229,14 @@ function SupplierRfq() {
                     onDecline={() => handleDecline(rfq)}
                     canDecline={canDecline(rfq)}
                     declining={decliningId === rfq.id}
+                    onCardClick={() => {
+                      const status = rfq.my_status?.toLowerCase();
+                      if (status === "sent" || status === "viewed") {
+                        navigate(`/supplier/create-quotation/${rfq.id}`);
+                      } else {
+                        handleToggle(rfq);
+                      }
+                    }}
                   />
                 );
               })}

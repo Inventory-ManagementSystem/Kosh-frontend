@@ -55,3 +55,52 @@ export const declineSupplierRFQ = async (accessToken, invitationId) => {
   }
   return data;
 };
+
+export const getSupplierQuotation = async (accessToken, invitationId) => {
+  const response = await fetch(
+    `${import.meta.env.VITE_BASE_URL}procurement/supplier/rfqs/${invitationId}/quotation/`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    },
+  );
+  const data = await response.json();
+  if (!response.ok || data.success === false) {
+    const error = new Error(data.message || "Failed to fetch quotation.");
+    error.status = response.status;
+    error.errors = data.errors;
+    throw error;
+  }
+  return data.data;
+};
+
+export const saveSupplierQuotation = async (
+  accessToken,
+  invitationId,
+  quotation,
+) => {
+  const response = await fetch(
+    `${import.meta.env.VITE_BASE_URL}procurement/supplier/rfqs/${invitationId}/quotation/`,
+    {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(quotation),
+    },
+  );
+  const data = await response.json();
+  if (!response.ok || data.success === false) {
+    const error = new Error(data.message || "Failed to save quotation.");
+    error.status = response.status;
+    error.errors = data.errors;
+    throw error;
+  }
+  return data.data;
+};

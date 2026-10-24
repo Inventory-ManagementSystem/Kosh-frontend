@@ -104,3 +104,38 @@ export const saveSupplierQuotation = async (
   }
   return data.data;
 };
+
+export const getSupplierQuotations = async (
+  accessToken,
+  page = 1,
+  pageSize = 5,
+  search = "",
+  status = ""
+) => {
+  const params = new URLSearchParams({
+    page: String(page),
+    page_size: String(pageSize),
+  });
+  if (search.trim()) {
+    params.set("search", search.trim());
+  }
+  if (status) {
+    params.set("status", status);
+  }
+  const response = await fetch(
+    `${BASE_URL}procurement/supplier/quotations/?${params.toString()}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Accept: "application/json",
+      },
+      credentials: "include",
+    }
+  );
+  const data = await response.json();
+  if (!response.ok || data.success === false) {
+    throw new Error(data.message || "Failed to fetch quotations.");
+  }
+  return data.data;
+};

@@ -13,7 +13,7 @@ import { FaClipboardList } from "react-icons/fa";
 export const supplierNavItems = [
   { label: "Dashboard", path: "/supplier-dashboard", icon: MdDashboard },
   { label: "New RFQ", path: "/supplier-rfqs", icon: TbAlertTriangleFilled },
-  { label: "Post Quotation", path: null, icon: FaClipboardList },
+  { label: "All Quotation", path: "/quotations", icon: FaClipboardList },
   { label: "PO & Invoice", path: null, icon: IoMdListBox },
   { label: "Report", path: null, icon: BiSolidReport },
   { label: "Kosh AI", path: "/supplier/kosh-ai", icon: MdPersonAddAlt1 },

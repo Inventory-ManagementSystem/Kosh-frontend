@@ -48,6 +48,8 @@ import SupplierRFQs from "./features/supplier/pages/SupplierRfq";
 import SupplierKoshAI from "./features/supplier/pages/SupplierKoshAI";
 import PayoutDetails from "./features/supplier/pages/PayoutDetails";
 import SupplierQuotation from "./features/supplier/pages/SupplierQuotation";
+import AllQuotations from "./features/supplier/pages/AllQuotations";
+
 
 function App() {
   return (
@@ -114,6 +116,7 @@ function App() {
             <Route path="/supplier/kosh-ai" element={<SupplierKoshAI />} />
             <Route path="/account-details" element={<PayoutDetails />} />
             <Route path="supplier/create-quotation/:id" element={<SupplierQuotation />} />
+            <Route path="/quotations" element={<AllQuotations />} />
           </Route>
         </Route>
 

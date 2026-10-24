@@ -1,6 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import AuthLoadingScreen from "../../components/auth/AuthLoadingScreen";
+import LandingPage from "./LandingPage";
 
 function HomePage() {
   const { isAuthenticated, role, loading } = useAuth();
@@ -9,7 +10,7 @@ function HomePage() {
     return <AuthLoadingScreen />;
   }
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <LandingPage />;
   }
   if (role === "owner") {
     return <Navigate to="/dashboard" replace />;

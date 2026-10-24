@@ -44,3 +44,42 @@ export function createGRN(accessToken, orderId, grnData) {
     }
   );
 }
+
+export async function downloadGoodsReceiptPdf(accessToken, grnId) {
+  const response = await fetch(
+    `${import.meta.env.VITE_BASE_URL}procurement/goods-receipts/${grnId}/pdf/`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Accept: "application/pdf",
+      },
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => null);
+
+    throw new Error(
+      error?.message || "Unable to download GRN PDF."
+    );
+  }
+
+  const blob = await response.blob();
+  const contentDisposition = response.headers.get("Content-Disposition");
+  let fileName = "Goods-Receipt.pdf";
+  if (contentDisposition) {
+    const match = contentDisposition.match(/filename="?([^";]+)"?/i);
+    if (match) {
+      fileName = match[1];
+    }
+  }
+  const fileUrl = window.URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = fileUrl;
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.URL.revokeObjectURL(fileUrl);
+}

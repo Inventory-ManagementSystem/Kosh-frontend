@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { FiArrowLeft, FiArrowRight, FiFileText } from "react-icons/fi";
+import { FiArrowLeft, FiArrowRight, FiFileText,FiDownload } from "react-icons/fi";
 import toast from "react-hot-toast";
 import logo from "../../../assets/auth/logo.svg";
 
 import { useAuth } from "../../../context/AuthContext";
-import { getOrderDetails, createGRN } from "../api/goodsReceiptApi";
+import { getOrderDetails, createGRN ,downloadGoodsReceiptPdf} from "../api/goodsReceiptApi";
 
 function formatDate(date) {
   if (!date) return "—";
@@ -139,6 +139,7 @@ function CreateGRN() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [items, setItems] = useState([]);
+  const [downloading, setDownloading] = useState(false);
   const [createdGRN, setCreatedGRN] = useState(null);
   const [notes, setNotes] = useState("");
 
@@ -176,6 +177,21 @@ function CreateGRN() {
       )
     );
   };
+
+  const handleDownloadGRN = async () => {
+  if (!accessToken || !createdGRN?.id || downloading) {
+    return;
+  }
+  setDownloading(true);
+  try {
+    await downloadGoodsReceiptPdf(accessToken, createdGRN.id);
+    toast.success("GRN downloaded successfully.");
+  } catch (error) {
+    toast.error(error.message || "Unable to download GRN.");
+  } finally {
+    setDownloading(false);
+  }
+};
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -399,11 +415,18 @@ function CreateGRN() {
 
                 <button
                   type="button"
-                  disabled={!locked}
-                  onClick={() => toast("Payment integration will be added here.")}
-                  className="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-[var(--input-background)] px-5 text-[11px] font-medium text-[var(--secondary-text-color)] transition hover:opacity-80 disabled:cursor-not-allowed"
+                  disabled={!locked || !createdGRN?.id || downloading}
+                  onClick={handleDownloadGRN}
+                  className="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-[var(--input-background)] px-5 text-[11px] font-medium text-[var(--text-color)] transition hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  Pay <FiArrowRight size={13} />
+                  {downloading ? (
+                    "Downloading"
+                  ) : (
+                    <>
+                      Download GRN
+                      <FiDownload size={13} />
+                    </>
+                  )}
                 </button>
               </div>
             </div>

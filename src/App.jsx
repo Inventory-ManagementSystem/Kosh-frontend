@@ -32,6 +32,8 @@ import AllOrders from "./features/owner/pages/AllOrders";
 import OrderDetails from "./features/owner/pages/OrderDetails";
 import AllInvoices from "./features/owner/pages/AllInvoices";
 import InvoiceDetail from "./features/owner/pages/InvoiceDetail";
+import DispatchedOrders from "./features/owner/pages/DispatchedOrders";
+import CreateGRN from "./features/owner/pages/CreateGRN";
 
 import EmployeeLayout from "./layouts/EmployeeLayout";
 import EmployeeInvites from "./features/employee/pages/EmployeeInvites";
@@ -99,6 +101,15 @@ function App() {
               path="/owner/invoices/:invoiceId"
               element={<InvoiceDetail />}
             />
+            <Route
+  path="/goods-receipts"
+  element={<DispatchedOrders />}
+/>
+
+<Route
+  path="/goods-receipts/:id"
+  element={<CreateGRN />}
+/>
           </Route>
 
           <Route path="/employee-invites" element={<EmployeeInvites />} />

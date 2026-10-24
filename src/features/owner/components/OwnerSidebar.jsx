@@ -29,7 +29,7 @@ export const navItems = [
   { label: "Warehouse", path: "/warehouse", icon: FaWarehouse },
   { label: "Add Product", path: "/add-products", icon: AiFillProduct },
   { label: "Orders", path: "/owner/orders", icon: FaCartShopping },
-  { label: "Create GRN", path: null, icon: IoMdListBox },
+  { label: "Create GRN", path: "/goods-receipts", icon: IoMdListBox },
   { label: "Report", path: null, icon: BiSolidReport },
   { label: "Received Stock", path: null, icon: BsArchiveFill },
   { label: "Dispatch Stock", path: "/dispatch-stock", icon: BiSolidSend },

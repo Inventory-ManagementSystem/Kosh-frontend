@@ -6,7 +6,6 @@ import { CgPushRight } from "react-icons/cg";
 import { FaWarehouse } from "react-icons/fa6";
 import { FaCartShopping } from "react-icons/fa6";
 import { IoMdListBox } from "react-icons/io";
-import { BiSolidReport } from "react-icons/bi";
 import { BiSolidSend } from "react-icons/bi";
 import { MdPersonAddAlt1 } from "react-icons/md";
 
@@ -14,8 +13,7 @@ export const employeeNavItems = [
   { label: "Dashboard", path: "/employee-dashboard", icon: MdDashboard },
   { label: "Warehouse", path: "/employee-warehouse", icon: FaWarehouse },
   { label: "Orders", path: "/employee/orders", icon: FaCartShopping },
-  { label: "Create GRN", path: null, icon: IoMdListBox },
-  { label: "Report", path: null, icon: BiSolidReport },
+  { label: "Create GRN", path: "/employee/goods-receipts" ,icon: IoMdListBox },
   {
     label: "Dispatch Stock",
     path: "employee/dispatch-stock",

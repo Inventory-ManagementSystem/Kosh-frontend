@@ -447,7 +447,6 @@ function CreateGRN() {
                 />
                 <SummaryRow label="Quantity" value={totalReceived} />
                 <SummaryRow label="Damaged Units" value={totalDamaged} />
-                <SummaryRow label="Expired Units" value={totalExpired} />
                 <SummaryRow
                   label="Delivery Date"
                   value={formatDate(order.expected_delivery_date)}

@@ -34,6 +34,7 @@ import AllInvoices from "./features/owner/pages/AllInvoices";
 import InvoiceDetail from "./features/owner/pages/InvoiceDetail";
 import DispatchedOrders from "./features/owner/pages/DispatchedOrders";
 import CreateGRN from "./features/owner/pages/CreateGRN";
+// import ReceivedStock from "./features/owner/pages/ReceivedStock";
 
 import EmployeeLayout from "./layouts/EmployeeLayout";
 import EmployeeInvites from "./features/employee/pages/EmployeeInvites";
@@ -42,6 +43,8 @@ import EmployeeWarehouse from "./features/employee/pages/EmployeeWarehouse";
 import EmployeeOrders from "./features/employee/pages/EmployeeOrders";
 import EmployeeDispatch from "./features/employee/pages/EmployeeDispatch";
 import EmployeeKoshAI from "./features/employee/pages/EmployeeKoshAI";
+import EmployeeDispatchOrders from "./features/employee/pages/EmployeeDispatchOrders";
+import EmployeeGRN from "./features/employee/pages/EmployeeGRN";
 
 import SupplierLayout from "./layouts/SupplierLayout";
 import SetupSupplier from "./pages/auth/SetUpSupplier";
@@ -102,14 +105,18 @@ function App() {
               element={<InvoiceDetail />}
             />
             <Route
-  path="/goods-receipts"
-  element={<DispatchedOrders />}
-/>
+            path="/goods-receipts"
+            element={<DispatchedOrders />}
+          />
 
-<Route
-  path="/goods-receipts/:id"
-  element={<CreateGRN />}
-/>
+          <Route
+            path="/goods-receipts/:id"
+            element={<CreateGRN />}
+          />
+          {/* <Route
+            path="/received-stock"
+            element={<ReceivedStock />}
+          /> */}
           </Route>
 
           <Route path="/employee-invites" element={<EmployeeInvites />} />
@@ -122,6 +129,15 @@ function App() {
               element={<EmployeeDispatch />}
             />
             <Route path="/employee/kosh-ai" element={<EmployeeKoshAI />} />
+            <Route
+              path="/employee/goods-receipts"
+              element={<EmployeeDispatchOrders />}
+            />
+
+            <Route
+              path="/employee/goods-receipts/:id"
+              element={<EmployeeGRN />}
+            />
           </Route>
 
           <Route element={<SupplierLayout />}>

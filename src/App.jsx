@@ -49,6 +49,9 @@ import SupplierKoshAI from "./features/supplier/pages/SupplierKoshAI";
 import PayoutDetails from "./features/supplier/pages/PayoutDetails";
 import SupplierQuotation from "./features/supplier/pages/SupplierQuotation";
 import AllQuotations from "./features/supplier/pages/AllQuotations";
+import SupplierOrders from "./features/supplier/pages/SupplierOrders";
+import SupplierOrderDetail from "./features/supplier/pages/SupplierOrderDetail";
+import SupplierOrderProgress from "./features/supplier/pages/SupplierOrderProgress";
 
 
 function App() {
@@ -117,6 +120,15 @@ function App() {
             <Route path="/account-details" element={<PayoutDetails />} />
             <Route path="supplier/create-quotation/:id" element={<SupplierQuotation />} />
             <Route path="/quotations" element={<AllQuotations />} />
+            <Route path="/supplier/orders" element={<SupplierOrders />} />
+            <Route
+              path="/supplier/orders/:orderId"
+              element={<SupplierOrderDetail />}
+            />
+            <Route
+              path="/supplier/orders/:orderId/progress"
+              element={<SupplierOrderProgress />}
+            />
           </Route>
         </Route>
 

@@ -14,8 +14,7 @@ export const supplierNavItems = [
   { label: "Dashboard", path: "/supplier-dashboard", icon: MdDashboard },
   { label: "New RFQ", path: "/supplier-rfqs", icon: TbAlertTriangleFilled },
   { label: "All Quotation", path: "/quotations", icon: FaClipboardList },
-  { label: "PO & Invoice", path: null, icon: IoMdListBox },
-  { label: "Report", path: null, icon: BiSolidReport },
+  { label: "PO & Invoice", path:"/supplier/orders", icon: IoMdListBox },
   { label: "Kosh AI", path: "/supplier/kosh-ai", icon: MdPersonAddAlt1 },
   {
     label: "Account Details",

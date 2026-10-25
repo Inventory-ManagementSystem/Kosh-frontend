@@ -27,19 +27,19 @@ function SupplierDashboard() {
 
   const buttons = [
     {
-      label: "Manage Inventory",
+      label: "Manage Quotations",
       icon: FiPackage,
-      path: null,
+      path: "/quotations",
     },
     {
-      label: "Manage Employees",
+      label: "Manage Account",
       icon: FiUsers,
-      path: null,
+      path:"/account-details",
     },
     {
-      label: "View Orders",
+      label: "View RFQ",
       icon: FiShoppingBag,
-      path: null,
+      path: "/supplier-rfqs",
     },
   ];
 

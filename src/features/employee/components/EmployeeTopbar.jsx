@@ -78,18 +78,6 @@ function EmployeeTopbar() {
       <header className="fixed left-0 right-0 top-0 z-50 h-18 bg-(--page-background) lg:left-57.5">
         <div className="flex h-full items-center justify-between gap-2 px-3 sm:px-6 lg:px-8">
           <div className="min-w-0 w-full max-w-[320px]">
-            <div className="flex h-10 items-center gap-2 rounded-xl bg-(--input-background) px-3">
-              <FiSearch
-                size={17}
-                className="shrink-0 text-(--secondary-text-color)"
-              />
-              <input
-                type="text"
-                placeholder="Search"
-                aria-label="Search"
-                className="w-full min-w-0 bg-transparent text-sm text-(--text-color) outline-none placeholder:text-(--secondary-text-color)"
-              />
-            </div>
           </div>
 
           <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2">

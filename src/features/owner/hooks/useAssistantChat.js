@@ -35,34 +35,20 @@ function useAssistantChat() {
   );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const restored = useRef(false);
 
   useEffect(() => {
-    if (!accessToken || !initialChat.conversationId || restored.current) {
-      return;
+    try {
+      sessionStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({
+          messages,
+          conversationId,
+        }),
+      );
+    } catch (error) {
+      console.error("Could not save chat:", error);
     }
-    restored.current = true;
-    const restoreChat = async () => {
-      try {
-        const response = await getAssistantConversation(
-          initialChat.conversationId,
-          accessToken,
-        );
-        const savedMessages = (response.data?.messages ?? []).map(
-          (message) => ({
-            role: message.role,
-            content: message.content,
-          }),
-        );
-        setMessages(savedMessages);
-      } catch (error) {
-        console.error("Could not restore chat:", error);
-        setMessages([]);
-        setConversationId(null);
-      }
-    };
-    restoreChat();
-  }, [accessToken, initialChat]);
+  }, [messages, conversationId]);
 
   async function sendMessage(message) {
     const trimmedMessage = message.trim();

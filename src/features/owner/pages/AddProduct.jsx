@@ -153,9 +153,9 @@ function AddProduct() {
       "low_stock_threshold",
       Number(formData.low_stock_alert_at),
     );
-    const openingStock = Number(formData.opening_stock);
-    const lowStockThreshold = Number(formData.low_stock_alert_at);
-    productData.append("is_active", String(openingStock<=lowStockThreshold));
+    // const openingStock = Number(formData.opening_stock);
+    // const lowStockThreshold = Number(formData.low_stock_alert_at);
+    // productData.append("is_active", String(openingStock<=lowStockThreshold));
     if (formData.category !== "") {
       productData.append("supply_category", Number(formData.category));
     }

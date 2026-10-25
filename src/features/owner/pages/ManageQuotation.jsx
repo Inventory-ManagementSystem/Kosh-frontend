@@ -95,29 +95,51 @@ function ManageQuotation() {
     loadData();
   }, [loadData]);
 
-  const updateWeight = (key, value) => {
-    setWeights((current) => ({
-      ...current,
-      [key]: Number(value),
-    }));
+    const updateWeight = (key, value) => {
+    setWeights((current) => {
+      const newValue = Math.min(100, Math.max(0, Number(value)));
+      const [first, second] = Object.keys(current).filter(
+        (item) => item !== key,
+      );
+      const remaining = 100 - newValue;
+      const othersTotal = current[first] + current[second];
+
+      const firstValue =
+        othersTotal === 0
+          ? Math.ceil(remaining / 2)
+          : Math.round((remaining * current[first]) / othersTotal);
+
+      return {
+        ...current,
+        [key]: newValue,
+        [first]: firstValue,
+        [second]: remaining - firstValue,
+      };
+    });
   };
 
   const applyWeights = () => {
-    const total = weights.price + weights.delivery + weights.payment;
-
-    if (total === 0) {
-      setError("At least one priority must be greater than zero.");
-      return;
-    }
-
-    const price = Math.round((weights.price / total) * 100);
-    const delivery = Math.round((weights.delivery / total) * 100);
-    const payment = 100 - price - delivery;
-
     setError("");
-    setAppliedWeights({ price, delivery, payment });
-    setWeights({ price, delivery, payment });
+    setAppliedWeights({ ...weights });
   };
+  
+
+  // const applyWeights = () => {
+  //   const total = weights.price + weights.delivery + weights.payment;
+
+  //   if (total === 0) {
+  //     setError("At least one priority must be greater than zero.");
+  //     return;
+  //   }
+
+  //   const price = Math.round((weights.price / total) * 100);
+  //   const delivery = Math.round((weights.delivery / total) * 100);
+  //   const payment = 100 - price - delivery;
+
+  //   setError("");
+  //   setAppliedWeights({ price, delivery, payment });
+  //   setWeights({ price, delivery, payment });
+  // };
 
   const rfqDetails = rfq?.data ?? rfq ?? {};
 

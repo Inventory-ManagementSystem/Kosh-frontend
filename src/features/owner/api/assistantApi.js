@@ -46,3 +46,21 @@ export async function deleteAssistantConversation(conversationId, accessToken) {
     throw new Error(data.message || "Failed to delete conversation.");
   }
 }
+
+export async function getAssistantConversation(conversationId, accessToken) {
+  const response = await fetch(
+    `${BASE_URL}assistant/conversations/${conversationId}/`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      credentials: "include",
+    },
+  );
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to fetch conversation.");
+  }
+  return data;
+}

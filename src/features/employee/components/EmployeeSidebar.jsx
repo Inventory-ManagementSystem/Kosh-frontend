@@ -19,7 +19,7 @@ export const employeeNavItems = [
     path: "employee/dispatch-stock",
     icon: BiSolidSend,
   },
-  { label: "Kosh AI", path: "/supplier/kosh-ai", icon: MdPersonAddAlt1 },
+  { label: "Kosh AI", path: "/employee/kosh-ai", icon: MdPersonAddAlt1 },
 ];
 
 function EmployeeSidebar({ collapsed, setCollapsed }) {

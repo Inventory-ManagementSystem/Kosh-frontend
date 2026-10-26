@@ -1,11 +1,20 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { FiArrowLeft, FiArrowRight, FiFileText,FiDownload } from "react-icons/fi";
+import {
+  FiArrowLeft,
+  FiArrowRight,
+  FiFileText,
+  FiDownload,
+} from "react-icons/fi";
 import toast from "react-hot-toast";
 import logo from "../../../assets/auth/logo.svg";
 
 import { useAuth } from "../../../context/AuthContext";
-import { getOrderDetails, createGRN ,downloadGoodsReceiptPdf} from "../api/goodsReceiptApi";
+import {
+  getOrderDetails,
+  createGRN,
+  downloadGoodsReceiptPdf,
+} from "../api/goodsReceiptApi";
 
 function formatDate(date) {
   if (!date) return "—";
@@ -26,7 +35,7 @@ function getDispatchedQuantity(item, shipment) {
     (entry) =>
       entry.purchase_order_item === item.id ||
       entry.order_item === item.id ||
-      entry.purchase_order_item_id === item.id
+      entry.purchase_order_item_id === item.id,
   );
 
   return Number(
@@ -34,7 +43,7 @@ function getDispatchedQuantity(item, shipment) {
       shipmentItem?.shipped_quantity ??
       shipmentItem?.quantity ??
       item.quantity ??
-      0
+      0,
   );
 }
 
@@ -119,10 +128,7 @@ function SummaryRow({ label, value }) {
 function EmptyGRNCard() {
   return (
     <aside className="flex min-h-[360px] min-w-0 flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-[var(--border-color)] bg-[var(--input-background)] px-5 py-5 text-center md:mt-[4.5rem]">
-      <FiFileText
-        size={28}
-        className="text-[var(--secondary-text-color)]"
-      />
+      <FiFileText size={28} className="text-[var(--secondary-text-color)]" />
       <p className="max-w-[220px] text-xs text-[var(--secondary-text-color)]">
         Fill in the fields to create a GRN
       </p>
@@ -173,25 +179,25 @@ function CreateGRN() {
   const updateItem = (index, field, value) => {
     setItems((current) =>
       current.map((item, itemIndex) =>
-        itemIndex === index ? { ...item, [field]: value } : item
-      )
+        itemIndex === index ? { ...item, [field]: value } : item,
+      ),
     );
   };
 
   const handleDownloadGRN = async () => {
-  if (!accessToken || !createdGRN?.id || downloading) {
-    return;
-  }
-  setDownloading(true);
-  try {
-    await downloadGoodsReceiptPdf(accessToken, createdGRN.id);
-    toast.success("GRN downloaded successfully.");
-  } catch (error) {
-    toast.error(error.message || "Unable to download GRN.");
-  } finally {
-    setDownloading(false);
-  }
-};
+    if (!accessToken || !createdGRN?.id || downloading) {
+      return;
+    }
+    setDownloading(true);
+    try {
+      await downloadGoodsReceiptPdf(accessToken, createdGRN.id);
+      toast.success("GRN downloaded successfully.");
+    } catch (error) {
+      toast.error(error.message || "Unable to download GRN.");
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -218,14 +224,14 @@ function CreateGRN() {
         received > item.dispatched_quantity
       ) {
         toast.error(
-          `Enter a valid received quantity for ${item.product_name}.`
+          `Enter a valid received quantity for ${item.product_name}.`,
         );
         return;
       }
 
       if (!Number.isInteger(rejected) || rejected < 0 || rejected > received) {
         toast.error(
-          `Damaged units cannot exceed received units for ${item.product_name}.`
+          `Damaged units cannot exceed received units for ${item.product_name}.`,
         );
         return;
       }
@@ -234,7 +240,7 @@ function CreateGRN() {
     if (
       items.reduce(
         (total, item) => total + Number(item.received_quantity),
-        0
+        0,
       ) <= 0
     ) {
       toast.error("At least one unit must be received.");
@@ -299,19 +305,19 @@ function CreateGRN() {
 
   const totalReceived = items.reduce(
     (total, item) => total + (Number(item.received_quantity) || 0),
-    0
+    0,
   );
 
   const totalDamaged = items.reduce(
     (total, item) => total + (Number(item.rejected_quantity) || 0),
-    0
+    0,
   );
 
   const totalExpired = Number(createdGRN?.expired_quantity ?? 0);
   const locked = Boolean(createdGRN);
 
   return (
-    <div className="min-h-full bg-[var(--card-background)] px-4 py-5 text-[var(--text-color)] sm:px-6 sm:py-7">
+    <div className="min-h-full bg-[var(--card-background)] px-4 py-5 rounded-xl text-[var(--text-color)] sm:px-6 sm:py-7">
       <div className="mx-auto max-w-4xl">
         <button
           type="button"
@@ -358,7 +364,11 @@ function CreateGRN() {
                       placeholder="Enter stock size"
                       value={item.received_quantity}
                       onChange={(event) =>
-                        updateItem(index, "received_quantity", event.target.value)
+                        updateItem(
+                          index,
+                          "received_quantity",
+                          event.target.value,
+                        )
                       }
                       readOnly={locked}
                       min={0}
@@ -372,7 +382,11 @@ function CreateGRN() {
                       placeholder="Enter damaged units"
                       value={item.rejected_quantity}
                       onChange={(event) =>
-                        updateItem(index, "rejected_quantity", event.target.value)
+                        updateItem(
+                          index,
+                          "rejected_quantity",
+                          event.target.value,
+                        )
                       }
                       readOnly={locked}
                       min={0}

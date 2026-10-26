@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   FiCalendar,
   FiCheckCircle,
-  FiMapPin,
   FiPackage,
   FiArrowRight,
 } from "react-icons/fi";
@@ -12,6 +11,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { getRFQDetails } from "../api/procurementApi";
 import { getQuotations } from "../api/quotationApi";
 import RfqCard from "../components/RfqCard";
+import { IoArrowBack } from "react-icons/io5";
 
 const DEFAULT_WEIGHTS = {
   price: 59,
@@ -95,7 +95,7 @@ function ManageQuotation() {
     loadData();
   }, [loadData]);
 
-    const updateWeight = (key, value) => {
+  const updateWeight = (key, value) => {
     setWeights((current) => {
       const newValue = Math.min(100, Math.max(0, Number(value)));
       const [first, second] = Object.keys(current).filter(
@@ -122,7 +122,6 @@ function ManageQuotation() {
     setError("");
     setAppliedWeights({ ...weights });
   };
-  
 
   // const applyWeights = () => {
   //   const total = weights.price + weights.delivery + weights.payment;
@@ -174,6 +173,7 @@ function ManageQuotation() {
   return (
     <main className="min-h-screen px-3 py-4 text-(--text-color) sm:px-5 sm:py-6">
       <div className="mx-auto w-full max-w-7xl space-y-5">
+        <IoArrowBack size={20} onClick={() => navigate(-1)} />
         <header className="flex items-center justify-between gap-3">
           <h1 className="font-['Google_Sans_Flex'] text-2xl font-semibold text-(--accent-color)">
             Manage Quotation

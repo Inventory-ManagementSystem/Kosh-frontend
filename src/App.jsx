@@ -35,6 +35,7 @@ import InvoiceDetail from "./features/owner/pages/InvoiceDetail";
 import DispatchedOrders from "./features/owner/pages/DispatchedOrders";
 import CreateGRN from "./features/owner/pages/CreateGRN";
 import Reports from "./features/owner/pages/Reports";
+import EditProduct from "./features/owner/pages/EditProduct";
 // import ReceivedStock from "./features/owner/pages/ReceivedStock";
 
 import EmployeeLayout from "./layouts/EmployeeLayout";
@@ -58,7 +59,6 @@ import AllQuotations from "./features/supplier/pages/AllQuotations";
 import SupplierOrders from "./features/supplier/pages/SupplierOrders";
 import SupplierOrderDetail from "./features/supplier/pages/SupplierOrderDetail";
 import SupplierOrderProgress from "./features/supplier/pages/SupplierOrderProgress";
-
 
 function App() {
   return (
@@ -105,20 +105,15 @@ function App() {
               path="/owner/invoices/:invoiceId"
               element={<InvoiceDetail />}
             />
-            <Route
-            path="/goods-receipts"
-            element={<DispatchedOrders />}
-          />
+            <Route path="/goods-receipts" element={<DispatchedOrders />} />
 
-          <Route
-            path="/goods-receipts/:id"
-            element={<CreateGRN />}
-          />
-          <Route path="/reports" element={<Reports />} />
-          {/* <Route
+            <Route path="/goods-receipts/:id" element={<CreateGRN />} />
+            <Route path="/reports" element={<Reports />} />
+            {/* <Route
             path="/received-stock"
             element={<ReceivedStock />}
           /> */}
+            <Route path="/edit-product/:id" element={<EditProduct />} />
           </Route>
 
           <Route path="/employee-invites" element={<EmployeeInvites />} />
@@ -147,7 +142,10 @@ function App() {
             <Route path="/supplier-rfqs" element={<SupplierRFQs />} />
             <Route path="/supplier/kosh-ai" element={<SupplierKoshAI />} />
             <Route path="/account-details" element={<PayoutDetails />} />
-            <Route path="supplier/create-quotation/:id" element={<SupplierQuotation />} />
+            <Route
+              path="supplier/create-quotation/:id"
+              element={<SupplierQuotation />}
+            />
             <Route path="/quotations" element={<AllQuotations />} />
             <Route path="/supplier/orders" element={<SupplierOrders />} />
             <Route

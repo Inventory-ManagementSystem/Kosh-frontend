@@ -96,7 +96,12 @@ function AddProduct() {
     }
 
     if (
-      ["selling_price", "cost_price", "opening_stock", "low_stock_alert_at"].includes(name) &&
+      [
+        "selling_price",
+        "cost_price",
+        "opening_stock",
+        "low_stock_alert_at",
+      ].includes(name) &&
       value !== "" &&
       Number(value) < 0
     ) {
@@ -145,10 +150,7 @@ function AddProduct() {
     productData.append("sku", formData.sku.trim().toUpperCase());
     productData.append("price", String(Number(formData.selling_price)));
     productData.append("cost_price", String(Number(formData.cost_price)));
-    productData.append(
-      "opening_quantity",
-      Number(formData.opening_stock),
-    );
+    productData.append("opening_quantity", Number(formData.opening_stock));
     productData.append(
       "low_stock_threshold",
       Number(formData.low_stock_alert_at),
@@ -183,8 +185,7 @@ function AddProduct() {
   const inputClass =
     "mt-2 h-9 w-full rounded border border-(--border-color) bg-(--dropdown-background) px-3 text-xs text-(--text-color) outline-none focus:border-(--accent-color)";
 
-  const labelClass =
-    "text-[10px] font-medium uppercase text-(--text-color)";
+  const labelClass = "text-[10px] font-medium uppercase text-(--text-color)";
 
   const errorClass = "mt-1 text-xs text-red-500";
 
@@ -265,9 +266,7 @@ function AddProduct() {
                 className="shrink-0 text-(--accent-color)"
               />
               <span className="min-w-0 truncate text-xs text-(--secondary-text-color)">
-                {formData.image
-                  ? formData.image.name
-                  : "Click to upload image"}
+                {formData.image ? formData.image.name : "Click to upload image"}
               </span>
               <input
                 id="product-image"

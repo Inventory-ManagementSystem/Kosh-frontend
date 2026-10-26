@@ -90,6 +90,39 @@ export const deleteProducts = async (accessToken, id) => {
   return data;
 };
 
+export const getProductById = async (accessToken, productId) => {
+  const response = await fetch(`${PRODUCTS_API_URL}${productId}/`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(getErrorMessage(data, "Failed to fetch product details."));
+  }
+  return data;
+};
+
+export const updateProduct = async (accessToken, productId, productData) => {
+  const isFormData = productData instanceof FormData;
+  const response = await fetch(`${PRODUCTS_API_URL}${productId}/`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
+    },
+    body: isFormData ? productData : JSON.stringify(productData),
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const error = new Error(getErrorMessage(data, "Failed to update product."));
+    error.data = data;
+    throw error;
+  }
+  return data;
+};
+
 export const updateWarehouse = async (accessToken, warehouseData) => {
   const response = await fetch(WAREHOUSE_API_URL, {
     method: "PUT",

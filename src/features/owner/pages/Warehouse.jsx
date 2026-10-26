@@ -171,23 +171,22 @@ function Warehouse() {
   }, [fetchProducts]);
 
   const handleDelete = async (product) => {
-    const confirmed = window.confirm(
-      `Are you sure you want to delete "${product.name}"?`,
-    );
-
-    if (!confirmed) return;
-
     try {
       setDeletingId(product.id);
+
       await deleteProducts(accessToken, product.id);
+
       toast.success("Product deleted successfully");
+
       const remainingProducts = totalProducts - 1;
       const updatedTotalPages = Math.max(
         1,
         Math.ceil(remainingProducts / PAGE_SIZE),
       );
+
       setTotalProducts(remainingProducts);
       setTotalPages(updatedTotalPages);
+
       if (products.length === 1 && currentPage > updatedTotalPages) {
         setCurrentPage(updatedTotalPages);
       } else {
@@ -275,6 +274,7 @@ function Warehouse() {
               items={products}
               onDelete={handleDelete}
               deletingId={deletingId}
+              onEdit={(product) => navigate(`/edit-product/${product.id}`)}
             />
             {totalProducts > 0 && (
               <Pagination

@@ -161,7 +161,7 @@ function InvoiceDetail() {
               type="button"
               onClick={handleDownloadInvoice}
               disabled={downloading}
-              className="flex w-full items-center justify-center gap-2 rounded-md bg-(--accent-color) px-4 py-3 text-sm font-semibold text-[#00010f] transition hover:opacity-90"
+              className="flex w-full items-center justify-center gap-2 rounded-md bg-(--accent-color) px-4 py-3 text-sm font-semibold text-(--page-background) transition hover:opacity-90"
             >
               {downloading ? "Downloading" : "Download Invoice"}
               <FiDownload size={16} />

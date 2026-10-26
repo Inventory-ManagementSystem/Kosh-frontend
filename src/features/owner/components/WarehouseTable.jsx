@@ -1,9 +1,12 @@
-import { FiTrash2 } from "react-icons/fi";
+import { useEffect, useRef, useState } from "react";
+import { IoMdMore } from "react-icons/io";
 import { BsFillSendFill } from "react-icons/bs";
+import ConfirmDelete from "../components/ConfirmDelete";
 
 function WarehouseTable({
   items = [],
   onDelete,
+  onEdit,
   deletingId,
   showDelete = true,
   variant = "warehouse",
@@ -12,6 +15,32 @@ function WarehouseTable({
 }) {
   const isDispatch = variant === "dispatch";
   const isOrders = variant === "orders";
+
+  const [openMenuId, setOpenMenuId] = useState(null);
+  const menuRef = useRef(null);
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setOpenMenuId(null);
+      }
+    };
+
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        setOpenMenuId(null);
+      }
+    };
+
+    document.addEventListener("pointerdown", handleOutsideClick);
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("pointerdown", handleOutsideClick);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
 
   const getOrderStatus = (status) => {
     const statuses = {
@@ -48,10 +77,6 @@ function WarehouseTable({
         return "bg-(--input-background) text-(--accent-color)";
       }
 
-      if (normalized === "awaiting advance") {
-        return "bg-(--input-background) text-(--secondary-text-color)";
-      }
-
       return "bg-(--input-background) text-(--secondary-text-color)";
     }
 
@@ -81,6 +106,23 @@ function WarehouseTable({
       minimumFractionDigits: 0,
       maximumFractionDigits: 2,
     })}`;
+  };
+
+  const handleEdit = (item) => {
+    setOpenMenuId(null);
+    onEdit?.(item);
+  };
+  const handleDelete = (item) => {
+    setOpenMenuId(null);
+    setSelectedItem(item);
+  };
+  const handleCancelDelete = () => {
+    if (deletingId === selectedItem?.id) return;
+    setSelectedItem(null);
+  };
+  const handleConfirmDelete = () => {
+    if (!selectedItem) return;
+    onDelete?.(selectedItem);
   };
 
   return (
@@ -132,8 +174,8 @@ function WarehouseTable({
                 <th className="px-3 py-3 text-center font-medium">Status</th>
 
                 {(isDispatch || showDelete) && (
-                  <th className="rounded-r-lg px-3 py-3 text-center font-medium">
-                    {isDispatch ? "Dispatch" : "Delete"}
+                  <th className="rounded-r-lg px-2 py-3 text-center font-medium">
+                    {isDispatch ? "Dispatch" : ""}
                   </th>
                 )}
               </>
@@ -157,10 +199,10 @@ function WarehouseTable({
                     }
                   : undefined
               }
-              className={`border-b border-(--border-color) last:border-0 ${
+              className={`group border-b border-(--border-color) last:border-0 ${
                 isOrders
                   ? "cursor-pointer transition hover:bg-(--input-background)/60 focus-visible:outline focus-visible:outline-(--accent-color)"
-                  : ""
+                  : "transition-colors hover:bg-(--input-background)/40"
               }`}
             >
               {isOrders ? (
@@ -227,16 +269,66 @@ function WarehouseTable({
                     </td>
                   ) : (
                     showDelete && (
-                      <td className="px-3 py-3.5 text-center">
-                        <button
-                          type="button"
-                          title="Delete product"
-                          disabled={deletingId === item.id}
-                          onClick={() => onDelete?.(item)}
-                          className="inline-flex items-center justify-center rounded p-1 text-(--secondary-text-color) transition hover:bg-red-500/10 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-50"
+                      <td className="px-2 py-3.5 text-center">
+                        <div
+                          className="relative flex items-center justify-center"
+                          ref={openMenuId === item.id ? menuRef : null}
                         >
-                          <FiTrash2 size={13} />
-                        </button>
+                          <button
+                            type="button"
+                            title="Product actions"
+                            aria-label={`Actions for ${item.name || "product"}`}
+                            aria-haspopup="menu"
+                            aria-expanded={openMenuId === item.id}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              setOpenMenuId((currentId) =>
+                                currentId === item.id ? null : item.id,
+                              );
+                            }}
+                            className={`inline-flex items-center justify-center rounded-md p-1.5 text-(--secondary-text-color) transition hover:bg-(--input-background) hover:text-(--text-color) focus-visible:outline focus-visible:outline-(--accent-color) ${
+                              openMenuId === item.id
+                                ? "opacity-100"
+                                : "opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
+                            }`}
+                          >
+                            <IoMdMore size={16} />
+                          </button>
+
+                          {openMenuId === item.id && (
+                            <div
+                              role="menu"
+                              className="absolute right-0 top-full z-30 mt-1 w-32 overflow-hidden rounded-lg border border-(--border-color) bg-(--dropdown-background) p-1 shadow-xl"
+                            >
+                              <button
+                                type="button"
+                                role="menuitem"
+                                onClick={(event) => {
+                                  event.stopPropagation();
+                                  handleEdit(item);
+                                }}
+                                className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-xs text-(--text-color) transition hover:bg-(--input-background)"
+                              >
+                                Edit
+                              </button>
+
+                              <button
+                                type="button"
+                                role="menuitem"
+                                disabled={deletingId === item.id}
+                                onClick={(event) => {
+                                  event.stopPropagation();
+                                  handleDelete(item);
+                                }}
+                                className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-xs text-red-400 transition hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-50"
+                              >
+                                {deletingId === item.id
+                                  ? "Deleting..."
+                                  : "Delete"}
+                              </button>
+                            </div>
+                          )}
+                        </div>
                       </td>
                     )
                   )}
@@ -246,6 +338,14 @@ function WarehouseTable({
           ))}
         </tbody>
       </table>
+      <ConfirmDelete
+        isOpen={Boolean(selectedItem)}
+        itemType="product"
+        itemName={selectedItem?.name || ""}
+        onCancel={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        loading={deletingId === selectedItem?.id}
+      />
     </div>
   );
 }

@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 
 import { useAuth } from "../../../context/AuthContext";
 import PeopleTable from "./PeopleTable";
+import ConfirmDelete from "./ConfirmDelete";
 
 function ManagePeople({
   title,
@@ -30,6 +31,7 @@ function ManagePeople({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [deletingId, setDeletingId] = useState(null);
+  const [confirmDeleteItem, setConfirmDeleteItem] = useState(null);
 
   useEffect(() => {
     if (authLoading) return;
@@ -57,20 +59,15 @@ function ManagePeople({
     fetchItems();
   }, [accessToken, authLoading, loadItems, title]);
 
-  const handleDelete = async (item) => {
+  const handleDeleteClick = (item) => {
+    setConfirmDeleteItem(item);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!confirmDeleteItem) return;
+    const item = confirmDeleteItem;
     const isPending = item.rowType === "invite";
-
-    const confirmed = window.confirm(
-      isPending
-        ? "Are you sure you want to cancel this invitation?"
-        : `Are you sure you want to remove this ${title.toLowerCase().replace("manage ", "").replace(/s$/, "")}?`,
-    );
-
-    if (!confirmed) return;
-
-    const itemKey = item.id;
-    setDeletingId(itemKey);
-
+    setDeletingId(item.id);
     try {
       await removeItem(item, accessToken);
 
@@ -82,10 +79,10 @@ function ManagePeople({
             ),
         ),
       );
-
       toast.success(
         isPending ? "Invitation cancelled." : "Record removed successfully.",
       );
+      setConfirmDeleteItem(null);
     } catch (error) {
       toast.error(error.message || "Unable to complete the action.");
     } finally {
@@ -162,12 +159,31 @@ function ManagePeople({
           <PeopleTable
             items={filteredItems}
             columns={columns}
-            onDelete={handleDelete}
+            onDelete={handleDeleteClick}
             deletingId={deletingId}
             getStatusClass={getStatusClass}
           />
         )}
       </div>
+      <ConfirmDelete
+        isOpen={Boolean(confirmDeleteItem)}
+        itemType={
+          confirmDeleteItem?.rowType === "invite"
+            ? "invitation"
+            : title.toLowerCase().replace("manage ", "").replace(/s$/, "")
+        }
+        description={
+          confirmDeleteItem?.rowType === "invite"
+            ? "Are you sure you want to cancel this invitation?"
+            : `Are you sure you want to remove this ${title
+                .toLowerCase()
+                .replace("manage ", "")
+                .replace(/s$/, "")}?`
+        }
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setConfirmDeleteItem(null)}
+        loading={deletingId !== null}
+      />
     </div>
   );
 }

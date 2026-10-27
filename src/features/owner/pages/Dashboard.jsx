@@ -9,6 +9,7 @@ import { getProfile } from "../../../api/getProfileApi";
 import { getEmployees } from "../api/getEmployeeApi";
 import { getSuppliers } from "../api/supplierApi";
 import { getProducts } from "../api/warehouseApi";
+import ConfirmDelete from "../components/ConfirmDelete";
 import {
   getActiveAlerts,
   getRFQs,
@@ -68,6 +69,7 @@ function Dashboard() {
   const [employees, setEmployees] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
   const [expandedRfqId, setExpandedRfqId] = useState(null);
+  const [selectedRFQ, setSelectedRFQ] = useState(null);
   const [cancellingId, setCancellingId] = useState(null);
 
   useEffect(() => {
@@ -170,16 +172,17 @@ function Dashboard() {
     loadDashboard();
   }, [loadDashboard]);
 
-  const handleCancelRfq = async (id) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to cancel this RFQ?",
-    );
-    if (!confirmed) return;
+  const handleCancelRfq = (id) => {
+    setSelectedRFQ(id);
+  };
 
+  const confirmCancelRfq = async () => {
+    if (!selectedRFQ) return;
     try {
-      setCancellingId(id);
-      await cancelRFQ(accessToken, id);
+      setCancellingId(selectedRFQ);
+      await cancelRFQ(accessToken, selectedRFQ);
       toast.success("RFQ cancelled successfully.");
+      setSelectedRFQ(null);
       await loadDashboard();
     } catch (error) {
       toast.error(error.message || "Failed to cancel RFQ.");
@@ -374,6 +377,14 @@ function Dashboard() {
                 onRetry={() => {}}
               />
             ))}
+            <ConfirmDelete
+              isOpen={selectedRFQ !== null}
+              itemType="RFQ"
+              itemName="this RFQ"
+              onCancel={() => setSelectedRFQ(null)}
+              onConfirm={confirmCancelRfq}
+              loading={cancellingId === selectedRFQ}
+            />
           </div>
         )}
       </section>

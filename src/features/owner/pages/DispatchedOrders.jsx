@@ -9,10 +9,7 @@ import {
 import toast from "react-hot-toast";
 
 import { useAuth } from "../../../context/AuthContext";
-import {
-  getDispatchedOrders,
-  getOrderDetails,
-} from "../api/goodsReceiptApi";
+import { getDispatchedOrders, getOrderDetails } from "../api/goodsReceiptApi";
 
 const PAGE_SIZE = 8;
 
@@ -45,17 +42,12 @@ function DispatchedOrders() {
           const categories = [
             ...new Set(
               (details.items || [])
-                .map(
-                  (item) =>
-                    item.category || item.supply_category
-                )
-                .filter(Boolean)
+                .map((item) => item.category || item.supply_category)
+                .filter(Boolean),
             ),
           ];
 
-          category = categories.length
-            ? categories.join(", ")
-            : "—";
+          category = categories.length ? categories.join(", ") : "—";
         } catch {
           // Keep the order visible if category lookup fails.
         }
@@ -149,14 +141,10 @@ function DispatchedOrders() {
                     <button
                       key={order.id}
                       type="button"
-                      onClick={() =>
-                        navigate(`/goods-receipts/${order.id}`)
-                      }
-                      className="grid min-h-10 w-full grid-cols-[1fr_1.5fr_1fr_0.8fr] items-center rounded-md px-3 py-2 text-[14px] text-[var(--text-color)] transition hover:bg-[var(--input-background)] sm:px-5"
+                      onClick={() => navigate(`/goods-receipts/${order.id}`)}
+                      className="grid min-h-10 w-full grid-cols-[1fr_1.5fr_1fr_0.8fr] items-center rounded-md px-3 py-2 text-[12px] text-[var(--text-color)] transition hover:bg-[var(--input-background)] sm:px-5"
                     >
-                      <span className="text-center">
-                        {order.number}
-                      </span>
+                      <span className="text-center">{order.number}</span>
 
                       <span className="truncate px-1 text-center">
                         {order.company_name || "—"}

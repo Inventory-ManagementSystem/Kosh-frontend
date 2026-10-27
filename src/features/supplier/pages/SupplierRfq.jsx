@@ -9,6 +9,7 @@ import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../../context/AuthContext";
+import ConfirmDelete from "../../owner/components/ConfirmDelete";
 
 import {
   getSupplierRFQs,
@@ -29,6 +30,7 @@ function SupplierRfq() {
   const [page, setPage] = useState(1);
   const [expandedRFQ, setExpandedRFQ] = useState(null);
   const [detailsById, setDetailsById] = useState({});
+  const [selectedRFQ, setSelectedRFQ] = useState(null);
   const [detailsLoadingId, setDetailsLoadingId] = useState(null);
   const [detailsErrors, setDetailsErrors] = useState({});
   const [loading, setLoading] = useState(true);
@@ -133,15 +135,16 @@ function SupplierRfq() {
     return true;
   };
 
-  const handleDecline = async (rfq) => {
+  const handleDecline = (rfq) => {
     if (!canDecline(rfq)) {
       toast.error("This RFQ can no longer be declined.");
       return;
     }
-    const confirmed = window.confirm(
-      "Are you sure you want to decline this RFQ?",
-    );
-    if (!confirmed) return;
+    setSelectedRFQ(rfq);
+  };
+  const confirmDecline = async () => {
+    if (!selectedRFQ) return;
+    const rfq = selectedRFQ;
     try {
       setDecliningId(rfq.id);
       await declineSupplierRFQ(accessToken, rfq.id);
@@ -150,7 +153,6 @@ function SupplierRfq() {
           item.id === rfq.id ? { ...item, my_status: "declined" } : item,
         ),
       );
-
       setDetailsById((previous) =>
         previous[rfq.id]
           ? {
@@ -162,7 +164,7 @@ function SupplierRfq() {
             }
           : previous,
       );
-
+      setSelectedRFQ(null);
       toast.success("RFQ declined successfully.");
     } catch (error) {
       toast.error(error.message || "Failed to decline RFQ.");
@@ -255,6 +257,14 @@ function SupplierRfq() {
           </section>
         )
       )}
+      <ConfirmDelete
+        isOpen={Boolean(selectedRFQ)}
+        itemType="RFQ"
+        itemName={selectedRFQ?.title || selectedRFQ?.rfq_title || "RFQ"}
+        onCancel={() => setSelectedRFQ(null)}
+        onConfirm={confirmDecline}
+        loading={decliningId === selectedRFQ?.id}
+      />
     </div>
   );
 }
@@ -287,7 +297,6 @@ function Pagination({ page, totalPages, onChange }) {
         type="button"
         onClick={() => onChange(1)}
         disabled={page <= 1}
-        aria-label="First page"
         className={buttonClass}
       >
         <FiChevronsLeft size={13} />
@@ -341,7 +350,6 @@ function Pagination({ page, totalPages, onChange }) {
         type="button"
         onClick={() => onChange(totalPages)}
         disabled={page >= totalPages}
-        aria-label="Last page"
         className={buttonClass}
       >
         <FiChevronsRight size={13} />

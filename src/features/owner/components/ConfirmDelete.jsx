@@ -52,7 +52,7 @@ function ConfirmDeleteModal({
         </button>
 
         <div className="flex flex-col items-center">
-          <div className="mb-9 flex h-[102px] w-[102px] items-center justify-center rounded-full bg-(--error-color)">
+          <div className="mb-9 flex h-[90px] w-[90px] items-center justify-center rounded-full bg-(--error-color)">
             <RiDeleteBin6Fill size={34} className="text-white" />
           </div>
 

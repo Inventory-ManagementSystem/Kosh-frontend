@@ -27,15 +27,15 @@ const orderProgress = {
 
 const getStatusClass = (status) => {
   if (["Delivered", "In Stock", "Approved", "Linked"].includes(status)) {
-    return "bg-green-100 text-green-400";
+    return "bg-[#26af41]/20 text-[#5fba71]";
   }
   if (["Dispatched", "Partially Received", "Low Stock"].includes(status)) {
-    return "bg-red-100 text-red-400";
+    return "bg-[#e5d283]/20 text-[#ffae00]";
   }
   if (["Out of Stock", "Cancelled"].includes(status)) {
-    return "bg-blue-300 text-blue-600";
+    return "bg-[#e65757]/15 text-[#e65757]";
   }
-  return "bg-stone-300 text-stone-600";
+  return "bg-[#454645]/37 text-(--text-color)";
 };
 
 const capitalize = (value) =>

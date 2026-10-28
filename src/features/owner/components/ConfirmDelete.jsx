@@ -31,7 +31,7 @@ function ConfirmDeleteModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-(--card-background) p-4 backdrop-blur-[1px]"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-(--card-background) p-4 backdrop-blur-[5px]"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget && !loading) {
           onCancel();
@@ -64,7 +64,7 @@ function ConfirmDeleteModal({
           </h2>
 
           {description ? (
-            <p className="mt-3 max-w-md text-center text-sm text-(--secondary-text-color)">
+            <p className="mt-3 max-w-md text-center text-base font-bold">
               {description}
             </p>
           ) : itemName ? (

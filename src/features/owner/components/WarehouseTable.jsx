@@ -11,7 +11,9 @@ function WarehouseTable({
   showDelete = true,
   variant = "warehouse",
   onDispatch,
+  onReactivate,
   onOrderClick,
+  deleteDescription,
 }) {
   const isDispatch = variant === "dispatch";
   const isOrders = variant === "orders";
@@ -121,7 +123,7 @@ function WarehouseTable({
     setSelectedItem(null);
   };
   const handleConfirmDelete = () => {
-    if (!selectedItem) return;
+    if (!selectedItem || deletingId === selectedItem.id) return;
     onDelete?.(selectedItem);
   };
 
@@ -311,21 +313,38 @@ function WarehouseTable({
                               >
                                 Edit
                               </button>
-
-                              <button
-                                type="button"
-                                role="menuitem"
-                                disabled={deletingId === item.id}
-                                onClick={(event) => {
-                                  event.stopPropagation();
-                                  handleDelete(item);
-                                }}
-                                className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-xs text-red-400 transition hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-50"
-                              >
-                                {deletingId === item.id
-                                  ? "Deleting..."
-                                  : "Delete"}
-                              </button>
+                              {item.is_active === false ? (
+                                <button
+                                  type="button"
+                                  role="menuitem"
+                                  disabled={deletingId === item.id}
+                                  onClick={(event) => {
+                                    event.stopPropagation();
+                                    setOpenMenuId(null);
+                                    onReactivate?.(item);
+                                  }}
+                                  className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-xs text-(--text-color) transition hover:bg-(--input-background)"
+                                >
+                                  {deletingId === item.id
+                                    ? "Reactivating"
+                                    : "Reactivate"}
+                                </button>
+                              ) : (
+                                <button
+                                  type="button"
+                                  role="menuitem"
+                                  disabled={deletingId === item.id}
+                                  onClick={(event) => {
+                                    event.stopPropagation();
+                                    handleDelete(item);
+                                  }}
+                                  className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-xs text-red-400 transition hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-50"
+                                >
+                                  {deletingId === item.id
+                                    ? "Deleting"
+                                    : "Delete"}
+                                </button>
+                              )}
                             </div>
                           )}
                         </div>
@@ -342,6 +361,7 @@ function WarehouseTable({
         isOpen={Boolean(selectedItem)}
         itemType="product"
         itemName={selectedItem?.name || ""}
+        description={deleteDescription}
         onCancel={handleCancelDelete}
         onConfirm={handleConfirmDelete}
         loading={deletingId === selectedItem?.id}

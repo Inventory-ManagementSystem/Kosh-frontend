@@ -36,7 +36,7 @@ export const getProducts = async (
   page = 1,
   pageSize = 10,
   search = "",
-  category = "all",
+  isActive = "true",
 ) => {
   const params = new URLSearchParams({
     page: String(page),
@@ -45,8 +45,8 @@ export const getProducts = async (
   if (search.trim()) {
     params.append("search", search.trim());
   }
-  if (category && category !== "all") {
-    params.append("category", String(category));
+  if (isActive !== "all") {
+    params.append("is_active", String(isActive));
   }
   const response = await fetch(`${PRODUCTS_API_URL}?${params.toString()}`, {
     method: "GET",

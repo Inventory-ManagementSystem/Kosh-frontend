@@ -7,8 +7,8 @@ import Pagination from "../components/Pagination";
 import {
   getWarehouse,
   getProducts,
-  getCategories,
   deleteProducts,
+  updateProduct,
 } from "../api/warehouseApi";
 import WarehouseTable from "../components/WarehouseTable";
 import WarehouseTableSkeleton from "../components/WarehouseTableSkeleton";
@@ -33,9 +33,8 @@ function Warehouse() {
 
   const [warehouse, setWarehouse] = useState(null);
   const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [search, setSearch] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedStatus, setSelectedStatus] = useState("true");
 
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
@@ -43,7 +42,6 @@ function Warehouse() {
   useEffect(() => {
     if (!accessToken) {
       setWarehouse(null);
-      setCategories([]);
       return;
     }
 
@@ -51,9 +49,6 @@ function Warehouse() {
       try {
         const warehouseRes = await getWarehouse(accessToken);
         setWarehouse(warehouseRes.data);
-
-        const categoriesRes = await getCategories(accessToken);
-        setCategories(categoriesRes.data || []);
       } catch (error) {
         console.error("Failed to fetch warehouse details:", error);
         toast.error(error.message || "Failed to load warehouse details");
@@ -80,7 +75,7 @@ function Warehouse() {
         currentPage,
         PAGE_SIZE,
         search,
-        selectedCategory,
+        selectedStatus,
       );
 
       const results = productsRes.data.results || [];
@@ -100,7 +95,7 @@ function Warehouse() {
     } finally {
       setLoading(false);
     }
-  }, [accessToken, currentPage, search, selectedCategory]);
+  }, [accessToken, currentPage, search, selectedStatus]);
 
   useEffect(() => {
     fetchProducts();
@@ -109,20 +104,22 @@ function Warehouse() {
   const handleDelete = async (product) => {
     try {
       setDeletingId(product.id);
-
-      await deleteProducts(accessToken, product.id);
-
-      toast.success("Product deleted successfully");
-
+      const response = await deleteProducts(accessToken, product.id);
+      const archived = response.data?.archived;
+      if (archived === true) {
+        toast.success("Product deactivated successfully.");
+      } else if (archived === false) {
+        toast.success("Product deleted permanently.");
+      } else {
+        toast.success(response.message || "Product updated successfully.");
+      }
       const remainingProducts = totalProducts - 1;
       const updatedTotalPages = Math.max(
         1,
         Math.ceil(remainingProducts / PAGE_SIZE),
       );
-
       setTotalProducts(remainingProducts);
       setTotalPages(updatedTotalPages);
-
       if (products.length === 1 && currentPage > updatedTotalPages) {
         setCurrentPage(updatedTotalPages);
       } else {
@@ -131,6 +128,21 @@ function Warehouse() {
     } catch (error) {
       console.error("Failed to delete product:", error);
       toast.error(error.message || "Failed to delete product");
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  const handleReactivate = async (product) => {
+    try {
+      setDeletingId(product.id);
+      await updateProduct(accessToken, product.id, {
+        is_active: true,
+      });
+      toast.success("Product reactivated successfully.");
+      await fetchProducts();
+    } catch (error) {
+      toast.error(error.message || "Failed to reactivate product.");
     } finally {
       setDeletingId(null);
     }
@@ -168,20 +180,15 @@ function Warehouse() {
           </div>
 
           <select
-            value={selectedCategory}
+            value={selectedStatus}
             onChange={(event) => {
-              setSelectedCategory(event.target.value);
+              setSelectedStatus(event.target.value);
               setCurrentPage(1);
             }}
             className="h-10 w-full rounded-xl border border-(--border-color) bg-(--dropdown-background) px-3 text-sm text-(--text-color) outline-none sm:max-w-52"
           >
-            <option value="all">All Categories</option>
-
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
+            <option value="true">Activated</option>
+            <option value="false">Deactivated</option>
           </select>
         </div>
 
@@ -210,8 +217,10 @@ function Warehouse() {
             <WarehouseTable
               items={products}
               onDelete={handleDelete}
+              onReactivate={handleReactivate}
               deletingId={deletingId}
               onEdit={(product) => navigate(`/edit-product/${product.id}`)}
+              deleteDescription="NOTE: If this product has transaction history, it will be deactivated instead of permanently deleted."
             />
             {totalProducts > 0 && (
               <Pagination

@@ -1,36 +1,32 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  FiFileText,
-  FiChevronLeft,
-  FiChevronsLeft,
-  FiChevronsRight,
-  FiChevronRight,
-} from "react-icons/fi";
+import { FiFileText, FiChevronRight } from "react-icons/fi";
 import toast from "react-hot-toast";
 
 import { useAuth } from "../../../context/AuthContext";
 import { getInvoices } from "../api/procurementApi";
+import Pagination from "../components/Pagination";
 
 function AllInvoices() {
   const { accessToken } = useAuth();
   const navigate = useNavigate();
 
   const [invoices, setInvoices] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [loading, setLoading] = useState(true);
 
   const PAGE_SIZE = 10;
 
   const fetchInvoices = useCallback(async () => {
-    if (!accessToken) return;
-
+    if (!accessToken) {
+      setInvoices([]);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
-
     try {
       const data = await getInvoices(accessToken, page, PAGE_SIZE);
-
       setInvoices(data.results || []);
       setTotalPages(Math.max(1, Math.ceil((data.count || 0) / PAGE_SIZE)));
     } catch (error) {
@@ -64,70 +60,6 @@ function AllInvoices() {
       year: "numeric",
     });
   };
-
-  function Pagination() {
-    const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
-
-    return (
-      <div className="flex flex-wrap items-center justify-center gap-2 border-t border-(--border-color) px-4 py-3">
-        <button
-          type="button"
-          onClick={() => setPage(1)}
-          disabled={page === 1}
-          aria-label="First page"
-          className="rounded-lg border border-(--border-color) p-2 text-(--text-color) transition hover:bg-(--input-background) disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          <FiChevronsLeft size={16} />
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setPage((current) => current - 1)}
-          disabled={page === 1}
-          aria-label="Previous page"
-          className="rounded-lg border border-(--border-color) p-2 text-(--text-color) transition hover:bg-(--input-background) disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          <FiChevronLeft size={16} />
-        </button>
-
-        {pages.map((pageNumber) => (
-          <button
-            key={pageNumber}
-            type="button"
-            onClick={() => setPage(pageNumber)}
-            aria-current={page === pageNumber ? "page" : undefined}
-            className={`min-w-9 rounded-lg border px-3 py-2 text-sm transition ${
-              page === pageNumber
-                ? "border-(--accent-color) bg-(--accent-color) text-[#00010f]"
-                : "border-(--border-color) text-(--text-color) hover:bg-(--input-background)"
-            }`}
-          >
-            {pageNumber}
-          </button>
-        ))}
-
-        <button
-          type="button"
-          onClick={() => setPage((current) => current + 1)}
-          disabled={page === totalPages}
-          aria-label="Next page"
-          className="rounded-lg border border-(--border-color) p-2 text-(--text-color) transition hover:bg-(--input-background) disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          <FiChevronRight size={16} />
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setPage(totalPages)}
-          disabled={page === totalPages}
-          aria-label="Last page"
-          className="rounded-lg border border-(--border-color) p-2 text-(--text-color) transition hover:bg-(--input-background) disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          <FiChevronsRight size={16} />
-        </button>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen space-y-4 p-4 text-(--accent-color) sm:p-6">
@@ -222,7 +154,9 @@ function AllInvoices() {
           </div>
         )}
 
-        {!loading && invoices.length > 0 && <Pagination />}
+        {!loading && invoices.length > 0 && (
+          <Pagination page={page} totalPages={totalPages} onChange={setPage} />
+        )}
       </div>
     </div>
   );

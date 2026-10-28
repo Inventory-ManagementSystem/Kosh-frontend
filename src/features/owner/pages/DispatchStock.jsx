@@ -16,6 +16,13 @@ import {
 import WarehouseTable from "../components/WarehouseTable";
 import WarehouseTableSkeleton from "../components/WarehouseTableSkeleton";
 
+const removeEmojis = (value) => {
+  return value.replace(
+    /[\p{Extended_Pictographic}\p{Regional_Indicator}\uFE0F\u200D\u20E3]/gu,
+    "",
+  );
+};
+
 function DispatchStock() {
   const { accessToken } = useAuth();
 
@@ -29,7 +36,7 @@ function DispatchStock() {
   const [showOutletPopup, setShowOutletPopup] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedOutlet, setSelectedOutlet] = useState("");
-  const [dispatchQuantity, setDispatchQuantity] = useState("")
+  const [dispatchQuantity, setDispatchQuantity] = useState("");
   const [outletName, setOutletName] = useState("");
   const [outletAddress, setOutletAddress] = useState("");
   const [dispatching, setDispatching] = useState(false);
@@ -83,18 +90,15 @@ function DispatchStock() {
     const productName = String(product.name || "").toLowerCase();
     const productSku = String(product.sku || "").toLowerCase();
     const matchesSearch =
-      productName.includes(searchValue) ||
-      productSku.includes(searchValue);
+      productName.includes(searchValue) || productSku.includes(searchValue);
     const categoryId =
       typeof product.category === "object"
         ? product.category?.id
         : product.category;
     const matchesCategory =
-      selectedCategory === "all" ||
-      String(categoryId) === selectedCategory;
+      selectedCategory === "all" || String(categoryId) === selectedCategory;
     const matchesStockStatus =
-      product.status === "In Stock" ||
-      product.status === "Low Stock";
+      product.status === "In Stock" || product.status === "Low Stock";
     return matchesSearch && matchesCategory && matchesStockStatus;
   });
 
@@ -144,8 +148,8 @@ function DispatchStock() {
       });
       toast.success(
         response.message ||
-          `Dispatch ${response.data?.number || ""} recorded successfully.`
-      )
+          `Dispatch ${response.data?.number || ""} recorded successfully.`,
+      );
       setShowDispatchPopup(false);
       setSelectedProduct(null);
       setSelectedOutlet("");
@@ -164,12 +168,7 @@ function DispatchStock() {
     event.preventDefault();
     const name = outletName.trim();
     const address = outletAddress.trim();
-    if (
-      !name ||
-      !address ||
-      outletNameError ||
-      outletAddressError
-    ) {
+    if (!name || !address || outletNameError || outletAddressError) {
       return;
     }
     try {
@@ -181,9 +180,7 @@ function DispatchStock() {
       const newOutlet = response.data;
       if (newOutlet?.is_active) {
         setOutlets((previousOutlets) => [
-          ...previousOutlets.filter(
-            (outlet) => outlet.id !== newOutlet.id
-          ),
+          ...previousOutlets.filter((outlet) => outlet.id !== newOutlet.id),
           newOutlet,
         ]);
         setSelectedOutlet(String(newOutlet.id));
@@ -210,14 +207,11 @@ function DispatchStock() {
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex w-full flex-col gap-3 sm:flex-row">
           <div className="flex h-10 w-full items-center gap-2 rounded-xl bg-(--input-background) px-3 sm:max-w-80">
-            <FiSearch
-              size={16}
-              className="shrink-0 text-(--text-color)"
-            />
+            <FiSearch size={16} className="shrink-0 text-(--text-color)" />
             <input
               type="text"
               value={search}
-              onChange={(event) => setSearch(event.target.value)}
+              onChange={(event) => setSearch(removeEmojis(event.target.value))}
               placeholder="Product name or SKU"
               className="w-full bg-transparent text-sm text-(--text-color) outline-none placeholder:text-(--secondary-text-color)"
             />
@@ -335,6 +329,7 @@ function DispatchStock() {
                   max={selectedProduct?.quantity ?? undefined}
                   step="1"
                   value={dispatchQuantity}
+                  onWheel={(event) => event.currentTarget.blur()}
                   onChange={(event) => {
                     const value = event.target.value;
                     setDispatchQuantity(value);
@@ -345,12 +340,9 @@ function DispatchStock() {
                       !Number.isInteger(Number(value)) ||
                       Number(value) < 1
                     ) {
-                      setQuantityError(
-                        "Enter a number greater than zero."
-                      );
+                      setQuantityError("Enter a number greater than zero.");
                     } else if (
-                      Number(value) >
-                      Number(selectedProduct?.quantity ?? 0)
+                      Number(value) > Number(selectedProduct?.quantity ?? 0)
                     ) {
                       setQuantityError("Quantity exceeds available stock.");
                     } else {
@@ -422,11 +414,11 @@ function DispatchStock() {
                   type="text"
                   value={outletName}
                   onChange={(event) => {
-                    const value = event.target.value;
+                    const value = removeEmojis(event.target.value);
                     setOutletName(value);
 
                     setOutletNameError(
-                      !value.trim() ? "Outlet name is required." : ""
+                      !value.trim() ? "Outlet name is required." : "",
                     );
                   }}
                   maxLength={100}
@@ -446,11 +438,11 @@ function DispatchStock() {
                   type="text"
                   value={outletAddress}
                   onChange={(event) => {
-                    const value = event.target.value;
+                    const value = removeEmojis(event.target.value);
                     setOutletAddress(value);
 
                     setOutletAddressError(
-                      !value.trim() ? "Outlet address is required." : ""
+                      !value.trim() ? "Outlet address is required." : "",
                     );
                   }}
                   maxLength={250}

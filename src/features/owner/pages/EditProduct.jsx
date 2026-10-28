@@ -13,6 +13,13 @@ import BackButton from "../../../components/auth/BackButton";
 import NavigationButton from "../../../components/auth/NavigationButton";
 import { useAuth } from "../../../context/AuthContext";
 
+const removeEmojis = (value) => {
+  return value.replace(
+    /[\p{Extended_Pictographic}\p{Regional_Indicator}\uFE0F\u200D\u20E3]/gu,
+    "",
+  );
+};
+
 function EditProduct() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -133,8 +140,11 @@ function EditProduct() {
   };
 
   const handleChange = (event) => {
-    const { name, value, files, checked, type } = event.target;
-
+    const { name, files } = event.target;
+    let { value } = event.target;
+    if (name == "name" || name == "sku") {
+      value = removeEmojis(value);
+    }
     if (name === "image") {
       const image = files?.[0];
 
@@ -160,15 +170,6 @@ function EditProduct() {
       setErrors((previous) => ({
         ...previous,
         image: "",
-      }));
-
-      return;
-    }
-
-    if (type === "checkbox") {
-      setFormData((previous) => ({
-        ...previous,
-        [name]: checked,
       }));
 
       return;

@@ -7,6 +7,13 @@ import BackButton from "../../../components/auth/BackButton";
 import { useAuth } from "../../../context/AuthContext";
 import NavigationButton from "../../../components/auth/NavigationButton";
 
+const removeEmojis = (value) => {
+  return value.replace(
+    /[\p{Extended_Pictographic}\p{Regional_Indicator}\uFE0F\u200D\u20E3]/gu,
+    "",
+  );
+};
+
 function AddProduct() {
   const navigate = useNavigate();
   const { accessToken } = useAuth();
@@ -94,7 +101,8 @@ function AddProduct() {
 
       return;
     }
-
+    const cleanedValue =
+      name === "name" || name === "sku" ? removeEmojis(value) : value;
     if (
       [
         "selling_price",
@@ -102,20 +110,20 @@ function AddProduct() {
         "opening_stock",
         "low_stock_alert_at",
       ].includes(name) &&
-      value !== "" &&
-      Number(value) < 0
+      cleanedValue !== "" &&
+      Number(cleanedValue) < 0
     ) {
       return;
     }
 
     setFormData((previous) => ({
       ...previous,
-      [name]: value,
+      [name]: cleanedValue,
     }));
 
     setErrors((previous) => ({
       ...previous,
-      [name]: validateField(name, value),
+      [name]: validateField(name, cleanedValue),
     }));
   };
 

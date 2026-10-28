@@ -136,6 +136,13 @@ function EmptyGRNCard() {
   );
 }
 
+const removeEmojis = (value) => {
+  return value.replace(
+    /[\p{Extended_Pictographic}\p{Regional_Indicator}\uFE0F\u200D\u20E3]/gu,
+    "",
+  );
+};
+
 function CreateGRN() {
   const { id } = useParams();
   const { accessToken } = useAuth();
@@ -410,11 +417,13 @@ function CreateGRN() {
 
                 <textarea
                   value={notes}
-                  onChange={(event) => setNotes(event.target.value)}
+                  onChange={(event) =>
+                    setNotes(removeEmojis(event.target.value))
+                  }
                   readOnly={locked}
                   maxLength={500}
                   placeholder="Add a note..."
-                  className="h-28 w-full resize-none rounded-md border border-[var(--border-color)] bg-[var(--input-background)] px-2.5 py-2.5 text-[10px] text-[var(--text-color)] outline-none placeholder:text-[var(--secondary-text-color)] focus:border-[var(--accent-color)]"
+                  className="h-28 w-full resize-none rounded-md border border-[var(--border-color)] bg-[var(--input-background)] px-2.5 py-2.5 text-[14px] text-[var(--text-color)] outline-none placeholder:text-[var(--secondary-text-color)] focus:border-[var(--accent-color)]"
                 />
               </label>
 

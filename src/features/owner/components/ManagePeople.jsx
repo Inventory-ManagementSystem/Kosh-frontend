@@ -8,6 +8,13 @@ import { useAuth } from "../../../context/AuthContext";
 import PeopleTable from "./PeopleTable";
 import ConfirmDelete from "./ConfirmDelete";
 
+const removeEmojis = (value) => {
+  return value.replace(
+    /[\p{Extended_Pictographic}\p{Regional_Indicator}\uFE0F\u200D\u20E3]/gu,
+    "",
+  );
+};
+
 function ManagePeople({
   title,
   description,
@@ -120,7 +127,8 @@ function ManagePeople({
           <input
             type="text"
             value={search}
-            onChange={(event) => setSearch(event.target.value)}
+            maxLength={100}
+            onChange={(event) => setSearch(removeEmojis(event.target.value))}
             placeholder={searchPlaceholder}
             className="w-full bg-transparent text-sm text-(--text-color) outline-none placeholder:text-(--secondary-text-color)"
           />

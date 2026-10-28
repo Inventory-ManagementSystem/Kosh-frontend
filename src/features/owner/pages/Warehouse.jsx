@@ -87,6 +87,13 @@ function Pagination({ page, totalPages, onChange }) {
   );
 }
 
+const removeEmojis = (value) => {
+  return value.replace(
+    /[\p{Extended_Pictographic}\p{Regional_Indicator}\uFE0F\u200D\u20E3]/gu,
+    "",
+  );
+};
+
 function Warehouse() {
   const navigate = useNavigate();
   const { accessToken } = useAuth();
@@ -221,8 +228,9 @@ function Warehouse() {
             <input
               type="text"
               value={search}
+              maxLength={100}
               onChange={(event) => {
-                setSearch(event.target.value);
+                setSearch(removeEmojis(event.target.value));
                 setCurrentPage(1);
               }}
               placeholder="Product name or SKU"

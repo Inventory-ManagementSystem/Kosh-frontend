@@ -32,7 +32,7 @@ function OwnerLayout() {
           <div
             className="
               pointer-events-none
-              absolute left-1/2 top-1/3
+              fixed left-1/2 top-1/3
               h-97.5 w-93
               rounded-full
               bg-(--dashboard-glow)

@@ -4,7 +4,10 @@ import { FiArrowLeft, FiDownload } from "react-icons/fi";
 import toast from "react-hot-toast";
 
 import { useAuth } from "../../../context/AuthContext";
-import { getSupplierInvoiceDetails, downloadSupplierInvoicePdf } from "../api/supplierOrderApi";
+import {
+  getSupplierInvoiceDetails,
+  downloadSupplierInvoicePdf,
+} from "../api/supplierOrderApi";
 import logo from "../../../assets/auth/logo.svg";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -18,9 +21,7 @@ const formatCurrency = (value) =>
 const formatDate = (value) => {
   if (!value) return "—";
 
-  const date = new Date(
-    value.length === 10 ? `${value}T00:00:00` : value,
-  );
+  const date = new Date(value.length === 10 ? `${value}T00:00:00` : value);
 
   if (Number.isNaN(date.getTime())) return "—";
 
@@ -46,15 +47,12 @@ const formatTime = (value) => {
   });
 };
 
-const formatStatus = (value) =>
-  value ? value.replaceAll("_", " ") : "—";
+const formatStatus = (value) => (value ? value.replaceAll("_", " ") : "—");
 
 function DetailRow({ label, value }) {
   return (
     <div className="flex items-start justify-between gap-3 text-xs">
-      <span className="shrink-0 text-(--secondary-text-color)">
-        {label}
-      </span>
+      <span className="shrink-0 text-(--secondary-text-color)">{label}</span>
 
       <span className="min-w-0 break-words text-right capitalize text-(--text-color)">
         {value ?? "—"}
@@ -112,10 +110,7 @@ function SupplierOrderProgress() {
         );
 
         setInvoice(invoiceData);
-      } else if (
-        invoiceValue &&
-        typeof invoiceValue === "object"
-      ) {
+      } else if (invoiceValue && typeof invoiceValue === "object") {
         setInvoice(invoiceValue);
       } else {
         setInvoice(null);
@@ -139,9 +134,7 @@ function SupplierOrderProgress() {
     const invoiceId =
       invoice?.id ||
       order?.invoice_id ||
-      (typeof order?.invoice === "object"
-        ? order.invoice?.id
-        : order?.invoice);
+      (typeof order?.invoice === "object" ? order.invoice?.id : order?.invoice);
 
     if (!invoiceId) {
       toast.error("Invoice is not available for this order yet.");
@@ -151,10 +144,7 @@ function SupplierOrderProgress() {
     setDownloading(true);
 
     try {
-      const blob = await downloadSupplierInvoicePdf(
-        accessToken,
-        invoiceId,
-      );
+      const blob = await downloadSupplierInvoicePdf(accessToken, invoiceId);
 
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -229,9 +219,7 @@ function SupplierOrderProgress() {
   const invoiceId =
     invoice?.id ||
     order.invoice_id ||
-    (typeof order.invoice === "object"
-      ? order.invoice?.id
-      : order.invoice);
+    (typeof order.invoice === "object" ? order.invoice?.id : order.invoice);
 
   return (
     <div className="min-h-screen space-y-5 p-4 text-(--text-color) sm:p-6">
@@ -246,30 +234,21 @@ function SupplierOrderProgress() {
           </h2>
 
           <div className="space-y-4">
-            <DetailRow
-              label="Invoice No."
-              value={invoice?.number}
-            />
+            <DetailRow label="Invoice No." value={invoice?.number} />
 
             <DetailRow
               label="Generated on"
               value={formatDate(invoice?.issue_date)}
             />
 
-            <DetailRow
-              label="Time"
-              value={formatTime(invoice?.created_at)}
-            />
+            <DetailRow label="Time" value={formatTime(invoice?.created_at)} />
 
             <DetailRow
               label="Sent to"
               value={buyer.business_name || order.business_name}
             />
 
-            <DetailRow
-              label="Status"
-              value={order.status}
-            />
+            <DetailRow label="Status" value={order.status} />
 
             <DetailRow
               label="Dispatch Date"
@@ -292,10 +271,7 @@ function SupplierOrderProgress() {
               />
             )}
 
-            <DetailRow
-              label="Tracking Note"
-              value={shipment.tracking_note}
-            />
+            <DetailRow label="Tracking Note" value={shipment.tracking_note} />
 
             {invoice && (
               <>
@@ -334,7 +310,7 @@ function SupplierOrderProgress() {
                   type="button"
                   onClick={handleDownloadInvoice}
                   disabled={downloading || !invoiceId}
-                  className="flex w-full items-center justify-center gap-2 rounded-md bg-(--accent-color) px-4 py-3 text-sm font-semibold text-[#00010f] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex w-full items-center justify-center gap-2 rounded-md bg-(--accent-color) px-4 py-3 text-sm font-semibold text-(--page-background) transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {downloading ? "Downloading..." : "Download Invoice"}
                   <FiDownload size={16} />
@@ -369,9 +345,7 @@ function SupplierOrderProgress() {
             <div className="min-w-0 space-y-1">
               <p className="text-(--secondary-text-color)">From</p>
 
-              <p className="font-medium">
-                {supplier.company_name }
-              </p>
+              <p className="font-medium">{supplier.company_name}</p>
 
               <p className="break-words text-(--secondary-text-color)">
                 {supplier.address || "—"}
@@ -434,9 +408,7 @@ function SupplierOrderProgress() {
                     className="border-b border-(--border-color)"
                   >
                     <td className="py-3 pr-3">
-                      <p className="font-medium">
-                        {item.product_name || "—"}
-                      </p>
+                      <p className="font-medium">{item.product_name || "—"}</p>
 
                       <p className="mt-1 text-(--secondary-text-color)">
                         {item.sku || "—"}
@@ -449,15 +421,13 @@ function SupplierOrderProgress() {
                       {formatCurrency(item.unit_price)}
                     </td>
 
-                    <td className="px-3 py-3">
-                      {item.gst_rate ?? 0}%
-                    </td>
+                    <td className="px-3 py-3">{item.gst_rate ?? 0}%</td>
 
                     <td className="py-3 pl-3 text-right">
                       {formatCurrency(
                         item.line_total ??
-                          (Number(item.line_subtotal || 0) +
-                            Number(item.line_tax || 0)),
+                          Number(item.line_subtotal || 0) +
+                            Number(item.line_tax || 0),
                       )}
                     </td>
                   </tr>
@@ -516,9 +486,7 @@ function SupplierOrderProgress() {
                     <span className="text-(--secondary-text-color)">
                       Goods Receipt Credit
                     </span>
-                    <span>
-                      {formatCurrency(invoice.discrepancy_credit)}
-                    </span>
+                    <span>{formatCurrency(invoice.discrepancy_credit)}</span>
                   </div>
                 )}
 

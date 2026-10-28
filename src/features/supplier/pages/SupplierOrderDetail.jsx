@@ -4,8 +4,10 @@ import { FiArrowLeft } from "react-icons/fi";
 import toast from "react-hot-toast";
 
 import { useAuth } from "../../../context/AuthContext";
-import { getSupplierOrderDetails } from "../api/supplierOrderApi";
-import logo from "../../../assets/auth/logo.svg";
+import {
+  getSupplierOrderDetails,
+  dispatchSupplierOrder,
+} from "../api/supplierOrderApi";
 
 const formatCurrency = (value) =>
   `\u20B9${(Number(value) || 0).toLocaleString("en-IN", {
@@ -16,9 +18,7 @@ const formatCurrency = (value) =>
 const formatDate = (value) => {
   if (!value) return "—";
 
-  const date = new Date(
-    value.length === 10 ? `${value}T00:00:00` : value,
-  );
+  const date = new Date(value.length === 10 ? `${value}T00:00:00` : value);
 
   if (Number.isNaN(date.getTime())) return "—";
 
@@ -32,9 +32,7 @@ const formatDate = (value) => {
 function DetailRow({ label, value }) {
   return (
     <div className="flex items-start justify-between gap-3 text-xs">
-      <span className="shrink-0 text-(--secondary-text-color)">
-        {label}
-      </span>
+      <span className="shrink-0 text-(--secondary-text-color)">{label}</span>
       <span className="min-w-0 break-words text-right text-(--text-color)">
         {value ?? "—"}
       </span>
@@ -46,7 +44,7 @@ function SupplierOrderDetail() {
   const { orderId } = useParams();
   const { accessToken } = useAuth();
   const navigate = useNavigate();
-
+  const [dispatching, setDispatching] = useState(false);
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -73,12 +71,6 @@ function SupplierOrderDetail() {
     fetchOrder();
   }, [fetchOrder]);
 
-  const handleDispatch = () => {
-    toast.error(
-      "Dispatch API is not connected yet. Share the dispatch endpoint to enable this action.",
-    );
-  };
-
   if (loading) {
     return (
       <div className="space-y-4 p-4 sm:p-6">
@@ -88,6 +80,24 @@ function SupplierOrderDetail() {
       </div>
     );
   }
+
+  const handleDispatch = async () => {
+    if (dispatching) return;
+    try {
+      setDispatching(true);
+      const result = await dispatchSupplierOrder(accessToken, orderId);
+      toast.success(
+        result?.shipment && result?.invoice
+          ? "Order dispatched and invoice generated successfully."
+          : "Order dispatched successfully.",
+      );
+      await fetchOrder();
+    } catch (error) {
+      toast.error(error.message || "Failed to dispatch order.");
+    } finally {
+      setDispatching(false);
+    }
+  };
 
   if (!order) {
     return (
@@ -159,9 +169,7 @@ function SupplierOrderDetail() {
               <p className="mb-1 text-[10px] uppercase text-(--secondary-text-color)">
                 {item.label}
               </p>
-              <p className="break-words text-xs font-semibold">
-                {item.value}
-              </p>
+              <p className="break-words text-xs font-semibold">{item.value}</p>
             </div>
           ))}
         </div>
@@ -254,18 +262,14 @@ function SupplierOrderDetail() {
                 <p className="text-[10px] uppercase text-(--secondary-text-color)">
                   Advance Payment
                 </p>
-                <p className="mt-2 font-semibold">
-                  {formatCurrency(advance)}
-                </p>
+                <p className="mt-2 font-semibold">{formatCurrency(advance)}</p>
               </div>
 
               <div className="border-t border-(--border-color) pt-3 sm:border-l sm:border-t-0 sm:pl-4 sm:pt-0">
                 <p className="text-[10px] uppercase text-(--secondary-text-color)">
                   After Delivery
                 </p>
-                <p className="mt-2 font-semibold">
-                  {formatCurrency(balance)}
-                </p>
+                <p className="mt-2 font-semibold">{formatCurrency(balance)}</p>
               </div>
             </div>
           </div>
@@ -277,10 +281,7 @@ function SupplierOrderDetail() {
 
             <div className="space-y-3">
               <DetailRow label="Order Number" value={order.number} />
-              <DetailRow
-                label="Quantity"
-                value={order.total_quantity ?? 0}
-              />
+              <DetailRow label="Quantity" value={order.total_quantity ?? 0} />
               <DetailRow
                 label="Delivery"
                 value={formatDate(
@@ -291,10 +292,7 @@ function SupplierOrderDetail() {
                 label="Total Price"
                 value={formatCurrency(order.grand_total)}
               />
-              <DetailRow
-                label="Balance Due"
-                value={formatCurrency(balance)}
-              />
+              <DetailRow label="Balance Due" value={formatCurrency(balance)} />
             </div>
 
             {order.advance_paid && advance > 0 && (
@@ -317,9 +315,7 @@ function SupplierOrderDetail() {
                 <th className="px-3 py-3">Quantity</th>
                 <th className="px-3 py-3">Unit Price</th>
                 <th className="px-3 py-3">GST</th>
-                <th className="rounded-r-lg px-3 py-3 text-right">
-                  Amount
-                </th>
+                <th className="rounded-r-lg px-3 py-3 text-right">Amount</th>
               </tr>
             </thead>
 
@@ -340,9 +336,7 @@ function SupplierOrderDetail() {
                     <td className="px-3 py-3">
                       {formatCurrency(item.unit_price)}
                     </td>
-                    <td className="px-3 py-3">
-                      {Number(item.gst_rate) || 0}%
-                    </td>
+                    <td className="px-3 py-3">{Number(item.gst_rate) || 0}%</td>
                     <td className="px-3 py-3 text-right">
                       {formatCurrency(item.line_total)}
                     </td>
@@ -386,10 +380,6 @@ function SupplierOrderDetail() {
         >
           Dispatch Order
         </button>
-      </div>
-
-      <div className="flex justify-end">
-        <img src={logo} alt="KOSH" className="h-6 w-auto opacity-70" />
       </div>
     </div>
   );

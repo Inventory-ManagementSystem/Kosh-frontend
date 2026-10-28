@@ -1,7 +1,6 @@
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-const getErrorMessage = (data, fallback) =>
-  data?.message || fallback;
+const getErrorMessage = (data, fallback) => data?.message || fallback;
 
 export const getSupplierOrders = async (
   accessToken,
@@ -25,19 +24,14 @@ export const getSupplierOrders = async (
   );
   const data = await response.json();
   if (!response.ok || data.success === false) {
-    const error = new Error(
-      getErrorMessage(data, "Failed to fetch orders."),
-    );
+    const error = new Error(getErrorMessage(data, "Failed to fetch orders."));
     error.status = response.status;
     throw error;
   }
   return data.data;
 };
 
-export const getSupplierOrderDetails = async (
-  accessToken,
-  orderId,
-) => {
+export const getSupplierOrderDetails = async (accessToken, orderId) => {
   const response = await fetch(
     `${BASE_URL}procurement/supplier/orders/${orderId}/`,
     {
@@ -60,10 +54,7 @@ export const getSupplierOrderDetails = async (
   return data.data;
 };
 
-export const getSupplierInvoiceDetails = async (
-  accessToken,
-  invoiceId,
-) => {
+export const getSupplierInvoiceDetails = async (accessToken, invoiceId) => {
   const response = await fetch(
     `${BASE_URL}procurement/supplier/invoices/${invoiceId}/`,
     {
@@ -98,9 +89,35 @@ export async function downloadSupplierInvoicePdf(accessToken, invoiceId) {
   );
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(
-      errorData.message || "Unable to download invoice.",
-    );
+    throw new Error(errorData.message || "Unable to download invoice.");
   }
   return response.blob();
 }
+
+export const dispatchSupplierOrder = async (
+  accessToken,
+  orderId,
+  body = {},
+) => {
+  const response = await fetch(
+    `${BASE_URL}procurement/supplier/orders/${orderId}/dispatch/`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(body),
+    },
+  );
+  const data = await response.json();
+  if (!response.ok || data.success === false) {
+    const error = new Error(getErrorMessage(data, "Failed to dispatch order."));
+    error.status = response.status;
+    error.data = data;
+    throw error;
+  }
+  return data.data;
+};

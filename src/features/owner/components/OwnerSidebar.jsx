@@ -2,14 +2,13 @@ import { NavLink } from "react-router-dom";
 
 import { MdDashboard } from "react-icons/md";
 import { TbAlertTriangleFilled } from "react-icons/tb";
-import { TbClipboardListFilled } from "react-icons/tb";
+import { FaHistory } from "react-icons/fa";
 import { RiFileList3Fill } from "react-icons/ri";
 import { FaWarehouse } from "react-icons/fa6";
 import { AiFillProduct } from "react-icons/ai";
 import { FaCartShopping } from "react-icons/fa6";
 import { IoMdListBox } from "react-icons/io";
 import { BiSolidReport } from "react-icons/bi";
-import { BsArchiveFill } from "react-icons/bs";
 import { BiSolidSend } from "react-icons/bi";
 import { MdPersonAddAlt1 } from "react-icons/md";
 import { BsPeopleFill } from "react-icons/bs";
@@ -20,19 +19,14 @@ import { CgPushRight } from "react-icons/cg";
 export const navItems = [
   { label: "Dashboard", path: "/dashboard", icon: MdDashboard },
   { label: "RFQ & Alerts", path: "/rfq-alerts", icon: TbAlertTriangleFilled },
-  // {
-  //   label: "Manage Quotation",
-  //   path: "/rfq-alerts",
-  //   icon: TbClipboardListFilled,
-  // },
   { label: "PO & Invoice", path: "/owner/invoices", icon: RiFileList3Fill },
   { label: "Warehouse", path: "/warehouse", icon: FaWarehouse },
   { label: "Add Product", path: "/add-products", icon: AiFillProduct },
   { label: "Orders", path: "/owner/orders", icon: FaCartShopping },
   { label: "Create GRN", path: "/goods-receipts", icon: IoMdListBox },
   { label: "Report", path: "/reports", icon: BiSolidReport },
-  // { label: "Received Stock", path: "/received-stock", icon: BsArchiveFill },
   { label: "Dispatch Stock", path: "/dispatch-stock", icon: BiSolidSend },
+  { label: "Stock History", path: "/received-stock", icon: FaHistory },
   { label: "Kosh AI", path: "/kosh-ai", icon: MdPersonAddAlt1 },
   { label: "Manage Employees", path: "/employees", icon: BsPeopleFill },
   { label: "Manage Suppliers", path: "/suppliers", icon: BsPersonLinesFill },
@@ -73,7 +67,7 @@ function OwnerSidebar({ collapsed, setCollapsed }) {
                   to={item.path}
                   title={collapsed ? item.label : undefined}
                   style={{
-                    marginTop: [1, 4, 11].includes(index) ? "24px" : undefined,
+                    marginTop: [1, 4, 10].includes(index) ? "24px" : undefined,
                   }}
                   className={({ isActive }) => `
                     ${itemClass}

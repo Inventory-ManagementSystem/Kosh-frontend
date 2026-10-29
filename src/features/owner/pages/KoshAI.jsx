@@ -5,6 +5,7 @@ import { FiPaperclip, FiX } from "react-icons/fi";
 
 import useAssistantChat from "../hooks/useAssistantChat";
 import formatAssistantMessage from "../components/formatAssistantMessage";
+import NewChatModal from "../components/NewChatModal";
 
 const MAX_MESSAGE_LENGTH = 2000;
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
@@ -16,15 +17,16 @@ const ALLOWED_IMAGE_TYPES = [
   "image/webp",
 ];
 
-function KoshAI() {
-  const { messages, loading, error, sendMessage } = useAssistantChat();
+function KoshAI({ dashboardName }) {
+  const { messages, loading, error, sendMessage,startNewChat } = useAssistantChat("owner");
   const [input, setInput] = useState("");
   const [attachment, setAttachment] = useState(null);
   const [fileError, setFileError] = useState("");
   const [checkingFile, setCheckingFile] = useState(false);
+  const [showNewChatModal, setShowNewChatModal] = useState(false);
+  const [deletingChat, setDeletingChat] = useState(false);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
-
 
   useEffect(() => {
     if (messages.length === 0 || !messagesEndRef.current) {
@@ -35,6 +37,27 @@ function KoshAI() {
       block: "end",
     });
   }, [messages, loading]);
+
+  async function handleCreateNewChat() {
+  if (deletingChat || loading) {
+    return;
+  }
+  setDeletingChat(true);
+  try {
+    const success = await startNewChat();
+    if (success) {
+      setInput("");
+      setAttachment(null);
+      setFileError("");
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+      setShowNewChatModal(false);
+    }
+  } finally {
+    setDeletingChat(false);
+  }
+}
 
   async function handleFileChange(event) {
     const file = event.target.files?.[0];
@@ -102,7 +125,16 @@ function KoshAI() {
       <h1 className="mb-3 shrink-0 text-base font-semibold text-(--accent-color) sm:text-2xl">
         Ask Kosh AI
       </h1>
-
+      <div className="py-2">
+      <button
+    type="button"
+    onClick={() => setShowNewChatModal(true)}
+    disabled={loading || deletingChat}
+    className="ml-auto flex shrink-0 justify-end items-center gap-2 rounded-lg border border-(--border-color) bg-(--accent-color) px-3 py-2 text-sm font-medium text-(--page-background)"
+  >
+    New Chat
+  </button>
+  </div>
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-(--border-color) bg-(--card-background)">
         <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden">
           {messages.length === 0 ? (
@@ -286,6 +318,12 @@ function KoshAI() {
           </form>
         </div>
       </div>
+      <NewChatModal
+  isOpen={showNewChatModal}
+  onClose={() => setShowNewChatModal(false)}
+  onConfirm={handleCreateNewChat}
+  loading={deletingChat}
+/>
     </div>
   );
 }

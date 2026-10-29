@@ -59,8 +59,8 @@ export async function deleteAssistantConversation(conversationId, accessToken) {
       credentials: "include",
     },
   );
+  const data = await response.json().catch(() => ({}));
   if (!response.ok) {
-    const data = await response.json().catch(() => ({}));
     throw new Error(data.message || "Failed to delete conversation.");
   }
 }

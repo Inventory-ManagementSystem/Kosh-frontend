@@ -5,11 +5,9 @@ import {
   deleteAssistantConversation,
 } from "../api/assistantApi";
 
-const STORAGE_KEY = "kosh-ai-chat";
-
-function getSavedChat() {
+function getSavedChat(storageKey) {
   try {
-    const savedChat = sessionStorage.getItem(STORAGE_KEY);
+    const savedChat = sessionStorage.getItem(storageKey);
     if (savedChat) {
       const data = JSON.parse(savedChat);
       return {
@@ -20,15 +18,14 @@ function getSavedChat() {
   } catch (error) {
     console.error("Could not restore chat:", error);
   }
-  return {
-    messages: [],
-    conversationId: null,
-  };
+  return { messages: [], conversationId: null };
 }
 
-function useAssistantChat() {
+function useAssistantChat(dashboardName = "default") {
   const { accessToken } = useAuth();
-  const [initialChat] = useState(getSavedChat);
+  const storageKey = `kosh-ai-chat-${dashboardName}`;
+
+  const [initialChat] = useState(() => getSavedChat(storageKey));
   const [messages, setMessages] = useState(initialChat.messages);
   const [conversationId, setConversationId] = useState(
     initialChat.conversationId,
@@ -39,61 +36,60 @@ function useAssistantChat() {
   useEffect(() => {
     try {
       sessionStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify({
-          messages,
-          conversationId,
-        }),
+        storageKey,
+        JSON.stringify({ messages, conversationId }),
       );
     } catch (error) {
       console.error("Could not save chat:", error);
     }
-  }, [messages, conversationId]);
+  }, [messages, conversationId, storageKey]);
 
   async function sendMessage(message, attachment = null) {
-    if (loading) {
-    return;
-  }
     const trimmedMessage = message.trim();
-    if (!trimmedMessage && !attachment) {
-      return;
+    if ((!trimmedMessage && !attachment) || loading || !accessToken) {
+      return false;
     }
     if (trimmedMessage.length > 2000) {
-    setError("Message cannot exceed 2000 characters.");
-    return;
-  }
+      setError("Message cannot exceed 2000 characters.");
+      return false;
+    }
+
     setError("");
     setLoading(true);
-    const userMessage = {
-  role: "user",
-  content: message,
-  attachment: attachment
-    ? {
-        name: attachment.name,
-        size: attachment.size,
-        type: attachment.type,
-      }
-    : null,
-};
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      userMessage
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        role: "user",
+        content: trimmedMessage,
+        attachment: attachment
+          ? {
+              name: attachment.name,
+              size: attachment.size,
+              type: attachment.type,
+            }
+          : null,
+      },
     ]);
+
     try {
       const response = await sendAssistantMessage(
         trimmedMessage,
         accessToken,
         conversationId,
-        attachment
+        attachment,
       );
       const data = response.data;
       setConversationId(data.conversation_id);
-      setMessages((prevMessages) => [
-        ...prevMessages,
+      setMessages((prev) => [
+        ...prev,
         { role: "assistant", content: data.reply },
       ]);
+      return true;
     } catch (error) {
       setError(error.message || "Something went wrong");
+      setMessages((prev) => prev.slice(0, -1));
+      return false;
     } finally {
       setLoading(false);
     }
@@ -101,15 +97,19 @@ function useAssistantChat() {
 
   async function startNewChat() {
     if (loading) {
-      return;
+      return false;
     }
     setError("");
     try {
-      await deleteAssistantConversation(conversationId, accessToken);
+      if (conversationId) {
+        await deleteAssistantConversation(conversationId, accessToken);
+      }
       setMessages([]);
       setConversationId(null);
+      return true;
     } catch (error) {
       setError(error.message || "Could not delete the conversation");
+      return false;
     }
   }
 

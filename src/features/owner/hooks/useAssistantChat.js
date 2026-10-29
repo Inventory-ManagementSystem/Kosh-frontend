@@ -50,22 +50,41 @@ function useAssistantChat() {
     }
   }, [messages, conversationId]);
 
-  async function sendMessage(message) {
+  async function sendMessage(message, attachment = null) {
+    if (loading) {
+    return;
+  }
     const trimmedMessage = message.trim();
-    if (!trimmedMessage || loading || !accessToken) {
+    if (!trimmedMessage && !attachment) {
       return;
     }
+    if (trimmedMessage.length > 2000) {
+    setError("Message cannot exceed 2000 characters.");
+    return;
+  }
     setError("");
     setLoading(true);
+    const userMessage = {
+  role: "user",
+  content: message,
+  attachment: attachment
+    ? {
+        name: attachment.name,
+        size: attachment.size,
+        type: attachment.type,
+      }
+    : null,
+};
     setMessages((prevMessages) => [
       ...prevMessages,
-      { role: "user", content: trimmedMessage },
+      userMessage
     ]);
     try {
       const response = await sendAssistantMessage(
         trimmedMessage,
         accessToken,
         conversationId,
+        attachment
       );
       const data = response.data;
       setConversationId(data.conversation_id);

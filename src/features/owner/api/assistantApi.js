@@ -4,25 +4,43 @@ export async function sendAssistantMessage(
   message,
   accessToken,
   conversationId,
+  attachment,
 ) {
-  const body = {
-    message,
+  let body;
+  let headers = {
+    Authorization: `Bearer ${accessToken}`,
   };
-  if (conversationId) {
-    body.conversation_id = conversationId;
+  if (attachment) {
+    body = new FormData();
+    if (message.trim()) {
+      body.append("message", message.trim());
+    }
+    body.append("attachment", attachment);
+    if (conversationId) {
+      body.append("conversation_id", conversationId);
+    }
+  } else {
+    headers["Content-Type"] = "application/json";
+    body = JSON.stringify({
+      message: message.trim(),
+      ...(conversationId && {
+        conversation_id: conversationId,
+      }),
+    });
   }
   const response = await fetch(`${BASE_URL}assistant/chat/`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`,
-    },
+    headers,
     credentials: "include",
-    body: JSON.stringify(body),
+    body,
   });
-  const data = await response.json();
+  const data = await response.json().catch(() => ({}));
   if (!response.ok) {
-    throw new Error(data.message || "Failed to send message.");
+    throw new Error(
+      data.message ||
+        data.detail ||
+        "Failed to send message.",
+    );
   }
   return data;
 }

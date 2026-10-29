@@ -10,6 +10,7 @@ import {
   FiCreditCard,
   FiChevronUp,
 } from "react-icons/fi";
+import toast from "react-hot-toast";
 
 import { useAuth } from "../../../context/AuthContext";
 import logo from "../../../assets/auth/logo.svg";
@@ -44,11 +45,30 @@ function formatDate(date) {
   });
 }
 
+const REPORT_CACHE_PREFIX = "kosh-report-";
+
+function getCachedReport(orderId) {
+  try {
+    return sessionStorage.getItem(REPORT_CACHE_PREFIX + orderId) || "";
+  } catch (error) {
+    console.error("Could not read cached report:", error);
+    return "";
+  }
+}
+
+function saveCachedReport(orderId, report) {
+  try {
+    sessionStorage.setItem(REPORT_CACHE_PREFIX + orderId, report);
+  } catch (error) {
+    console.error("Could not save cached report:", error);
+  }
+}
+
 function formatMoney(amount) {
   const value = Number(amount);
 
   if (!Number.isFinite(value)) {
-    return "₹0.00";
+    return "0.00";
   }
 
   return value.toLocaleString("en-IN", {
@@ -278,10 +298,13 @@ const filteredOrders = orders.filter((order) => {
         setGrnError("A goods receipt has not been created yet.");
       }
 
+      const cachedReport = getCachedReport(order.id);
+
+      if (cachedReport) {
+        setReport(cachedReport);
+      } else {
       setLoadingReport(true);
-
-      const prompt = `Draft a bulleted report for ${orderDetails.number || order.number}, with heading "Final Stock Details and Discrepancy Report". Don't give any extra lines like "Here is a detailed.." etc etc. Don't write as "field: value" format, write concise sentence for each bullet, report spanning about 5-8 such sentences.`;
-
+      const prompt = `Draft a bulleted report for ${orderDetails.number || order.number}. Don't include a heading or any introductory lines. Write concise sentences for each bullet, with about 5-8 bullets. Don't use "field: value" format.`;
       try {
         const assistantResponse = await sendAssistantMessage(
           prompt,
@@ -294,14 +317,15 @@ const filteredOrders = orders.filter((order) => {
         if (!reply) {
           throw new Error("The assistant returned an empty report.");
         }
-
         setReport(reply);
+        saveCachedReport(order.id, reply);
       } catch (error) {
         setReportError(
           error.message || "Unable to generate the report.",
         );
       } finally {
         setLoadingReport(false);
+      }
       }
     } catch (error) {
       setPageError(
@@ -438,7 +462,7 @@ async function handlePayBalance() {
 
 
   return (
-    <div className="min-h-screen bg-[var(--page-background)] px-3 py-5 text-[var(--text-color)] sm:px-5 lg:px-6">
+    <div className="min-h-screen px-3 py-5 text-[var(--text-color)] sm:px-5 lg:px-6">
       <div className="mx-auto max-w-7xl">
         <div className="relative z-20 mb-5 max-w-md">
           <div className="flex h-10 items-center gap-2 rounded-full border border-[var(--border-color)] bg-[var(--input-background)] px-4">
@@ -466,7 +490,12 @@ async function handlePayBalance() {
 
             <button
               type="button"
-              onClick={() => setShowOrders((previous) => !previous)}
+              onClick={() => {
+                if (!showOrders) {
+                setSearch("");
+               }
+              setShowOrders((previous) => !previous);
+              }}
               className="flex shrink-0 items-center justify-center text-[var(--secondary-text-color)]"
               aria-label={
                 showOrders ? "Close order dropdown" : "Open order dropdown"
@@ -943,6 +972,9 @@ async function handlePayBalance() {
 
             <SectionCard className="mt-4">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <h2 className="text-sm font-semibold text-(--accent-color)">
+                  Final Stock Details and Discrepancy Report
+                </h2>
                 {loadingReport && (
                   <span className="flex items-center gap-2 text-xs text-[var(--secondary-text-color)]">
                     <FiLoader className="animate-spin" size={14} />

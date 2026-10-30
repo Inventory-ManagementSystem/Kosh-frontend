@@ -36,7 +36,7 @@ function HeroSection() {
         className="pointer-events-none absolute left-1/2 top-[60%] z-0 h-[520px] w-[900px] max-w-[90vw] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-60 blur-[120px]"
         style={{
           background:
-            "radial-gradient(circle, color-mix(in srgb, var(--chat-ai-user-background) 80%, transparent), color-mix(in srgb, var(--dashboard-glow) 25%, transparent) 60%, transparent 80%)",
+            "radial-gradient(ellipse at center, color-mix(in srgb, var(--chat-ai-user-background) 80%, transparent), color-mix(in srgb, var(--chat-ai-user-background) 25%, transparent) 60%, transparent 80%)",
         }}
       />
       <img
@@ -44,7 +44,6 @@ function HeroSection() {
         alt="wave"
         className="pointer-events-none absolute left-0 top-[52%] z-0 h-auto w-full min-w-[1200px] max-w-none select-none"
       />
-
       <div className="relative z-10 mx-auto max-w-6xl px-5 pb-6 pt-14 text-center sm:px-8 sm:pt-20">
         <h1 className="font-['Google_Sans_Flex'] text-4xl font-bold text-(--text-color) sm:text-5xl md:text-6xl">
           Invoices &amp; Inventory.
@@ -54,7 +53,7 @@ function HeroSection() {
           ONE <span className="text-(--accent-color)">PLATFORM.</span>
         </h1>
 
-        <p className="font-['Google_Sans_Flex'] mx-auto mt-6 max-w-md font-medium text-xs text-(--secondary-text-color) sm:text-[16px]">
+        <p className="font-['Google_Sans_Flex'] mx-auto mt-6 max-w-[800px] font-medium text-xs text-(--secondary-text-color) sm:text-[16px]">
           Kosh brings business owners, employees and suppliers onto one{" "}
           <span className="text-(--text-color) font-bold"> B2B </span>
           platform — from RFQs and quotations to purchase orders, GRNs and

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { FaArrowUp } from "react-icons/fa";
 
@@ -121,20 +120,14 @@ function ContactSection() {
       </button>
 
       <div className="relative z-10 mx-auto mt-10 max-w-[480px] text-center">
-        <h2 className="font-['Google_Sans_Flex'] text-3xl font-bold text-(--accent-color)">
+        <h2 className="font-['Google_Sans_Flex'] text-5xl font-bold text-(--accent-color)">
           Exciting ?
         </h2>
-        <p className="mt-2 text-sm text-(--secondary-text-color)">
-          <Link
-            to="/role"
-            className="text-(--accent-color) underline underline-offset-4 transition hover:text-(--text-color)"
-          >
-            Sign Up
-          </Link>{" "}
-          and get started for free
+        <p className="mt-2 text-xl text-(--text-color)">
+          Sign Up and get started for free
         </p>
 
-        <div className="mt-8 w-full rounded-lg shadow-[0_0_40px_4px_color-mix(in_srgb,var(--chat-ai-user-background)_55%,transparent)]">
+        <div className="mt-8 w-full rounded-lg shadow-[0_0_80px_4px_color-mix(in_srgb,var(--chat-ai-user-background)_55%,transparent)]">
           <form
             noValidate
             onSubmit={handleSubmit}

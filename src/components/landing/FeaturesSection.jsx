@@ -67,7 +67,7 @@ function FeaturesSection() {
                 <img
                   src={row.image}
                   alt={row.alt}
-                  className="w-full rounded-lg shadow-[0_0_40px_4px_color-mix(in_srgb,var(--chat-ai-user-background)_55%,transparent)] ring-1 ring-(--border-color)"
+                  className="w-full rounded-lg shadow-[0_0_80px_4px_color-mix(in_srgb,var(--chat-ai-user-background)_55%,transparent)] ring-1 ring-(--border-color)"
                 />
               </div>
             </div>

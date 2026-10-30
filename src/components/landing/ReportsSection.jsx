@@ -1,7 +1,7 @@
 import grn from "../../assets/auth/grn.svg";
 import Report from "../../assets/auth/Report.svg";
 import invoice from "../../assets/auth/Invoice.svg";
-import connector from "../../assets/auth/Vector 33.svg";
+import arrow from "../../assets/auth/arrow.svg";
 
 function ReportsSection() {
   return (
@@ -20,8 +20,8 @@ function ReportsSection() {
 
         <div className="relative mt-14 sm:mt-20">
           <img
-            src={connector}
-            alt=""
+            src={arrow}
+            alt="arrow svg"
             className="pointer-events-none absolute left-1/2 top-[2%] z-0 hidden h-[92%] w-[112%] max-w-none -translate-x-1/2 select-none lg:block"
           />
 
@@ -30,14 +30,14 @@ function ReportsSection() {
               <img
                 src={invoice}
                 alt="Goods received note"
-                className="w-full max-w-[340px] z-1 rounded-lg ring-1 ring-(--border-color)"
+                className="w-full max-w-[340px] z-1 shadow-[0_0_40px_4px_color-mix(in_srgb,var(--chat-ai-user-background)_55%,transparent)] rounded-lg ring-1 ring-(--border-color)"
               />
             </div>
             <div className="bg-(--page-background)">
               <img
                 src={grn}
                 alt="Goods received note"
-                className="w-full max-w-[280px] z-1 rounded-lg ring-1 ring-(--border-color)"
+                className="w-full max-w-[280px] z-1 shadow-[0_0_40px_4px_color-mix(in_srgb,var(--chat-ai-user-background)_55%,transparent)] rounded-lg ring-1 ring-(--border-color)"
               />
             </div>
           </div>
@@ -45,7 +45,7 @@ function ReportsSection() {
           <img
             src={Report}
             alt="Automated discrepancy report"
-            className="relative z-1 mx-auto mt-10 w-full max-w-[1080px] h-[480px] rounded-lg shadow-[0_0_40px_4px_color-mix(in_srgb,var(--chat-ai-user-background)_55%,transparent)] ring-1 ring-(--border-color) lg:mt-24 lg:w-[60%]"
+            className="relative z-1 mx-auto mt-10 w-full max-w-[1080px] h-[480px] rounded-lg shadow-[0_0_80px_4px_color-mix(in_srgb,var(--chat-ai-user-background)_55%,transparent)] ring-1 ring-(--border-color) lg:mt-24 lg:w-[60%]"
           />
         </div>
       </div>

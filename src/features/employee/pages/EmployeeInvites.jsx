@@ -138,7 +138,7 @@ function EmployeeInvites() {
             type="button"
             onClick={fetchInvites}
             disabled={loading || actionLoading}
-            className="mt-8 rounded-md bg-(--accent-color) px-8 py-3 text-sm font-medium text-(--button-text-color) transition hover:opacity-90 disabled:opacity-50 sm:mt-10"
+            className="mt-8 rounded-md bg-(--accent-color) px-8 py-3 text-sm font-medium text-(--page-background) transition hover:opacity-90 disabled:opacity-50 sm:mt-10"
           >
             Check Again
           </button>
@@ -208,7 +208,7 @@ function EmployeeInvites() {
               type="button"
               onClick={handleAccept}
               disabled={actionLoading || !selectedInvite}
-              className="w-full rounded-md bg-(--accent-color) px-4 py-3 text-sm font-medium text-(--button-text-color) transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+              className="w-full rounded-md bg-(--accent-color) px-4 py-3 text-sm font-medium text-(--page-background) transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
             >
               {actionLoading ? "Please wait..." : "Accept"}
             </button>

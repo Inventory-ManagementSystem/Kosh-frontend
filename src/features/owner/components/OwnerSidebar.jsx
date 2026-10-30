@@ -24,7 +24,7 @@ export const navItems = [
   { label: "Add Product", path: "/add-products", icon: AiFillProduct },
   { label: "Orders", path: "/owner/orders", icon: FaCartShopping },
   { label: "Create GRN", path: "/goods-receipts", icon: IoMdListBox },
-  { label: "Report", path: "/reports", icon: BiSolidReport },
+  { label: "Report & Payments", path: "/reports", icon: BiSolidReport },
   { label: "Dispatch Stock", path: "/dispatch-stock", icon: BiSolidSend },
   { label: "Stock History", path: "/received-stock", icon: FaHistory },
   { label: "Kosh AI", path: "/kosh-ai", icon: MdPersonAddAlt1 },

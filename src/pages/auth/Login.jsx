@@ -1,4 +1,4 @@
-import { useState, useEffect , useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -11,6 +11,7 @@ import AuthDecoration from "../../components/auth/AuthDecoration";
 import AuthButton from "../../components/auth/AuthButton";
 import { googleLogin } from "../../api/googleApi";
 import { githubLogin } from "../../api/githubApi";
+import { resolveNextStep } from "../../utils/onboarding";
 
 import GoogleButton from "../../components/auth/GoogleButton";
 import GithubButton from "../../components/auth/GithubButton";
@@ -123,64 +124,43 @@ function Login() {
     return !newErrors.email && !newErrors.password;
   };
 
-  const debouncedLogin=useMemo(()=>
-  debounce(async(data)=>{
-    try {
-      const response = await loginUser({
-        email: data.email,
-        password: data.password,
-      });
+  const debouncedLogin = useMemo(
+    () =>
+      debounce(async (data) => {
+        try {
+          const response = await loginUser({
+            email: data.email,
+            password: data.password,
+          });
 
-      login(response.data.access, response.data.role);
-      localStorage.removeItem("loginFormData");
+          login(response.data.access, response.data.role);
 
-      const role = response.data.role;
-      const selectedRole = localStorage.getItem("selectedRole");
-      if (role === "supplier" || selectedRole === "supplier") {
-        if (role === null) {
-          navigate("/setup-supplier");
-        } else {
-          navigate("/supplier-dashboard");
+          const nextRoute = await resolveNextStep(
+            response.data,
+            response.data.access,
+          );
+          navigate(nextRoute);
+        } catch (error) {
+          console.log("Login Failed", error.message);
+          if (error.status === 429) {
+            setErrors({
+              email: "",
+              password: "",
+              general: "Too many login attempts. Please try again later.",
+            });
+          } else {
+            setErrors({
+              email: "",
+              password: "",
+              general: error.message,
+            });
+          }
         }
-      } else if (selectedRole === "business_owner") {
-        if (response.data.has_business === true) {
-          navigate("/dashboard");
-        } else {
-          navigate("/setup-business");
-        }
-      } else if (selectedRole === "employee") {
-        navigate("/employee-invites");
-      } else if (role === "owner") {
-        if (response.data.has_business === true) {
-          navigate("/dashboard");
-        } else {
-          navigate("/setup-business");
-        }
-      } else if (role === "employee") {
-        navigate("/employee-dashboard");
-      }
-      localStorage.removeItem("selectedRole");
-    } catch (error) {
-      console.log("Login Failed", error.message);
-      if (error.status === 429) {
-    setErrors({
-      email: "",
-      password: "",
-      general: "Too many login attempts. Please try again later.",
-    });
-  } else {
-    setErrors({
-      email: "",
-      password: "",
-      general: error.message,
-    });
-  }
-    }
-  },500),
-[login,navigate]
-);
+      }, 500),
+    [login, navigate],
+  );
 
-  const handleSubmit =(e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (!validateForm()) {
       return;

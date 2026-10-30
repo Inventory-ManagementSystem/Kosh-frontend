@@ -102,3 +102,39 @@ input[type="password"]::-webkit-credentials-auto-fill-button {
   display: none !important;
   pointer-events: none;
 }
+
+.kosh-marquee {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 15%, #000 85%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 15%, #000 85%, transparent);
+}
+.kosh-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: kosh-marquee 28s linear infinite;
+}
+.kosh-marquee:hover .kosh-marquee-track {
+  animation-play-state: paused;
+}
+@keyframes kosh-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.kosh-video-glow {
+  box-shadow:
+    0 0 30px 2px color-mix(in srgb, var(--chat-ai-user-background) 55%, transparent),
+    0 0 100px 16px color-mix(in srgb, var(--dashboard-glow) 18%, transparent);
+}
+.kosh-video-glow-inset {
+  box-shadow:
+    inset 0 0 28px 2px color-mix(in srgb, var(--chat-ai-user-background) 75%, transparent),
+    inset 0 0 80px color-mix(in srgb, var(--dashboard-glow) 16%, transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .kosh-marquee-track {
+    animation: none;
+  }
+}

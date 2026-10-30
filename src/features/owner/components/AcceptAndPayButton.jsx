@@ -451,7 +451,7 @@ function AcceptAndPayButton({ quotationId, advanceAmount, onPaymentUpdate }) {
               <button
                 type="button"
                 onClick={closePaymentPopup}
-                className="mt-7 h-10 w-full max-w-xs rounded-md bg-(--accent-color) text-sm font-semibold text-(--base-background) transition hover:opacity-90"
+                className="mt-7 h-10 w-full max-w-xs rounded-md bg-(--accent-color) text-sm font-semibold text-(--page-background) transition hover:opacity-90"
               >
                 {paymentPopup.type === "success" ? "Continue" : "Close"}
               </button>

@@ -1,4 +1,4 @@
-import FeatureMarquee from "./FeatureMarquee";
+import FeatureMarquee from "./Featuremarquee";
 
 import wave from "../../assets/auth/wave.svg";
 import firstScreen from "../../assets/auth/first-screen.svg";

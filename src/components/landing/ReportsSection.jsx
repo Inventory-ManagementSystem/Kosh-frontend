@@ -1,6 +1,6 @@
 import grn from "../../assets/auth/grn.svg";
 import Report from "../../assets/auth/Report.svg";
-import invoice from "../../assets/auth/invoice.svg";
+import invoice from "../../assets/auth/Invoice.svg";
 import connector from "../../assets/auth/Vector 33.svg";
 
 function ReportsSection() {

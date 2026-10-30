@@ -71,3 +71,17 @@ export const deleteAllNotifications = async (accessToken, id) => {
   }
   return data.data;
 };
+
+export const getWsTicket = async (accessToken) => {
+  const response = await fetch(`${BASE_URL}notifications/ws-ticket/`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to get WebSocket ticket.");
+  }
+  return data.data.ticket;
+};

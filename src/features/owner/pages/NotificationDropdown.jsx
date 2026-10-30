@@ -9,12 +9,21 @@ import {
   deleteAllNotifications,
 } from "../api/notificationApi";
 
-function NotificationDropdown({ onUnreadCountChange }) {
+function NotificationDropdown({ onUnreadCountChange, liveNotification }) {
   const { accessToken } = useAuth();
 
   const [notifications, setNotifications] = useState([]);
   const [error, setError] = useState("");
   const [actionError, setActionError] = useState("");
+
+  useEffect(() => {
+    if (!liveNotification) return;
+    setNotifications((previous) =>
+      previous.some((item) => item.id === liveNotification.id)
+        ? previous
+        : [{ is_read: false, ...liveNotification }, ...previous],
+    );
+  }, [liveNotification]);
 
   useEffect(() => {
     if (!accessToken) {

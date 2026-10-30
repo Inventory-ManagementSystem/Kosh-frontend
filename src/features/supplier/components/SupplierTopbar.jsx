@@ -1,19 +1,16 @@
 import { useEffect, useState, useRef } from "react";
 import { NavLink } from "react-router-dom";
 
-import {
-  FiBell,
-  FiSun,
-  FiMoon,
-  FiLogOut,
-  FiMenu,
-  FiX,
-} from "react-icons/fi";
+import { FiLogOut, FiMenu, FiX } from "react-icons/fi";
+import { FaBell } from "react-icons/fa";
+import { MdSunny } from "react-icons/md";
+import { FaMoon } from "react-icons/fa";
 import { getUnreadCount } from "../../owner/api/notificationApi";
 
 import { useAuth } from "../../../context/AuthContext";
 import { logoutUser } from "../../../api/logoutApi";
 import { useTheme } from "../../../context/ThemeContext";
+import { useNotificationSocket } from "../../owner/hooks/useNotificationSocket";
 import { supplierNavItems } from "./SupplierSidebar";
 import NotificationDropdown from "../../owner/pages/NotificationDropdown";
 
@@ -27,6 +24,19 @@ function SupplierTopbar() {
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [liveNotification, setLiveNotification] = useState(null);
+
+  useNotificationSocket(accessToken, async (payload) => {
+    const notification = payload?.data ?? payload?.notification ?? payload;
+    if (notification?.id) {
+      setLiveNotification(notification);
+    }
+    try {
+      setUnreadCount(await getUnreadCount(accessToken));
+    } catch (error) {
+      console.error("Failed to refresh unread count:", error.message);
+    }
+  });
 
   useEffect(() => {
     const fetchUnreadCount = async () => {
@@ -76,8 +86,7 @@ function SupplierTopbar() {
     <>
       <header className="fixed left-0 right-0 top-0 z-50 h-18 bg-(--page-background) lg:left-57.5">
         <div className="flex h-full items-center justify-between gap-2 px-3 sm:px-6 lg:px-8">
-          <div className="min-w-0 w-full max-w-[320px]">
-          </div>
+          <div className="min-w-0 w-full max-w-[320px]"></div>
 
           <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2">
             <div className="relative" ref={notificationRef}>
@@ -87,7 +96,7 @@ function SupplierTopbar() {
                 onClick={() => setNotificationsOpen((previous) => !previous)}
                 className="flex h-10 w-9 items-center justify-center rounded-full text-(--secondary-text-color) hover:bg-(--input-background) hover:text-(--text-color) sm:w-10"
               >
-                <FiBell size={18} />
+                <FaBell size={18} />
                 {unreadCount > 0 && (
                   <span className="absolute -right-0.5 -top-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold leading-none text-white">
                     {unreadCount > 99 ? "99+" : unreadCount}
@@ -95,7 +104,10 @@ function SupplierTopbar() {
                 )}
               </button>
               {notificationsOpen && (
-                <NotificationDropdown onUnreadCountChange={setUnreadCount} />
+                <NotificationDropdown
+                  onUnreadCountChange={setUnreadCount}
+                  liveNotification={liveNotification}
+                />
               )}
             </div>
 
@@ -106,7 +118,7 @@ function SupplierTopbar() {
               title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
               className="flex h-10 w-9 items-center justify-center rounded-full text-(--secondary-text-color) hover:bg-(--input-background) hover:text-(--text-color) sm:w-10"
             >
-              {theme === "dark" ? <FiSun size={18} /> : <FiMoon size={18} />}
+              {theme === "dark" ? <MdSunny size={18} /> : <FaMoon size={18} />}
             </button>
 
             <button

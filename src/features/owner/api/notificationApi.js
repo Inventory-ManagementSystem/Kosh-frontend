@@ -85,3 +85,19 @@ export const getWsTicket = async (accessToken) => {
   }
   return data.data.ticket;
 };
+
+export const markAllNotificationsAsRead = async (accessToken) => {
+  const response = await fetch(`${BASE_URL}notifications/read-all/`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to mark all notifications as read.",
+    );
+  }
+  return data.data;
+};

@@ -7,6 +7,7 @@ import {
   markNotificationAsRead,
   deleteNotification,
   deleteAllNotifications,
+  markAllNotificationsAsRead,
 } from "../api/notificationApi";
 
 function NotificationDropdown({ onUnreadCountChange, liveNotification }) {
@@ -102,6 +103,24 @@ function NotificationDropdown({ onUnreadCountChange, liveNotification }) {
     }
   };
 
+  const hasUnread = notifications.some((item) => !item.is_read);
+
+  const handleMarkAllAsRead = async () => {
+    if (!hasUnread) {
+      return;
+    }
+    try {
+      setActionError("");
+      await markAllNotificationsAsRead(accessToken);
+      setNotifications((previous) =>
+        previous.map((item) => ({ ...item, is_read: true })),
+      );
+      onUnreadCountChange(0);
+    } catch (error) {
+      setActionError(error.message || "Failed to mark all as read");
+    }
+  };
+
   return (
     <div className="absolute right-0 top-full z-50 mt-2 w-80 rounded-xl border border-(--border-color) bg-(--dropdown-background) p-3 shadow-xl">
       <div className="flex items-center justify-between gap-3 pb-3">
@@ -110,11 +129,11 @@ function NotificationDropdown({ onUnreadCountChange, liveNotification }) {
         </h2>
         <button
           type="button"
-          onClick={handleClearAll}
-          disabled={notifications.length === 0}
+          onClick={handleMarkAllAsRead}
+          disabled={!hasUnread}
           className=" font-['Google_Sans_Flex'] rounded border border-(--border-color) px-2 py-1 text-[12px] text-(--text-color) hover:bg-(--input-background)"
         >
-          Clear All
+          Mark All Read
         </button>
       </div>
       {error && <p className="mb-2 text-xs text-(--error-color)">{error}</p>}

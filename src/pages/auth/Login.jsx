@@ -23,6 +23,7 @@ function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState(() => {
     const savedData = localStorage.getItem("loginFormData");
     if (savedData) {
@@ -155,6 +156,8 @@ function Login() {
               general: error.message,
             });
           }
+        } finally {
+          setIsSubmitting(false);
         }
       }, 500),
     [login, navigate],
@@ -162,9 +165,11 @@ function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
     if (!validateForm()) {
       return;
     }
+    setIsSubmitting(true);
     debouncedLogin(formData);
   };
 
@@ -282,7 +287,9 @@ function Login() {
               </button>
             </div>
 
-            <AuthButton isFormFilled={isFormFilled}>Login</AuthButton>
+            <AuthButton isFormFilled={isFormFilled} isLoading={isSubmitting}>
+              Login
+            </AuthButton>
             <div className="my-5 text-center text-xs text-(--secondary-text-color)">
               OR
             </div>

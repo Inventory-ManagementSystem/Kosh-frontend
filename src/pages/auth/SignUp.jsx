@@ -1,4 +1,4 @@
-import { useState, useEffect,useMemo, useRef  } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { IoMdArrowRoundBack } from "react-icons/io";
@@ -19,7 +19,7 @@ import { debounce } from "../../utils/debounce";
 function Signup() {
   const navigate = useNavigate();
   const location = useLocation();
-  const isSubmitting = useRef(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const role =
     location.state?.role ||
@@ -257,45 +257,44 @@ function Signup() {
     Boolean(formData.confirmPassword);
 
   const debouncedRegister = useMemo(
-  () =>
-    debounce(async (data) => {
-      try {
-        await regUser({
-          name: data.name.trim(),
-          email: data.email,
-          password: data.password,
-        });
+    () =>
+      debounce(async (data) => {
+        try {
+          await regUser({
+            name: data.name.trim(),
+            email: data.email,
+            password: data.password,
+          });
 
-        localStorage.removeItem("signupFormData");
+          localStorage.removeItem("signupFormData");
 
-        sessionStorage.setItem("registrationName", data.name);
-        sessionStorage.setItem("registrationEmail", data.email);
-        sessionStorage.setItem("registrationRole", role);
+          sessionStorage.setItem("registrationName", data.name);
+          sessionStorage.setItem("registrationEmail", data.email);
+          sessionStorage.setItem("registrationRole", role);
 
-        navigate("/registration-otp");
-      } catch (error) {
-        console.error("Registration failed:", error.message);
+          navigate("/registration-otp");
+        } catch (error) {
+          console.error("Registration failed:", error.message);
 
-        setApiError(
-          error.status === 429
-            ? "Too many registration attempts. Please try again later."
-            : error.message,
-        );
-      } finally {
-        isSubmitting.current = false;
-      }
-    }, 500),
-  [navigate, role],
-);
+          setApiError(
+            error.status === 429
+              ? "Too many registration attempts. Please try again later."
+              : error.message,
+          );
+        } finally {
+          setIsSubmitting(false);
+        }
+      }, 500),
+    [navigate, role],
+  );
 
-const handleSubmit = (e) => {
-  e.preventDefault();
-  if (isSubmitting.current || !validateForm()) {
-    return;
-  }
-  isSubmitting.current = true;
-  debouncedRegister(formData);
-};
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (isSubmitting) return;
+    if (!validateForm()) return;
+    setIsSubmitting(true);
+    debouncedRegister(formData);
+  };
 
   return (
     <main className="relative min-h-screen overflow-x-hidden bg-(--page-background) text-(--text-color)">
@@ -490,7 +489,9 @@ const handleSubmit = (e) => {
                 {apiError}
               </p>
             )}
-            <AuthButton isFormFilled={isFormFilled}>Create Account</AuthButton>
+            <AuthButton isFormFilled={isFormFilled} isLoading={isSubmitting}>
+              Create Account
+            </AuthButton>
 
             <div className="my-5 text-center text-xs text-(--secondary-text-color)">
               OR

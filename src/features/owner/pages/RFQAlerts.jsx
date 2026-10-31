@@ -7,6 +7,8 @@ import {
   getRFQDetails,
   cancelRFQ,
   refreshAlerts,
+  getProcurementSettings,
+  updateProcurementSettings,
 } from "../api/procurementApi";
 import WarehouseTable from "../components/WarehouseTable";
 import WarehouseTableSkeleton from "../components/WarehouseTableSkeleton";
@@ -41,6 +43,8 @@ function RFQAlerts() {
   const [detailsLoading, setDetailsLoading] = useState({});
   const [detailsError, setDetailsError] = useState({});
   const [confirmCancelRfq, setConfirmCancelRfq] = useState(null);
+  const [settings, setSettings] = useState(null);
+  const [savingSettings, setSavingSettings] = useState(false);
 
   const loadData = async () => {
     try {
@@ -78,6 +82,46 @@ function RFQAlerts() {
       loadData();
     }
   }, [accessToken, rfqPage, alertPage]);
+
+  useEffect(() => {
+    if (!accessToken) return;
+    const loadSettings = async () => {
+      try {
+        const data = await getProcurementSettings(accessToken);
+        setSettings(data);
+      } catch (err) {
+        console.log(err.message || "Failed to load proc setting");
+      }
+    };
+    loadSettings();
+  }, [accessToken]);
+
+  const handleTogglePlatformPool = async () => {
+    if (!settings || savingSettings || !isOwner) return;
+
+    const previous = settings;
+    const nextValue = !settings.auto_rfq_include_platform_pool;
+
+    setSettings({ ...settings, auto_rfq_include_platform_pool: nextValue });
+    setSavingSettings(true);
+
+    try {
+      const updated = await updateProcurementSettings(accessToken, {
+        auto_rfq_include_platform_pool: nextValue,
+      });
+      setSettings(updated);
+      toast.success(
+        nextValue
+          ? "Platform suppliers will be included from the next nightly run."
+          : "Only your own suppliers will be used from the next nightly run.",
+      );
+    } catch (err) {
+      setSettings(previous);
+      toast.error(err.message || "Failed to update supplier pool setting.");
+    } finally {
+      setSavingSettings(false);
+    }
+  };
 
   const handleRefreshAlerts = async () => {
     try {
@@ -203,9 +247,49 @@ function RFQAlerts() {
 
   return (
     <div className="space-y-6 p-4 text-(--accent-color) sm:p-6">
-      <h1 className="font-['Google_Sans_Flex'] text-3xl font-semibold">
-        RFQ & Alerts
-      </h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="font-['Google_Sans_Flex'] text-3xl font-semibold">
+          RFQ & Alerts
+        </h1>
+
+        {settings && (
+          <div className="flex items-end gap-3">
+            <span className="pb-0.5 text-sm text-(--secondary-text-color)">
+              No
+            </span>
+
+            <div className="flex flex-col items-center gap-1.5">
+              <span className="whitespace-nowrap text-sm font-medium text-(--secondary-text-color)">
+                Supplier Pool
+              </span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={Boolean(settings.auto_rfq_include_platform_pool)}
+                onClick={handleTogglePlatformPool}
+                disabled={!isOwner || savingSettings}
+                className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
+                  settings.auto_rfq_include_platform_pool
+                    ? "bg-(--accent-color)"
+                    : "bg-(--border-color)"
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 rounded-full bg-white transition-transform ${
+                    settings.auto_rfq_include_platform_pool
+                      ? "translate-x-6"
+                      : "translate-x-1"
+                  }`}
+                />
+              </button>
+            </div>
+
+            <span className="pb-0.5 text-sm text-(--secondary-text-color)">
+              Yes
+            </span>
+          </div>
+        )}
+      </div>
 
       {error && (
         <div className="rounded-lg border border-(--border-color) p-3 text-sm text-(--error-color)">

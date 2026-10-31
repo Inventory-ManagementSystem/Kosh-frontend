@@ -235,3 +235,33 @@ export const downloadInvoicePdf = async (accessToken, invoiceId) => {
   }
   return await response.blob();
 };
+
+export const getProcurementSettings = async (accessToken) => {
+  const response = await fetch(`${BASE_URL}procurement/settings/`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to load procurement settings.");
+  }
+  return data.data;
+};
+
+export const updateProcurementSettings = async (accessToken, payload) => {
+  const response = await fetch(`${BASE_URL}procurement/settings/`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(payload),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to update procurement settings.");
+  }
+  return data.data;
+};

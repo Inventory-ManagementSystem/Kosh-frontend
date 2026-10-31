@@ -1,138 +1,220 @@
-# KOSH -Automated Invoice and Inventory Monitoring System
+# Kosh
 
-KOSH is an inventory and invoice management system designed to help businesses manage their inventory, invoices, and users through a centralized web application.
+Kosh is a role-based procurement and inventory management web application. It brings business owners, employees, and suppliers onto a single platform, covering the full cycle from low-stock alerts and requests for quotation (RFQs) through purchase orders, goods receipt notes (GRNs), invoicing, and payments.
 
-This repository contains the frontend application of KOSH, developed using React and Vite. The frontend communicates with a separate Django backend through REST APIs.
+This repository contains the frontend client, built with React and Vite. It communicates with a separate backend REST API and WebSocket service.
 
-## Tech Stack
+---
 
-* React.js
+## Table of Contents
 
-## Features
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Technology Stack](#technology-stack)
+- [Getting Started](#getting-started)
+- [Application Routes](#application-routes)
+- [Authentication and Session Handling](#authentication-and-session-handling)
+- [Real-Time Notifications](#real-time-notifications)
 
-* User registration and login
-* Role selection for Business Owner and Employee
-* OTP verification
-* User logout
-* Client-side form validation
-* Responsive user interface
-* REST API integration
-* JWT-based authentication
+---
 
-## Project Structure
+## Overview
 
-```text
-Kosh-frontend/
-├── public/
-├── src/
-│   ├── api/
-│   ├── assets/
-│   ├── components/
-│   ├── pages/
-│   ├── App.jsx
-│   └── main.jsx
-├── .env
-├── package.json
-├── vite.config.js
-└── README.md
-```
+Kosh provides a separate workspace for each type of user:
 
-## Installation
+| Role     | Purpose                                                                                                                                                                 |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Owner    | Manages the business, warehouses, products, employees, and suppliers. Raises RFQs, evaluates quotations, approves purchase orders, makes payments, and reviews reports. |
+| Employee | Joins a business through an invitation. Handles warehouse stock, orders, dispatches, and goods receipts.                                                                |
+| Supplier | Responds to RFQs with quotations, fulfils and tracks orders, and manages payout details.                                                                                |
 
-Clone the repository:
+Each role has its own layout, navigation, and dashboard. Access to all application routes beyond the public pages is gated by an authentication check.
 
-```bash
-git clone <repository-url>
-```
+---
 
-Navigate to the project directory:
+## Key Features
 
-```bash
-cd Kosh-frontend
-```
+**Owner**
 
-Install the dependencies:
+- Dashboard with an overview of stock, orders, and activity
+- Warehouse and product management, including product creation and editing
+- Low-stock alerts that lead directly into RFQ creation
+- RFQ management and side-by-side quotation review and acceptance
+- Purchase order and invoice management with downloadable PDF invoices
+- Advance and balance payment flows through Razorpay
+- Goods receipt (GRN) creation, with downloadable GRN documents
+- Stock dispatch to outlets and a received-stock history
+- Reports covering orders, invoices, and GRNs
+- Employee and supplier management, including employee invitations
+- Real-time notifications and an in-app AI assistant (Kosh AI)
 
-```bash
-npm install
-```
+**Employee**
 
-## Environment Variables
+- Invitation inbox with accept and decline actions
+- Employee dashboard and warehouse view
+- Order tracking, stock dispatch, and GRN creation
+- Kosh AI assistant
 
-Create a `.env` file in the root directory and add the required backend API URLs.
+**Supplier**
 
-Example:
+- Supplier onboarding and profile setup
+- RFQ inbox with quotation creation and decline actions
+- Quotation history
+- Order list, order detail, and order progress tracking, including dispatch
+- Payout account details management
+- Kosh AI assistant
 
-```env
-VITE_REG_API_URL=https://your-backend-domain/accounts/register/
-VITE_LOGIN_API_URL=https://your-backend-domain/accounts/login/
-```
+**Platform**
 
-Environment variables must start with `VITE_` to be accessible in the Vite frontend.
+- Email and password authentication with OTP verification
+- Google and GitHub OAuth sign-in
+- Password reset through OTP
+- Multi-step onboarding for businesses, warehouses, and suppliers
+- Automatic access token refresh with request retry
+- Public landing page with a contact form
 
-Do not commit the `.env` file if it contains sensitive information.
+---
 
-## Running the Project
+## Technology Stack
 
-Start the development server:
+| Area                      | Technology           |
+| ------------------------- | -------------------- |
+| UI library                | React                |
+| Build tool and dev server | Vite                 |
+| Routing                   | React Router         |
+| Styling                   | Tailwind CSS         |
+| Notifications and toasts  | react-hot-toast      |
+| Icons                     | react-icons          |
+| Payments                  | Razorpay Checkout    |
+| Real-time updates         | Native WebSocket API |
+| Language                  | JavaScript (JSX)     |
 
-```bash
-npm run dev
-```
+State is managed through React Context and local component state. There is no external state management library.
 
-The application will run at:
+---
 
-```text
-http://localhost:5173
-```
+## Getting Started
 
-## Production Build
+### Prerequisites
 
-To create a production build:
+- Node.js (an active LTS release is recommended)
+- npm, yarn, or pnpm
+- A running instance of the Kosh backend API
 
-```bash
-npm run build
-```
+### Installation
 
-The production files will be generated in the `dist` directory.
+1. Clone the repository.
 
-To preview the production build locally:
+   ```bash
+   git clone <repository-url>
+   cd <repository-directory>
+   ```
 
-```bash
-npm run preview
-```
+2. Install dependencies.
 
-## Authentication
+   ```bash
+   npm install
+   ```
 
-The authentication system includes:
+3. Create a `.env` file in the project root and add the required environment variables.
 
-* User registration
-* Login
-* OTP verification
-* JWT-based authentication
-* Google authentication
-* Role-based user selection
+4. Start the development server.
 
-Authentication API endpoints are configured through environment variables.
+   ```bash
+   npm run dev
+   ```
 
-## Deployment
+The application will be available at the local address printed by Vite, typically `http://localhost:5173`.
 
-The frontend can be deployed on platforms such as AWS EC2, Vercel, or other platforms that support Vite applications.
+To create a production build, run `npm run build`. To preview it locally, run `npm run preview`.
 
-For production deployment, first generate the production build using:
+---
 
-```bash
-npm run build
-```
+## Application Routes
 
-The contents of the generated `dist` directory can then be served using a web server such as Nginx.
+**Public**
 
-## Development
+| Path                                                 | Description                   |
+| ---------------------------------------------------- | ----------------------------- |
+| `/`                                                  | Landing page                  |
+| `/role`                                              | Role selection                |
+| `/login`, `/signup`                                  | Authentication                |
+| `/registration-otp`                                  | Registration OTP verification |
+| `/forgot-password`, `/verify-otp`, `/reset-password` | Password recovery             |
+| `/oauth/callback`, `/github/callback`                | OAuth callbacks               |
 
-The frontend is developed separately from the backend, allowing both applications to be developed and deployed independently.
+**Onboarding (authenticated)**
 
-When backend API URLs change, they can be updated through the frontend environment variables without changing the application source code.
+| Path               | Description       |
+| ------------------ | ----------------- |
+| `/setup-business`  | Business details  |
+| `/setup-warehouse` | Warehouse details |
+| `/setup-supplier`  | Supplier profile  |
+| `/complete-setup`  | Setup completion  |
 
-## License
+**Owner (authenticated)**
 
-This project is currently developed for internal/project purpose.
+| Path                                               | Description                  |
+| -------------------------------------------------- | ---------------------------- |
+| `/dashboard`                                       | Dashboard                    |
+| `/rfq-alerts`                                      | RFQs and stock alerts        |
+| `/manage-quotation/:rfqId`                         | Quotations for an RFQ        |
+| `/manage-quotation/:rfqId/quotation/:quotationId`  | Quotation detail             |
+| `/owner/orders`, `/owner/orders/:orderId`          | Orders                       |
+| `/owner/invoices`, `/owner/invoices/:invoiceId`    | Purchase orders and invoices |
+| `/goods-receipts`, `/goods-receipts/:id`           | Goods receipts               |
+| `/warehouse`, `/add-products`, `/edit-product/:id` | Warehouse and products       |
+| `/dispatch-stock`, `/received-stock`               | Dispatch and stock history   |
+| `/reports`                                         | Reports and payments         |
+| `/employees`, `/add-employee`                      | Employee management          |
+| `/suppliers`, `/add-supplier`                      | Supplier management          |
+| `/kosh-ai`                                         | AI assistant                 |
+
+**Employee (authenticated)**
+
+| Path                                                       | Description    |
+| ---------------------------------------------------------- | -------------- |
+| `/employee-invites`                                        | Invitations    |
+| `/employee-dashboard`                                      | Dashboard      |
+| `/employee-warehouse`                                      | Warehouse      |
+| `/employee/orders`                                         | Orders         |
+| `/employee/dispatch-stock`                                 | Dispatch       |
+| `/employee/goods-receipts`, `/employee/goods-receipts/:id` | Goods receipts |
+| `/employee/kosh-ai`                                        | AI assistant   |
+
+**Supplier (authenticated)**
+
+| Path                                            | Description        |
+| ----------------------------------------------- | ------------------ |
+| `/supplier-dashboard`                           | Dashboard          |
+| `/supplier-rfqs`                                | Incoming RFQs      |
+| `/supplier/create-quotation/:id`                | Quotation creation |
+| `/quotations`                                   | Quotation history  |
+| `/supplier/orders`, `/supplier/orders/:orderId` | Orders             |
+| `/supplier/orders/:orderId/progress`            | Order progress     |
+| `/account-details`                              | Payout details     |
+| `/supplier/kosh-ai`                             | AI assistant       |
+
+---
+
+## Authentication and Session Handling
+
+- The access token is held in memory within `AuthContext` and is never written to browser storage.
+- The refresh token is managed by the backend as a cookie. All requests use `credentials: "include"`.
+- On page load, the application attempts to restore the session by calling the refresh endpoint and then fetching the user profile.
+- A scheduled refresh runs periodically while a session is active.
+- `apiFetch` wraps requests and, on a `401` response, refreshes the token once and retries the original request. Concurrent refresh calls are de-duplicated, and a `429` response from the refresh endpoint temporarily blocks further attempts, honouring the `Retry-After` header.
+- If refresh fails with `400`, `401`, or `403`, the user is redirected to `/login`.
+- `ProtectedRoute` guards all authenticated routes and shows a loading screen while the session is being restored.
+- After login, the backend returns a `next_step` value that determines the destination: the relevant dashboard, a setup screen, the invitations page, or role selection.
+
+---
+
+## Real-Time Notifications
+
+The `useNotificationSocket` hook establishes a WebSocket connection to `/ws/notifications/` on the backend host.
+
+- A short-lived ticket is requested from the REST API and passed as a query parameter, so the access token itself is never placed in the socket URL.
+- The protocol is derived from the configured API base URL (`wss` for HTTPS, `ws` for HTTP).
+- Reconnection uses exponential backoff, starting at 3 seconds and capped at 30 seconds.
+- The connection is closed cleanly on logout or component unmount.

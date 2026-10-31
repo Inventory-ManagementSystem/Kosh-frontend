@@ -1,14 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import {
-  FiChevronLeft,
-  FiChevronRight,
-  FiChevronsLeft,
-  FiChevronsRight,
-} from "react-icons/fi";
 import { toast } from "react-hot-toast";
 
 import { useAuth } from "../../../context/AuthContext";
 import { getSupplierQuotations } from "../api/supplierRfqApi";
+import Pagination from "../../owner/components/Pagination";
 
 const PAGE_SIZE = 5;
 
@@ -87,7 +82,7 @@ function QuotationCard({ quotation }) {
         </div>
 
         <span
-          className={`shrink-0 rounded-full border px-2.5 py-1 text-xs font-medium capitalize ${getStatusClass(
+          className={`flex items-center justify-center shrink-0  w-24 rounded-full border px-2.5 py-1 text-xs font-medium capitalize ${getStatusClass(
             quotation.status,
           )}`}
         >
@@ -177,11 +172,6 @@ function AllQuotations() {
     setPage(1);
   };
 
-  const goToPage = (nextPage) => {
-    if (nextPage < 1 || nextPage > totalPages) return;
-    setPage(nextPage);
-  };
-
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -228,10 +218,7 @@ function AllQuotations() {
       ) : quotations.length > 0 ? (
         <div className="space-y-4">
           {quotations.map((quotation) => (
-            <QuotationCard
-              key={quotation.id}
-              quotation={quotation}
-            />
+            <QuotationCard key={quotation.id} quotation={quotation} />
           ))}
         </div>
       ) : (
@@ -249,74 +236,7 @@ function AllQuotations() {
       )}
 
       {!loading && totalCount > 0 && (
-        <div className="flex flex-wrap items-center justify-center gap-4 border-t border-(--border-color) pt-4">
-          <div className="flex items-center gap-1">
-            <button
-              type="button"
-              onClick={() => goToPage(1)}
-              disabled={page === 1}
-              className="flex h-9 w-9 items-center justify-center rounded-lg border border-(--border-color) text-(--text-color) transition hover:bg-(--decoration-background) disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              <FiChevronsLeft />
-            </button>
-
-            <button
-              type="button"
-              onClick={() => goToPage(page - 1)}
-              disabled={page === 1}
-              className="flex h-9 w-9 items-center justify-center rounded-lg border border-(--border-color) text-(--text-color) transition hover:bg-(--decoration-background) disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              <FiChevronLeft />
-            </button>
-
-            {Array.from({ length: totalPages }, (_, index) => index + 1)
-              .filter(
-                (pageNumber) =>
-                  pageNumber === 1 ||
-                  pageNumber === totalPages ||
-                  Math.abs(pageNumber - page) <= 1,
-              )
-              .map((pageNumber, index, pages) => (
-                <span key={pageNumber} className="flex items-center gap-1">
-                  {index > 0 && pages[index - 1] !== pageNumber - 1 && (
-                    <span className="px-1 text-(--secondary-text-color)">
-                      ...
-                    </span>
-                  )}
-
-                  <button
-                    type="button"
-                    onClick={() => goToPage(pageNumber)}
-                    className={`min-w-9 rounded-lg border px-3 py-2 text-sm transition ${
-                      page === pageNumber
-                        ? "border-(--accent-color) bg-(--decoration-background) text-(--text-color)"
-                        : "border-(--border-color) text-(--secondary-text-color) hover:bg-(--decoration-background)"
-                    }`}
-                  >
-                    {pageNumber}
-                  </button>
-                </span>
-              ))}
-
-            <button
-              type="button"
-              onClick={() => goToPage(page + 1)}
-              disabled={page === totalPages}
-              className="flex h-9 w-9 items-center justify-center rounded-lg border border-(--border-color) text-(--text-color) transition hover:bg-(--decoration-background) disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              <FiChevronRight />
-            </button>
-
-            <button
-              type="button"
-              onClick={() => goToPage(totalPages)}
-              disabled={page === totalPages}
-              className="flex h-9 w-9 items-center justify-center rounded-lg border border-(--border-color) text-(--text-color) transition hover:bg-(--decoration-background) disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              <FiChevronsRight />
-            </button>
-          </div>
-        </div>
+        <Pagination page={page} totalPages={totalPages} onChange={setPage} />
       )}
     </div>
   );

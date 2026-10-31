@@ -223,7 +223,7 @@ function WarehouseTable({
                   </td>
                   <td className="px-2 py-4 text-center">
                     <span
-                      className={`inline-flex max-w-full justify-center whitespace-nowrap rounded-full px-2 py-1 text-[9px] font-medium sm:px-2.5 sm:text-[10px] ${getStatusClass(
+                      className={`inline-flex w-24 justify-center whitespace-nowrap rounded-full px-2 py-1 text-[9px] font-medium sm:px-2.5 sm:text-[10px] ${getStatusClass(
                         item.status,
                       )}`}
                     >
@@ -250,7 +250,7 @@ function WarehouseTable({
                   </td>
                   <td className="px-3 py-3.5 text-center">
                     <span
-                      className={`inline-flex justify-center whitespace-nowrap rounded-full px-2.5 py-1 text-[10px] font-medium ${getStatusClass(
+                      className={`inline-flex w-20 justify-center whitespace-nowrap rounded-full px-2.5 py-1 text-[10px] font-medium ${getStatusClass(
                         item.status,
                       )}`}
                     >

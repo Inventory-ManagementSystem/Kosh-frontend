@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 
 import OwnerSidebar from "../features/owner/components/OwnerSidebar";
 import OwnerTopbar from "../features/owner/components/OwnerTopbar";
@@ -16,7 +16,9 @@ function OwnerLayout() {
       data-theme={themes.owner}
     >
       <div className="fixed left-0 top-0 z-50 flex h-18 w-57.5 items-center px-5 bg-(--page-background)">
-        <img src={logo} alt="KOSH" className="h-7 w-auto shrink-0" />
+        <Link to="/dashboard" className="flex items-center">
+          <img src={logo} alt="KOSH" className="h-7 w-auto shrink-0" />
+        </Link>
       </div>
       <OwnerTopbar />
       <OwnerSidebar collapsed={collapsed} setCollapsed={setCollapsed} />

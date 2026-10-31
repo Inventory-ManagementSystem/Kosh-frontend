@@ -1,10 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import {
-  FiChevronLeft,
-  FiChevronsLeft,
-  FiChevronsRight,
-  FiChevronRight,
-} from "react-icons/fi";
 import { PiDotsThreeCircleFill } from "react-icons/pi";
 import { FaShoppingCart, FaCheckCircle } from "react-icons/fa";
 import toast from "react-hot-toast";
@@ -12,6 +6,7 @@ import toast from "react-hot-toast";
 import { useAuth } from "../../../context/AuthContext";
 import WarehouseTable from "../../owner/components/WarehouseTable";
 import WarehouseTableSkeleton from "../../owner/components/WarehouseTableSkeleton";
+import Pagination from "../../owner/components/Pagination";
 
 import {
   getOrders,
@@ -99,74 +94,6 @@ function EmployeeOrders() {
   useEffect(() => {
     fetchSummary();
   }, [fetchSummary]);
-
-  function Pagination({ page, totalPages, onChange }) {
-    const pages = [];
-
-    for (let i = 1; i <= totalPages; i++) {
-      pages.push(i);
-    }
-
-    return (
-      <div className="flex flex-wrap items-center justify-center gap-2 px-4 py-3">
-        <button
-          type="button"
-          onClick={() => onChange(1)}
-          disabled={page === 1}
-          aria-label="First page"
-          className="rounded-lg border border-(--border-color) p-2 text-(--text-color) transition hover:bg-(--input-background) disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          <FiChevronsLeft size={16} />
-        </button>
-
-        <button
-          type="button"
-          onClick={() => onChange(page - 1)}
-          disabled={page === 1}
-          aria-label="Previous page"
-          className="rounded-lg border border-(--border-color) p-2 text-(--text-color) transition hover:bg-(--input-background) disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          <FiChevronLeft size={16} />
-        </button>
-
-        {pages.map((pageNumber) => (
-          <button
-            key={pageNumber}
-            type="button"
-            onClick={() => onChange(pageNumber)}
-            aria-current={page === pageNumber ? "page" : undefined}
-            className={`min-w-9 rounded-lg border px-3 py-2 text-sm transition ${
-              page === pageNumber
-                ? "border-(--accent-color) bg-(--accent-color) text-(--page-background)"
-                : "border-(--border-color) text-(--text-color) hover:bg-(--input-background)"
-            }`}
-          >
-            {pageNumber}
-          </button>
-        ))}
-
-        <button
-          type="button"
-          onClick={() => onChange(page + 1)}
-          disabled={page === totalPages}
-          aria-label="Next page"
-          className="rounded-lg border border-(--border-color) p-2 text-(--text-color) transition hover:bg-(--input-background) disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          <FiChevronRight size={16} />
-        </button>
-
-        <button
-          type="button"
-          onClick={() => onChange(totalPages)}
-          disabled={page === totalPages}
-          aria-label="Last page"
-          className="rounded-lg border border-(--border-color) p-2 text-(--text-color) transition hover:bg-(--input-background) disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          <FiChevronsRight size={16} />
-        </button>
-      </div>
-    );
-  }
 
   const summaryCards = [
     {

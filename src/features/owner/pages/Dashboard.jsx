@@ -422,7 +422,7 @@ function StatCard({ title, value, icon }) {
 function StatusBadge({ status }) {
   return (
     <span
-      className={`inline-flex justify-center whitespace-nowrap rounded-full px-2.5 py-1 text-[10px] font-medium ${getStatusClass(
+      className={`inline-flex w-24 justify-center whitespace-nowrap rounded-full px-2.5 py-1 text-[10px] font-medium ${getStatusClass(
         status,
       )}`}
     >

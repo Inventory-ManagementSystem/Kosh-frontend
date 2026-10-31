@@ -27,7 +27,7 @@ const orderProgress = {
 
 const getStatusClass = (status) => {
   if (["Delivered", "In Stock", "Approved", "Linked"].includes(status)) {
-    return "bg-[#26af41]/20 text-[#5fba71]";
+    return "bg-[#26af41]/20 text-[#18903f]";
   }
   if (["Dispatched", "Partially Received", "Low Stock"].includes(status)) {
     return "bg-[#e5d283]/20 text-[#ffae00]";
@@ -334,7 +334,7 @@ function StatCard({ title, value, icon, onClick }) {
 function StatusBadge({ status }) {
   return (
     <span
-      className={`inline-flex justify-center whitespace-nowrap rounded-full px-2.5 py-1 text-[10px] font-medium ${getStatusClass(
+      className={`inline-flex w-24 justify-center whitespace-nowrap rounded-full px-2.5 py-1 text-[10px] font-medium ${getStatusClass(
         status,
       )}`}
     >

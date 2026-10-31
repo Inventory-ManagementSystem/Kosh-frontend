@@ -1,11 +1,20 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { FiArrowLeft, FiFileText } from "react-icons/fi";
+import {
+  FiArrowLeft,
+  FiArrowRight,
+  FiFileText,
+  FiDownload,
+} from "react-icons/fi";
 import toast from "react-hot-toast";
 import logo from "../../../assets/auth/logo.svg";
 
 import { useAuth } from "../../../context/AuthContext";
-import { getOrderDetails, createGRN } from "../../owner/api/goodsReceiptApi";
+import {
+  getOrderDetails,
+  createGRN,
+  downloadGoodsReceiptPdf,
+} from "../../owner/api/goodsReceiptApi";
 
 function formatDate(date) {
   if (!date) return "—";
@@ -26,7 +35,7 @@ function getDispatchedQuantity(item, shipment) {
     (entry) =>
       entry.purchase_order_item === item.id ||
       entry.order_item === item.id ||
-      entry.purchase_order_item_id === item.id
+      entry.purchase_order_item_id === item.id,
   );
 
   return Number(
@@ -34,7 +43,7 @@ function getDispatchedQuantity(item, shipment) {
       shipmentItem?.shipped_quantity ??
       shipmentItem?.quantity ??
       item.quantity ??
-      0
+      0,
   );
 }
 
@@ -119,16 +128,20 @@ function SummaryRow({ label, value }) {
 function EmptyGRNCard() {
   return (
     <aside className="flex min-h-[360px] min-w-0 flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-[var(--border-color)] bg-[var(--input-background)] px-5 py-5 text-center md:mt-[4.5rem]">
-      <FiFileText
-        size={28}
-        className="text-[var(--secondary-text-color)]"
-      />
+      <FiFileText size={28} className="text-[var(--secondary-text-color)]" />
       <p className="max-w-[220px] text-xs text-[var(--secondary-text-color)]">
         Fill in the fields to create a GRN
       </p>
     </aside>
   );
 }
+
+const removeEmojis = (value) => {
+  return value.replace(
+    /[\p{Extended_Pictographic}\p{Regional_Indicator}\uFE0F\u200D\u20E3]/gu,
+    "",
+  );
+};
 
 function EmployeeGRN() {
   const { id } = useParams();
@@ -139,6 +152,7 @@ function EmployeeGRN() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [items, setItems] = useState([]);
+  const [downloading, setDownloading] = useState(false);
   const [createdGRN, setCreatedGRN] = useState(null);
   const [notes, setNotes] = useState("");
 
@@ -172,9 +186,24 @@ function EmployeeGRN() {
   const updateItem = (index, field, value) => {
     setItems((current) =>
       current.map((item, itemIndex) =>
-        itemIndex === index ? { ...item, [field]: value } : item
-      )
+        itemIndex === index ? { ...item, [field]: value } : item,
+      ),
     );
+  };
+
+  const handleDownloadGRN = async () => {
+    if (!accessToken || !createdGRN?.id || downloading) {
+      return;
+    }
+    setDownloading(true);
+    try {
+      await downloadGoodsReceiptPdf(accessToken, createdGRN.id);
+      toast.success("GRN downloaded successfully.");
+    } catch (error) {
+      toast.error(error.message || "Unable to download GRN.");
+    } finally {
+      setDownloading(false);
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -202,14 +231,14 @@ function EmployeeGRN() {
         received > item.dispatched_quantity
       ) {
         toast.error(
-          `Enter a valid received quantity for ${item.product_name}.`
+          `Enter a valid received quantity for ${item.product_name}.`,
         );
         return;
       }
 
       if (!Number.isInteger(rejected) || rejected < 0 || rejected > received) {
         toast.error(
-          `Damaged units cannot exceed received units for ${item.product_name}.`
+          `Damaged units cannot exceed received units for ${item.product_name}.`,
         );
         return;
       }
@@ -218,7 +247,7 @@ function EmployeeGRN() {
     if (
       items.reduce(
         (total, item) => total + Number(item.received_quantity),
-        0
+        0,
       ) <= 0
     ) {
       toast.error("At least one unit must be received.");
@@ -283,23 +312,23 @@ function EmployeeGRN() {
 
   const totalReceived = items.reduce(
     (total, item) => total + (Number(item.received_quantity) || 0),
-    0
+    0,
   );
 
   const totalDamaged = items.reduce(
     (total, item) => total + (Number(item.rejected_quantity) || 0),
-    0
+    0,
   );
 
   const totalExpired = Number(createdGRN?.expired_quantity ?? 0);
   const locked = Boolean(createdGRN);
 
   return (
-    <div className="min-h-full bg-[var(--card-background)] px-4 py-5 text-[var(--text-color)] sm:px-6 sm:py-7">
+    <div className="min-h-full bg-[var(--card-background)] px-4 py-5 rounded-xl text-[var(--text-color)] sm:px-6 sm:py-7">
       <div className="mx-auto max-w-4xl">
         <button
           type="button"
-          onClick={() => navigate("/employee/goods-receipts")}
+          onClick={() => navigate("/goods-receipts")}
           className="mb-8 inline-flex items-center text-[var(--text-color)] transition hover:opacity-70"
           aria-label="Go back"
         >
@@ -342,7 +371,11 @@ function EmployeeGRN() {
                       placeholder="Enter stock size"
                       value={item.received_quantity}
                       onChange={(event) =>
-                        updateItem(index, "received_quantity", event.target.value)
+                        updateItem(
+                          index,
+                          "received_quantity",
+                          event.target.value,
+                        )
                       }
                       readOnly={locked}
                       min={0}
@@ -356,7 +389,11 @@ function EmployeeGRN() {
                       placeholder="Enter damaged units"
                       value={item.rejected_quantity}
                       onChange={(event) =>
-                        updateItem(index, "rejected_quantity", event.target.value)
+                        updateItem(
+                          index,
+                          "rejected_quantity",
+                          event.target.value,
+                        )
                       }
                       readOnly={locked}
                       min={0}
@@ -380,11 +417,13 @@ function EmployeeGRN() {
 
                 <textarea
                   value={notes}
-                  onChange={(event) => setNotes(event.target.value)}
+                  onChange={(event) =>
+                    setNotes(removeEmojis(event.target.value))
+                  }
                   readOnly={locked}
                   maxLength={500}
                   placeholder="Add a note..."
-                  className="h-28 w-full resize-none rounded-md border border-[var(--border-color)] bg-[var(--input-background)] px-2.5 py-2.5 text-[10px] text-[var(--text-color)] outline-none placeholder:text-[var(--secondary-text-color)] focus:border-[var(--accent-color)]"
+                  className="h-28 w-full resize-none rounded-md border border-[var(--border-color)] bg-[var(--input-background)] px-2.5 py-2.5 text-[14px] text-[var(--text-color)] outline-none placeholder:text-[var(--secondary-text-color)] focus:border-[var(--accent-color)]"
                 />
               </label>
 
@@ -395,6 +434,22 @@ function EmployeeGRN() {
                   className="h-9 min-w-[110px] rounded-md bg-[var(--accent-color)] px-6 text-[11px] font-semibold text-[var(--page-background)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {submitting ? "Creating" : "Create GRN"}
+                </button>
+
+                <button
+                  type="button"
+                  disabled={!locked || !createdGRN?.id || downloading}
+                  onClick={handleDownloadGRN}
+                  className="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-[var(--input-background)] px-5 text-[11px] font-medium text-[var(--text-color)] transition hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {downloading ? (
+                    "Downloading"
+                  ) : (
+                    <>
+                      Download GRN
+                      <FiDownload size={13} />
+                    </>
+                  )}
                 </button>
               </div>
             </div>

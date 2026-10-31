@@ -122,7 +122,7 @@ function NotificationDropdown({ onUnreadCountChange, liveNotification }) {
   };
 
   return (
-    <div className="absolute right-0 top-full z-50 mt-2 w-80 rounded-xl border border-(--border-color) bg-(--dropdown-background) p-3 shadow-xl">
+    <div className="fixed inset-x-3 top-[4.5rem] z-50 rounded-xl border border-(--border-color) bg-(--dropdown-background) p-3 shadow-xl sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 sm:w-80 md:w-96">
       <div className="flex items-center justify-between gap-3 pb-3">
         <h2 className="font-['Google_Sans_Flex'] text-base font-semibold text-(--text-color)">
           Notifications

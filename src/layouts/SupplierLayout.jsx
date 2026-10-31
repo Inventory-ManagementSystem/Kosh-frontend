@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 
 import SupplierSidebar from "../features/supplier/components/SupplierSidebar";
 import SupplierTopbar from "../features/supplier/components/SupplierTopbar";
@@ -16,15 +16,14 @@ function SupplierLayout() {
       data-theme={themes.supplier}
     >
       <div className="fixed left-0 top-0 z-50 flex h-18 w-57.5 items-center px-5 bg-(--page-background)">
-        <img src={logo} alt="KOSH" className="h-7 w-auto shrink-0" />
+        <Link to="/supplier-dashboard" className="flex items-center">
+          <img src={logo} alt="KOSH" className="h-7 w-auto shrink-0" />
+        </Link>
       </div>
 
       <SupplierTopbar />
 
-      <SupplierSidebar
-        collapsed={collapsed}
-        setCollapsed={setCollapsed}
-      />
+      <SupplierSidebar collapsed={collapsed} setCollapsed={setCollapsed} />
 
       <main
         className={`

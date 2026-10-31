@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 
 import { FiLogOut, FiMenu, FiX } from "react-icons/fi";
 import { FaBell } from "react-icons/fa";
@@ -13,6 +13,7 @@ import { useTheme } from "../../../context/ThemeContext";
 import { useNotificationSocket } from "../../owner/hooks/useNotificationSocket";
 import { employeeNavItems } from "./EmployeeSidebar";
 import NotificationDropdown from "../../owner/pages/NotificationDropdown";
+import logo from "../../../assets/auth/logo.svg";
 
 function EmployeeTopbar() {
   const { accessToken } = useAuth();
@@ -86,7 +87,14 @@ function EmployeeTopbar() {
     <>
       <header className="fixed left-0 right-0 top-0 z-50 h-18 bg-(--page-background) lg:left-57.5">
         <div className="flex h-full items-center justify-between gap-2 px-3 sm:px-6 lg:px-8">
-          <div className="min-w-0 w-full max-w-[320px]"></div>
+          <div className="min-w-0 w-full max-w-[320px]">
+            <Link
+              to="/employee-dashboard"
+              className="flex items-center lg:hidden"
+            >
+              <img src={logo} alt="KOSH" className="h-6 w-auto shrink-0" />
+            </Link>
+          </div>
 
           <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2">
             <div className="relative" ref={notificationRef}>

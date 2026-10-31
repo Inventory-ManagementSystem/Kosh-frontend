@@ -215,7 +215,6 @@ function PayoutDetails() {
             className="rounded-xl border border-(--border-color) bg-(--card-background) p-4 sm:p-5"
           >
             <div className="mb-5 flex items-center gap-2 text-sm font-medium text-(--accent-color)">
-              <span className="bg-orange-400 rounded-full h-1.5 w-1.5"></span>
               {savedDetails ? "Edit your account" : "Add your account"}
             </div>
 

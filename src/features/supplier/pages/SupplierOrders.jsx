@@ -1,15 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  FiChevronsLeft,
-  FiChevronLeft,
-  FiChevronRight,
-  FiChevronsRight,
-} from "react-icons/fi";
 import toast from "react-hot-toast";
 
 import { useAuth } from "../../../context/AuthContext";
 import { getSupplierOrders } from "../api/supplierOrderApi";
+import Pagination from "../../owner/components/Pagination";
 
 const PAGE_SIZE = 5;
 
@@ -22,9 +17,7 @@ const formatCurrency = (value) =>
 const formatDate = (value) => {
   if (!value) return "—";
 
-  const date = new Date(
-    value.length === 10 ? `${value}T00:00:00` : value,
-  );
+  const date = new Date(value.length === 10 ? `${value}T00:00:00` : value);
 
   if (Number.isNaN(date.getTime())) return "—";
 
@@ -35,14 +28,13 @@ const formatDate = (value) => {
   });
 };
 
-const formatStatus = (status) =>
-  status ? status.replaceAll("_", " ") : "—";
+const formatStatus = (status) => (status ? status.replaceAll("_", " ") : "—");
 
 const getStatusClass = (status) => {
   if (status === "issued") return "text-(--accent-color)";
   if (status === "dispatched") return "text-blue-400";
   if (status === "partially_received") return "text-yellow-400";
-  if (status === "received") return "text-green-400";
+  if (status === "received") return "text-[#18903f]";
 
   return "text-(--secondary-text-color)";
 };
@@ -95,25 +87,19 @@ function OrderCard({ order, onClick }) {
             Delivery
           </p>
           <p className="break-words text-sm font-semibold text-(--text-color)">
-            {formatDate(
-              order.expected_delivery_date || order.delivery_date,
-            )}
+            {formatDate(order.expected_delivery_date || order.delivery_date)}
           </p>
         </div>
 
         <div className="min-w-0">
-          <p className="mb-1.5 text-xs text-(--secondary-text-color)">
-            Stock
-          </p>
+          <p className="mb-1.5 text-xs text-(--secondary-text-color)">Stock</p>
           <p className="text-sm font-semibold text-(--text-color)">
             {order.total_quantity ?? 0}
           </p>
         </div>
 
         <div className="min-w-0">
-          <p className="mb-1.5 text-xs text-(--secondary-text-color)">
-            Amount
-          </p>
+          <p className="mb-1.5 text-xs text-(--secondary-text-color)">Amount</p>
           <p className="break-words text-sm font-semibold text-(--text-color)">
             {formatCurrency(order.grand_total)}
           </p>
@@ -129,9 +115,7 @@ function OrderCard({ order, onClick }) {
         </div>
 
         <div className="min-w-0">
-          <p className="mb-1.5 text-xs text-(--secondary-text-color)">
-            Status
-          </p>
+          <p className="mb-1.5 text-xs text-(--secondary-text-color)">Status</p>
           <p
             className={`text-sm font-semibold capitalize ${getStatusClass(order.status)}`}
           >
@@ -210,9 +194,7 @@ function AllOrders() {
     }
 
     if (
-      ["dispatched", "partially_received", "received"].includes(
-        order.status,
-      )
+      ["dispatched", "partially_received", "received"].includes(order.status)
     ) {
       navigate(`/supplier/orders/${order.id}/progress`);
       return;
@@ -272,93 +254,7 @@ function AllOrders() {
       )}
 
       {!loading && count > 0 && (
-        <div className="flex items-center justify-center pt-2">
-
-          <div className="flex flex-wrap items-center gap-2">
-            <button
-              type="button"
-              disabled={page === 1}
-              onClick={() => setPage(1)}
-              title="First page"
-              aria-label="First page"
-              className="flex h-9 w-9 items-center justify-center rounded-lg border border-(--border-color) transition hover:bg-(--input-background) disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              <FiChevronsLeft size={16} />
-            </button>
-
-            <button
-              type="button"
-              disabled={page === 1}
-              onClick={() => setPage((current) => current - 1)}
-              className="flex h-9 items-center gap-1 rounded-lg border border-(--border-color) px-3 text-sm transition hover:bg-(--input-background) disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              <FiChevronLeft size={16} />
-            </button>
-
-            <div className="flex items-center gap-1">
-              {Array.from({ length: totalPages }, (_, index) => index + 1)
-                .filter(
-                  (pageNumber) =>
-                    pageNumber === 1 ||
-                    pageNumber === totalPages ||
-                    Math.abs(pageNumber - page) <= 1,
-                )
-                .reduce((result, pageNumber, index, pages) => {
-                  if (index > 0 && pageNumber - pages[index - 1] > 1) {
-                    result.push("ellipsis-" + pageNumber);
-                  }
-
-                  result.push(pageNumber);
-                  return result;
-                }, [])
-                .map((item) =>
-                  typeof item === "string" ? (
-                    <span
-                      key={item}
-                      className="px-1 text-sm text-(--secondary-text-color)"
-                    >
-                      ...
-                    </span>
-                  ) : (
-                    <button
-                      key={item}
-                      type="button"
-                      onClick={() => setPage(item)}
-                      aria-label={`Page ${item}`}
-                      aria-current={page === item ? "page" : undefined}
-                      className={`h-9 min-w-9 rounded-lg border px-3 text-sm transition ${
-                        page === item
-                          ? "border-(--accent-color) bg-(--accent-color) font-semibold text-(--page-background)"
-                          : "border-(--border-color) hover:bg-(--input-background)"
-                      }`}
-                    >
-                      {item}
-                    </button>
-                  ),
-                )}
-            </div>
-
-            <button
-              type="button"
-              disabled={page >= totalPages}
-              onClick={() => setPage((current) => current + 1)}
-              className="flex h-9 items-center gap-1 rounded-lg border border-(--border-color) px-3 text-sm transition hover:bg-(--input-background) disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              <FiChevronRight size={16} />
-            </button>
-
-            <button
-              type="button"
-              disabled={page >= totalPages}
-              onClick={() => setPage(totalPages)}
-              title="Last page"
-              aria-label="Last page"
-              className="flex h-9 w-9 items-center justify-center rounded-lg border border-(--border-color) transition hover:bg-(--input-background) disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              <FiChevronsRight size={16} />
-            </button>
-          </div>
-        </div>
+        <Pagination page={page} totalPages={totalPages} onChange={setPage} />
       )}
     </div>
   );

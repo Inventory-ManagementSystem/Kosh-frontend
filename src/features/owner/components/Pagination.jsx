@@ -57,7 +57,7 @@ function Pagination({ page, totalPages, onChange }) {
         pageNumber === "..." ? (
           <span
             key={`ellipsis-${index}`}
-            className="px-1 text-sm text-(--secondary-color)"
+            className="px-1 text-sm text-(--secondary-text-color)"
           >
             ...
           </span>

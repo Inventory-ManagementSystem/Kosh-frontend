@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 
 import EmployeeSidebar from "../features/employee/components/EmployeeSidebar";
 import EmployeeTopbar from "../features/employee/components/EmployeeTopbar";
@@ -16,15 +16,14 @@ function EmployeeLayout() {
       data-theme={themes.employee}
     >
       <div className="fixed left-0 top-0 z-50 flex h-18 w-57.5 items-center px-5 bg-(--page-background)">
-        <img src={logo} alt="KOSH" className="h-7 w-auto shrink-0" />
+        <Link to="/employee-dashboard" className="flex items-center">
+          <img src={logo} alt="KOSH" className="h-7 w-auto shrink-0" />
+        </Link>
       </div>
 
       <EmployeeTopbar />
 
-      <EmployeeSidebar
-        collapsed={collapsed}
-        setCollapsed={setCollapsed}
-      />
+      <EmployeeSidebar collapsed={collapsed} setCollapsed={setCollapsed} />
 
       <main
         className={`

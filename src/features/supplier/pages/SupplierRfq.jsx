@@ -1,15 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import {
-  FiChevronsLeft,
-  FiChevronLeft,
-  FiChevronRight,
-  FiChevronsRight,
-} from "react-icons/fi";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../../context/AuthContext";
 import ConfirmDelete from "../../owner/components/ConfirmDelete";
+import Pagination from "../../owner/components/Pagination";
 
 import {
   getSupplierRFQs,
@@ -265,95 +260,6 @@ function SupplierRfq() {
         onConfirm={confirmDecline}
         loading={decliningId === selectedRFQ?.id}
       />
-    </div>
-  );
-}
-
-function Pagination({ page, totalPages, onChange }) {
-  const getPages = () => {
-    if (totalPages <= 5) {
-      return Array.from({ length: totalPages }, (_, index) => index + 1);
-    }
-    if (page <= 3) {
-      return [1, 2, 3, 4, "...", totalPages];
-    }
-    if (page >= totalPages - 2) {
-      return [
-        1,
-        "...",
-        totalPages - 3,
-        totalPages - 2,
-        totalPages - 1,
-        totalPages,
-      ];
-    }
-    return [1, "...", page - 1, page, page + 1, "...", totalPages];
-  };
-  const buttonClass =
-    "flex h-7 min-w-7 items-center justify-center rounded-md border border-(--border-color) px-2 text-xs transition disabled:cursor-not-allowed disabled:opacity-40";
-  return (
-    <div className="mt-4 flex flex-wrap items-center justify-center gap-1.5">
-      <button
-        type="button"
-        onClick={() => onChange(1)}
-        disabled={page <= 1}
-        className={buttonClass}
-      >
-        <FiChevronsLeft size={13} />
-      </button>
-
-      <button
-        type="button"
-        onClick={() => onChange(page - 1)}
-        disabled={page <= 1}
-        aria-label="Previous page"
-        className={buttonClass}
-      >
-        <FiChevronLeft size={13} />
-      </button>
-
-      {getPages().map((item, index) =>
-        item === "..." ? (
-          <span
-            key={`ellipsis-${index}`}
-            className="flex h-7 min-w-5 items-center justify-center text-xs text-(--page-background)"
-          >
-            ...
-          </span>
-        ) : (
-          <button
-            key={item}
-            type="button"
-            onClick={() => onChange(item)}
-            className={`${buttonClass} ${
-              page === item
-                ? "border-(--accent-color) bg-(--accent-color) font-semibold text-(--page-background)"
-                : "text-(--secondary-text-color) hover:text-(--accent-color)"
-            }`}
-          >
-            {item}
-          </button>
-        ),
-      )}
-
-      <button
-        type="button"
-        onClick={() => onChange(page + 1)}
-        disabled={page >= totalPages}
-        aria-label="Next page"
-        className={buttonClass}
-      >
-        <FiChevronRight size={13} />
-      </button>
-
-      <button
-        type="button"
-        onClick={() => onChange(totalPages)}
-        disabled={page >= totalPages}
-        className={buttonClass}
-      >
-        <FiChevronsRight size={13} />
-      </button>
     </div>
   );
 }

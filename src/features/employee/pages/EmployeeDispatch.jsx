@@ -15,6 +15,14 @@ import {
 
 import WarehouseTable from "../../owner/components/WarehouseTable";
 import WarehouseTableSkeleton from "../../owner/components/WarehouseTableSkeleton";
+import Pagination from "../../owner/components/Pagination";
+
+const removeEmojis = (value) => {
+  return value.replace(
+    /[\p{Extended_Pictographic}\p{Regional_Indicator}\uFE0F\u200D\u20E3]/gu,
+    "",
+  );
+};
 
 function EmployeeDispatch() {
   const { accessToken } = useAuth();
@@ -37,6 +45,8 @@ function EmployeeDispatch() {
   const [outletNameError, setOutletNameError] = useState("");
   const [outletAddressError, setOutletAddressError] = useState("");
   const [quantityError, setQuantityError] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 8;
 
   const inputClass =
     "h-11 w-full rounded-md border border-(--icon-border-color) bg-(--dropdown-background) px-3 text-sm text-(--text-color) outline-none placeholder:text-(--secondary-text-color) focus:border-(--accent-color)";
@@ -94,6 +104,17 @@ function EmployeeDispatch() {
       product.status === "In Stock" || product.status === "Low Stock";
     return matchesSearch && matchesCategory && matchesStockStatus;
   });
+
+  const totalPages = Math.ceil(filteredProducts.length / PAGE_SIZE);
+  const startIndex = (currentPage - 1) * PAGE_SIZE;
+  const paginatedProducts = filteredProducts.slice(
+    startIndex,
+    startIndex + PAGE_SIZE,
+  );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, selectedCategory]);
 
   const handleDispatch = (product) => {
     setSelectedProduct(product);
@@ -204,7 +225,7 @@ function EmployeeDispatch() {
             <input
               type="text"
               value={search}
-              onChange={(event) => setSearch(event.target.value)}
+              onChange={(event) => setSearch(removeEmojis(event.target.value))}
               placeholder="Product name or SKU"
               className="w-full bg-transparent text-sm text-(--text-color) outline-none placeholder:text-(--secondary-text-color)"
             />
@@ -252,10 +273,17 @@ function EmployeeDispatch() {
           <WarehouseTableSkeleton />
         ) : (
           <WarehouseTable
-            items={filteredProducts}
+            items={paginatedProducts}
             variant="dispatch"
             showDelete={false}
             onDispatch={handleDispatch}
+          />
+        )}
+        {totalPages > 1 && (
+          <Pagination
+            page={currentPage}
+            totalPages={totalPages}
+            onChange={setCurrentPage}
           />
         )}
       </section>
@@ -322,6 +350,7 @@ function EmployeeDispatch() {
                   max={selectedProduct?.quantity ?? undefined}
                   step="1"
                   value={dispatchQuantity}
+                  onWheel={(event) => event.currentTarget.blur()}
                   onChange={(event) => {
                     const value = event.target.value;
                     setDispatchQuantity(value);
@@ -406,7 +435,7 @@ function EmployeeDispatch() {
                   type="text"
                   value={outletName}
                   onChange={(event) => {
-                    const value = event.target.value;
+                    const value = removeEmojis(event.target.value);
                     setOutletName(value);
 
                     setOutletNameError(
@@ -430,7 +459,7 @@ function EmployeeDispatch() {
                   type="text"
                   value={outletAddress}
                   onChange={(event) => {
-                    const value = event.target.value;
+                    const value = removeEmojis(event.target.value);
                     setOutletAddress(value);
 
                     setOutletAddressError(

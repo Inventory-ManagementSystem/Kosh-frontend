@@ -19,6 +19,7 @@ import { toast } from "react-hot-toast";
 import RfqCard from "../components/RfqCard";
 import ConfirmDelete from "../components/ConfirmDelete";
 import Pagination from "../components/Pagination";
+import Toggle from "../components/Toggle";
 
 const PAGE_SIZE = 5;
 
@@ -96,15 +97,11 @@ function RFQAlerts() {
     loadSettings();
   }, [accessToken]);
 
-  const handleTogglePlatformPool = async () => {
+  const handleSetPlatformPool = async (nextValue) => {
     if (!settings || savingSettings || !isOwner) return;
-
     const previous = settings;
-    const nextValue = !settings.auto_rfq_include_platform_pool;
-
     setSettings({ ...settings, auto_rfq_include_platform_pool: nextValue });
     setSavingSettings(true);
-
     try {
       const updated = await updateProcurementSettings(accessToken, {
         auto_rfq_include_platform_pool: nextValue,
@@ -112,8 +109,8 @@ function RFQAlerts() {
       setSettings(updated);
       toast.success(
         nextValue
-          ? "Platform suppliers will be included from the next nightly run."
-          : "Only your own suppliers will be used from the next nightly run.",
+          ? "Platform suppliers will be included."
+          : "Only your own suppliers will be used.",
       );
     } catch (err) {
       setSettings(previous);
@@ -247,46 +244,26 @@ function RFQAlerts() {
 
   return (
     <div className="space-y-6 p-4 text-(--accent-color) sm:p-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-['Google_Sans_Flex'] text-3xl font-semibold">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="font-['Google_Sans_Flex'] text-2xl font-semibold sm:text-3xl">
           RFQ & Alerts
         </h1>
 
         {settings && (
-          <div className="flex items-end gap-3">
-            <span className="pb-0.5 text-sm text-(--secondary-text-color)">
-              No
+          <div className="flex w-full items-center justify-between gap-3 rounded-xl border border-(--border-color) bg-(--card-background) px-3 py-2 sm:w-auto sm:flex-col sm:gap-1.5 sm:border-0 sm:bg-transparent sm:p-0">
+            <span className="whitespace-nowrap text-sm font-medium text-(--text-color)">
+              Supplier Pool
             </span>
 
-            <div className="flex flex-col items-center gap-1.5">
-              <span className="whitespace-nowrap text-sm font-medium text-(--secondary-text-color)">
-                Supplier Pool
-              </span>
-              <button
-                type="button"
-                role="switch"
-                aria-checked={Boolean(settings.auto_rfq_include_platform_pool)}
-                onClick={handleTogglePlatformPool}
-                disabled={!isOwner || savingSettings}
-                className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
-                  settings.auto_rfq_include_platform_pool
-                    ? "bg-(--accent-color)"
-                    : "bg-(--border-color)"
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 rounded-full bg-white transition-transform ${
-                    settings.auto_rfq_include_platform_pool
-                      ? "translate-x-6"
-                      : "translate-x-1"
-                  }`}
-                />
-              </button>
-            </div>
-
-            <span className="pb-0.5 text-sm text-(--secondary-text-color)">
-              Yes
-            </span>
+            <Toggle
+              options={[
+                { label: "Yes", value: true },
+                { label: "No", value: false },
+              ]}
+              value={Boolean(settings.auto_rfq_include_platform_pool)}
+              onChange={handleSetPlatformPool}
+              disabled={!isOwner || savingSettings}
+            />
           </div>
         )}
       </div>

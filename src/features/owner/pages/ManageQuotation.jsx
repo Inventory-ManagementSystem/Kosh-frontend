@@ -197,7 +197,7 @@ function ManageQuotation() {
 
         <section className="space-y-4 p-1 sm:p-2">
           <div className="flex items-center gap-2">
-            <span className="h-2 w-2 shrink-0 rounded-full bg-[#56f4ed]" />
+            <span className="h-2 w-2 shrink-0 rounded-full bg-[#18903f]" />
             <h2 className="text-base font-semibold sm:text-lg">
               Set Priorities
             </h2>
@@ -255,7 +255,7 @@ function ManageQuotation() {
                 style={{ width: `${weights.delivery}%` }}
               />
               <div
-                className="bg-[#4bc783]"
+                className="bg-[#18903f]"
                 style={{ width: `${weights.payment}%` }}
               />
             </div>
@@ -364,7 +364,7 @@ function ManageQuotation() {
 
                   <div className="mb-3 flex items-start justify-between gap-2">
                     <div className="flex min-w-0 items-start gap-2">
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#63e8a3]" />
+                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#18903f]" />
                       <h3 className="break-words text-sm font-semibold">
                         {quotation.company_name || "Supplier"}
                       </h3>
@@ -379,14 +379,14 @@ function ManageQuotation() {
                     {badges.map((badge) => (
                       <span
                         key={badge}
-                        className="rounded border border-[#315746] px-2 py-1 text-[9px] text-[#6ce6a1]"
+                        className="rounded border border-[#315746] px-2 py-1 text-[9px] font-bold uppercase text-[#18903f]"
                       >
                         {String(badge).replaceAll("_", " ")}
                       </span>
                     ))}
 
                     {quotation.supplier_verified && (
-                      <span className="flex items-center gap-1 rounded border border-[#315746] px-2 py-1 text-[9px] text-[#6ce6a1]">
+                      <span className="flex items-center gap-1 rounded border border-[#315746] font-bold uppercase px-2 py-1 text-[9px] text-[#18903f]">
                         <FiCheckCircle />
                         Verified
                       </span>
@@ -401,7 +401,7 @@ function ManageQuotation() {
                   </p>
 
                   {quotation.delivery_date && rfqDetails.expected_delivery && (
-                    <p className="mt-1 text-[10px] text-[#63dc99]">
+                    <p className="mt-1 text-[10px] text-[#18903f] font-bold uppercase">
                       {(() => {
                         const deliveryDate = new Date(quotation.delivery_date);
                         const expectedDate = new Date(

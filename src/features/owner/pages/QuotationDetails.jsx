@@ -217,7 +217,7 @@ function QuotationDetails() {
                 )}
 
                 {quotation.supplier_verified && (
-                  <span className="flex items-center gap-1 rounded-md border border-(--border-color) px-2 py-1 text-xs text-[#63dc99]">
+                  <span className="flex items-center gap-1 rounded-md border border-(--border-color) px-2 py-1 text-xs text-[#18903f]">
                     <FiCheckCircle />
                     Verified
                   </span>
@@ -282,7 +282,7 @@ function QuotationDetails() {
                     </p>
 
                     {quotation.score != null && (
-                      <p className="mt-1 flex items-center gap-1 text-xs text-[#63dc99]">
+                      <p className="mt-1 flex items-center gap-1 text-xs text-[#18903f]">
                         <FiCheckCircle />
                         Score {Number(quotation.score).toFixed(1)}/100
                       </p>

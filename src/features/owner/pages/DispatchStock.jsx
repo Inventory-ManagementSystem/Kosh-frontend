@@ -15,6 +15,7 @@ import {
 
 import WarehouseTable from "../components/WarehouseTable";
 import WarehouseTableSkeleton from "../components/WarehouseTableSkeleton";
+import Pagination from "../components/Pagination";
 
 const removeEmojis = (value) => {
   return value.replace(
@@ -44,6 +45,8 @@ function DispatchStock() {
   const [outletNameError, setOutletNameError] = useState("");
   const [outletAddressError, setOutletAddressError] = useState("");
   const [quantityError, setQuantityError] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 8;
 
   const inputClass =
     "h-11 w-full rounded-md border border-(--icon-border-color) bg-(--dropdown-background) px-3 text-sm text-(--text-color) outline-none placeholder:text-(--secondary-text-color) focus:border-(--accent-color)";
@@ -101,6 +104,17 @@ function DispatchStock() {
       product.status === "In Stock" || product.status === "Low Stock";
     return matchesSearch && matchesCategory && matchesStockStatus;
   });
+
+  const totalPages = Math.ceil(filteredProducts.length / PAGE_SIZE);
+  const startIndex = (currentPage - 1) * PAGE_SIZE;
+  const paginatedProducts = filteredProducts.slice(
+    startIndex,
+    startIndex + PAGE_SIZE,
+  );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, selectedCategory]);
 
   const handleDispatch = (product) => {
     setSelectedProduct(product);
@@ -259,10 +273,17 @@ function DispatchStock() {
           <WarehouseTableSkeleton />
         ) : (
           <WarehouseTable
-            items={filteredProducts}
+            items={paginatedProducts}
             variant="dispatch"
             showDelete={false}
             onDispatch={handleDispatch}
+          />
+        )}
+        {totalPages > 1 && (
+          <Pagination
+            page={currentPage}
+            totalPages={totalPages}
+            onChange={setCurrentPage}
           />
         )}
       </section>

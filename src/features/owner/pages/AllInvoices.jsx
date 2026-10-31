@@ -124,7 +124,7 @@ function AllInvoices() {
                   <span
                     className={`mt-1 inline-block text-xs capitalize ${
                       invoice.status === "paid"
-                        ? "text-[#5fba71]"
+                        ? "text-[#18903f]"
                         : "text-[#ff985c]"
                     }`}
                   >

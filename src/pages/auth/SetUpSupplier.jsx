@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 import AuthDecoration from "../../components/auth/AuthDecoration";
 import supplier from "../../assets/auth/supplier.svg";
@@ -222,12 +223,18 @@ function SetupSupplier() {
             Let's Setup Your Supplying Agency
           </h1>
         </div>
-
         <section className="relative mx-auto w-full max-w-xl rounded-lg border border-(--border-color) bg-(--card-background) p-6 sm:p-8 lg:flex lg:max-w-4xl lg:items-center lg:p-10">
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="absolute left-3 top-3 pb-5 z-10 cursor-pointer text-(--icon-accent-color)"
+          >
+            <IoMdArrowRoundBack size={20} />
+          </button>
           <form
             noValidate
             onSubmit={handleSubmit}
-            className="w-full lg:w-1/2 lg:pr-8"
+            className="w-full pl-6 lg:w-1/2 lg:pr-8"
           >
             <div className="mb-5">
               <label htmlFor="businessName" className={labelClass}>

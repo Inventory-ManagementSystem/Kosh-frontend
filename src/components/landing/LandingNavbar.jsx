@@ -69,7 +69,7 @@ function LandingNavbar() {
           </Link>
 
           <Link
-            to="/role"
+            to="/signup"
             className="rounded-md bg-(--accent-color) px-5 py-1.5 text-xs font-semibold text-(--page-background) transition hover:bg-(--accent-hover-color)"
           >
             Sign Up

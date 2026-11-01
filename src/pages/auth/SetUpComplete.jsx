@@ -53,7 +53,7 @@ function SetupComplete() {
             All Set!
           </h1>
           <p className="mt-2 text-sm sm:text-base text-(--secondary-text-color)">
-            Your business is ready to go
+            Ready to go
           </p>
           <div className="mt-6 sm:mt-7 w-full rounded-lg bg-(--success-background) px-4 sm:px-6 py-3 sm:py-4">
             <p className="text-xs sm:text-sm  text-[#5bc46b]">

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { Link } from "react-router-dom";
@@ -18,20 +18,7 @@ import { debounce } from "../../utils/debounce";
 
 function Signup() {
   const navigate = useNavigate();
-  const location = useLocation();
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const role =
-    location.state?.role ||
-    localStorage.getItem("selectedRole") ||
-    "business_owner";
-  const roleName =
-    role === "employee"
-      ? "Employee/Staff"
-      : role === "supplier"
-        ? "Supplier"
-        : "Business Owner";
-
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState(() => {
@@ -270,7 +257,6 @@ function Signup() {
 
           sessionStorage.setItem("registrationName", data.name);
           sessionStorage.setItem("registrationEmail", data.email);
-          sessionStorage.setItem("registrationRole", role);
 
           navigate("/registration-otp");
         } catch (error) {
@@ -285,7 +271,7 @@ function Signup() {
           setIsSubmitting(false);
         }
       }, 500),
-    [navigate, role],
+    [navigate],
   );
 
   const handleSubmit = (e) => {
@@ -311,8 +297,7 @@ function Signup() {
       <div className="flex min-h-screen flex-col items-center justify-center px-4 pt-20 min-[700px]:px-6 min-[700px]:pt-8">
         <div className="mb-4 text-center min-[700px]:mb-5">
           <p className="font-['Google_Sans_Flex'] text-xl font-semibold min-[700px]:text-2xl">
-            Create account as{" "}
-            <span className="font-bold text-(--accent-color)">{roleName}</span>
+            Create account
           </p>
         </div>
 

@@ -11,7 +11,8 @@ import AuthDecoration from "../../components/auth/AuthDecoration";
 import AuthButton from "../../components/auth/AuthButton";
 import { googleLogin } from "../../api/googleApi";
 import { githubLogin } from "../../api/githubApi";
-import { resolveNextStep } from "../../utils/onboarding";
+import { getHomeRoute } from "../../utils/onboarding";
+import { getProfile } from "../../api/getProfileApi";
 
 import GoogleButton from "../../components/auth/GoogleButton";
 import GithubButton from "../../components/auth/GithubButton";
@@ -119,9 +120,7 @@ function Login() {
     } else if (formData.password.length > 30) {
       newErrors.password = "Maximum limit reached";
     }
-
     setErrors(newErrors);
-
     return !newErrors.email && !newErrors.password;
   };
 
@@ -133,14 +132,11 @@ function Login() {
             email: data.email,
             password: data.password,
           });
-
-          login(response.data.access, response.data.role);
-
-          const nextRoute = await resolveNextStep(
-            response.data,
-            response.data.access,
-          );
-          navigate(nextRoute);
+          const access = response.data.access;
+          const profile = await getProfile(access);
+          const role = profile.data.role ?? null;
+          login(access, role);
+          navigate(getHomeRoute(role), { replace: true });
         } catch (error) {
           console.log("Login Failed", error.message);
           if (error.status === 429) {
@@ -310,7 +306,7 @@ function Login() {
               Don't have an account?{" "}
               <button
                 type="button"
-                onClick={() => navigate("/role")}
+                onClick={() => navigate("/signup")}
                 className=" text-(--accent-color) underline underline-offset-4 transition hover:text-(--text-color)"
               >
                 SignUp
@@ -322,7 +318,7 @@ function Login() {
             Don't have an account?{" "}
             <button
               type="button"
-              onClick={() => navigate("/role")}
+              onClick={() => navigate("/signup")}
               className="text-[#b4bedd] underline underline-offset-4 transition hover:text-[#e6e6e8]"
             >
               SignUp

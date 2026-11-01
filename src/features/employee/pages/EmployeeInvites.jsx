@@ -78,7 +78,7 @@ function EmployeeInvites() {
 
   if (loading) {
     return (
-      <div className="relative min-h-screen overflow-x-hidden bg-(--background-color) text-(--text-color)">
+      <div className="relative min-h-screen overflow-x-hidden bg-(--page-background) text-(--text-color)">
         <AuthDecoration />
 
         <Link
@@ -98,7 +98,7 @@ function EmployeeInvites() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-(--background-color) text-(--text-color)">
+    <div className="relative min-h-screen overflow-x-hidden bg-(--page-background) text-(--text-color)">
       <Link
         to="/"
         className="fixed left-4 top-5 z-20 sm:left-8 sm:top-7 lg:left-15"

@@ -14,6 +14,8 @@ import GitHubOAuthCallback from "./pages/auth/GitHubOAuthCallback";
 import HomePage from "./pages/auth/HomePage";
 
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import RequireSetupRole from "./components/auth/RequireSetupRole";
+import RequireRole from "./components/auth/RequireRole";
 
 import OwnerLayout from "./layouts/OwnerLayout";
 import Dashboard from "./features/owner/pages/Dashboard";
@@ -62,23 +64,32 @@ import SupplierOrderProgress from "./features/supplier/pages/SupplierOrderProgre
 
 function App() {
   return (
-    <>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/role" element={<RoleSelection />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/verify-otp" element={<OTPVerification />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/registration-otp" element={<RegistrationOtp />} />
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/role" element={<RoleSelection />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/verify-otp" element={<OTPVerification />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/registration-otp" element={<RegistrationOtp />} />
 
-        <Route element={<ProtectedRoute />}>
+      <Route element={<ProtectedRoute />}>
+        <Route path="/complete-setup" element={<SetupComplete />} />
+        <Route element={<RequireSetupRole roleKey="business_owner" />}>
           <Route path="/setup-business" element={<SetupBusiness />} />
           <Route path="/setup-warehouse" element={<SetupWarehouse />} />
-          <Route path="/complete-setup" element={<SetupComplete />} />
-          <Route path="/setup-supplier" element={<SetupSupplier />} />
+        </Route>
 
+        <Route element={<RequireSetupRole roleKey="supplier" />}>
+          <Route path="/setup-supplier" element={<SetupSupplier />} />
+        </Route>
+
+        <Route element={<RequireSetupRole roleKey="employee" />}>
+          <Route path="/employee-invites" element={<EmployeeInvites />} />
+        </Route>
+
+        <Route element={<RequireRole allow={["business_owner", "owner"]} />}>
           <Route element={<OwnerLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/employees" element={<ManageEmployee />} />
@@ -106,14 +117,14 @@ function App() {
               element={<InvoiceDetail />}
             />
             <Route path="/goods-receipts" element={<DispatchedOrders />} />
-
             <Route path="/goods-receipts/:id" element={<CreateGRN />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/received-stock" element={<ReceivedStock />} />
             <Route path="/edit-product/:id" element={<EditProduct />} />
           </Route>
+        </Route>
 
-          <Route path="/employee-invites" element={<EmployeeInvites />} />
+        <Route element={<RequireRole allow={["employee"]} />}>
           <Route element={<EmployeeLayout />}>
             <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
             <Route path="/employee-warehouse" element={<EmployeeWarehouse />} />
@@ -127,20 +138,21 @@ function App() {
               path="/employee/goods-receipts"
               element={<EmployeeDispatchOrders />}
             />
-
             <Route
               path="/employee/goods-receipts/:id"
               element={<EmployeeGRN />}
             />
           </Route>
+        </Route>
 
+        <Route element={<RequireRole allow={["supplier"]} />}>
           <Route element={<SupplierLayout />}>
             <Route path="/supplier-dashboard" element={<SupplierDashboard />} />
             <Route path="/supplier-rfqs" element={<SupplierRFQs />} />
             <Route path="/supplier/kosh-ai" element={<SupplierKoshAI />} />
             <Route path="/account-details" element={<PayoutDetails />} />
             <Route
-              path="supplier/create-quotation/:id"
+              path="/supplier/create-quotation/:id"
               element={<SupplierQuotation />}
             />
             <Route path="/quotations" element={<AllQuotations />} />
@@ -155,11 +167,11 @@ function App() {
             />
           </Route>
         </Route>
+      </Route>
 
-        <Route path="/oauth/callback" element={<OAuthCallback />} />
-        <Route path="/github/callback" element={<GitHubOAuthCallback />} />
-      </Routes>
-    </>
+      <Route path="/oauth/callback" element={<OAuthCallback />} />
+      <Route path="/github/callback" element={<GitHubOAuthCallback />} />
+    </Routes>
   );
 }
 

@@ -14,7 +14,7 @@ const FEATURE_ROWS = [
       "Every role gets its own workspace. Owners manage warehouses, people and payments, employees handle stock and GRNs, and suppliers respond to RFQs and track payouts — all on the same platform.",
     image: firstScreen,
     alt: "Choose your workplace",
-    cta: { label: "Create Account", to: "/role" },
+    cta: { label: "Create Account", to: "/signup" },
   },
   {
     id: "features",

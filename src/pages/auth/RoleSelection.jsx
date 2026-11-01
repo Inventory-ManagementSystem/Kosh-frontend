@@ -1,34 +1,29 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, Navigate } from "react-router-dom";
 
 import RoleCard from "../../components/auth/RoleCard";
 import AuthDecorations from "../../components/auth/AuthDecoration";
+import AuthLoadingScreen from "../../components/auth/AuthLoadingScreen";
 import BackButton from "../../components/auth/BackButton";
 import NavigationButton from "../../components/auth/NavigationButton";
+import { useAuth } from "../../context/AuthContext";
+import { getHomeRoute, getSetupRoute } from "../../utils/onboarding";
 
 import firstscreen from "../../assets/auth/firstscreen.svg";
 import logo from "../../assets/auth/logo.svg";
 
 function RoleSelection() {
   const navigate = useNavigate();
+  const { isAuthenticated, loading, role: userRole } = useAuth();
   const [role, setRole] = useState("business_owner");
 
-  const handleNext = () => {
-    localStorage.setItem("selectedRole", role);
-    const isOAuthUser = localStorage.getItem("oauthUser") === "true";
-    if (isOAuthUser) {
-      localStorage.removeItem("oauthUser");
-      if (role === "business_owner") {
-        navigate("/setup-business");
-      } else if (role === "employee") {
-        navigate("/employee-invites");
-      } else if (role === "supplier") {
-        navigate("/setup-supplier");
-      }
-      return;
-    }
+  if (loading) return <AuthLoadingScreen />;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (userRole) return <Navigate to={getHomeRoute(userRole)} replace />;
 
-    navigate("/signup", { state: { role } });
+  const handleNext = () => {
+    sessionStorage.setItem("chosenRole", role);
+    navigate(getSetupRoute(role));
   };
 
   return (
@@ -42,7 +37,7 @@ function RoleSelection() {
           <div className="w-full max-w-md">
             <h1 className="font-['Google_Sans_Flex'] text-4xl font-medium sm:text-5xl">
               Choose your
-              <span className="font-['Google_Sans_Flex'] block font-extrabold text-(--accent-color)">
+              <span className="block font-['Google_Sans_Flex'] font-extrabold text-(--accent-color)">
                 Workplace.
               </span>
             </h1>
@@ -64,7 +59,7 @@ function RoleSelection() {
               />
             </div>
             <div className="mt-5 flex gap-4">
-              <BackButton onClick={() => navigate("/login")}>Back</BackButton>
+              <BackButton onClick={() => navigate(-1)}>Back</BackButton>
               <NavigationButton onClick={handleNext} isFormFilled={!!role}>
                 Next
               </NavigationButton>

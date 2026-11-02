@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { Link } from "react-router-dom";
+import {
+  GoogleReCaptchaProvider,
+  useGoogleReCaptcha,
+} from "react-google-recaptcha-v3";
 
 import createaccount from "../../assets/auth/createaccount.svg";
 import logo from "../../assets/auth/logo.svg";
@@ -16,7 +20,8 @@ import { googleLogin } from "../../api/googleApi";
 import { githubLogin } from "../../api/githubApi";
 import { debounce } from "../../utils/debounce";
 
-function Signup() {
+function SignupForm() {
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -245,23 +250,21 @@ function Signup() {
 
   const debouncedRegister = useMemo(
     () =>
-      debounce(async (data) => {
+      debounce(async (data, captchaToken) => {
         try {
           await regUser({
             name: data.name.trim(),
             email: data.email,
             password: data.password,
+            recaptcha_token: captchaToken,
           });
 
           localStorage.removeItem("signupFormData");
-
           sessionStorage.setItem("registrationName", data.name);
           sessionStorage.setItem("registrationEmail", data.email);
-
           navigate("/registration-otp");
         } catch (error) {
           console.error("Registration failed:", error.message);
-
           setApiError(
             error.status === 429
               ? "Too many registration attempts. Please try again later."
@@ -274,12 +277,22 @@ function Signup() {
     [navigate],
   );
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (isSubmitting) return;
     if (!validateForm()) return;
+    if (!executeRecaptcha) {
+      setApiError("Security check is still loading. Please try again.");
+      return;
+    }
     setIsSubmitting(true);
-    debouncedRegister(formData);
+    try {
+      const captchaToken = await executeRecaptcha("signup");
+      debouncedRegister(formData, captchaToken);
+    } catch {
+      setApiError("Security check failed. Please try again.");
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -522,4 +535,12 @@ function Signup() {
   );
 }
 
-export default Signup;
+export default function Signup() {
+  return (
+    <GoogleReCaptchaProvider
+      reCaptchaKey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+    >
+      <SignupForm />
+    </GoogleReCaptchaProvider>
+  );
+}

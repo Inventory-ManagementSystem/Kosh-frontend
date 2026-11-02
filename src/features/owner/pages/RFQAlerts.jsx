@@ -109,8 +109,8 @@ function RFQAlerts() {
       setSettings(updated);
       toast.success(
         nextValue
-          ? "Platform suppliers will be included."
-          : "Only your own suppliers will be used.",
+          ? "All Suppliers on the platform will receive future RFQ's."
+          : "Only suppliers added by you will receive future RFQ's.",
       );
     } catch (err) {
       setSettings(previous);

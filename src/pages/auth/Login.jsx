@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { IoMdArrowRoundBack } from "react-icons/io";
@@ -13,6 +13,7 @@ import { googleLogin } from "../../api/googleApi";
 import { githubLogin } from "../../api/githubApi";
 import { getHomeRoute } from "../../utils/onboarding";
 import { getProfile } from "../../api/getProfileApi";
+import AuthLoadingScreen from "../../components/auth/AuthLoadingScreen";
 
 import GoogleButton from "../../components/auth/GoogleButton";
 import GithubButton from "../../components/auth/GithubButton";
@@ -22,7 +23,7 @@ import { debounce } from "../../utils/debounce";
 
 function Login() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, isAuthenticated, loading, role } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState(() => {
@@ -171,6 +172,10 @@ function Login() {
 
   const isFormFilled =
     Boolean(formData.email.trim()) && Boolean(formData.password);
+
+  if (loading) return <AuthLoadingScreen />;
+  if (isAuthenticated) return <Navigate to={getHomeRoute(role)} replace />;
+
   return (
     <main className="relative min-h-screen overflow-x-hidden bg-(--page-background) text-(--text-color)">
       <div className="fixed left-0 top-0 z-50 h-16 w-full bg-(--page-background) min-[700px]:hidden">

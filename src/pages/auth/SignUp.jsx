@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { Link } from "react-router-dom";
@@ -14,14 +14,18 @@ import AuthDecoration from "../../components/auth/AuthDecoration";
 import AuthButton from "../../components/auth/AuthButton";
 import GoogleButton from "../../components/auth/GoogleButton";
 import GithubButton from "../../components/auth/GithubButton";
+import AuthLoadingScreen from "../../components/auth/AuthLoadingScreen";
 
 import { regUser } from "../../api/regApi";
 import { googleLogin } from "../../api/googleApi";
 import { githubLogin } from "../../api/githubApi";
 import { debounce } from "../../utils/debounce";
+import { useAuth } from "../../context/AuthContext";
+import { getHomeRoute } from "../../utils/onboarding";
 
 function SignupForm() {
   const { executeRecaptcha } = useGoogleReCaptcha();
+  const { isAuthenticated, loading, role } = useAuth();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -294,6 +298,9 @@ function SignupForm() {
       setIsSubmitting(false);
     }
   };
+
+  if (loading) return <AuthLoadingScreen />;
+  if (isAuthenticated) return <Navigate to={getHomeRoute(role)} replace />;
 
   return (
     <main className="relative min-h-screen overflow-x-hidden bg-(--page-background) text-(--text-color)">

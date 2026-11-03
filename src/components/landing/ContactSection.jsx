@@ -1,6 +1,10 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { FaArrowUp } from "react-icons/fa";
+import {
+  GoogleReCaptchaProvider,
+  useGoogleReCaptcha,
+} from "react-google-recaptcha-v3";
 
 import AuthButton from "../auth/AuthButton";
 import { sendContactMessage } from "../../api/contactApi";
@@ -23,7 +27,8 @@ const SQUARES = [
 const INITIAL_FORM = { email: "", note: "", website: "" };
 const INITIAL_ERRORS = { email: "", note: "", general: "" };
 
-function ContactSection() {
+function ContactSectionForm() {
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const [formData, setFormData] = useState(INITIAL_FORM);
   const [errors, setErrors] = useState(INITIAL_ERRORS);
   const [isLoading, setIsLoading] = useState(false);
@@ -62,12 +67,21 @@ function ContactSection() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isLoading || !validate()) return;
+    if (!executeRecaptcha) {
+      setErrors({
+        ...INITIAL_ERRORS,
+        general: "Security check is still loading. Please try again.",
+      });
+      return;
+    }
     setIsLoading(true);
     try {
+      const captchaToken = await executeRecaptcha("contact_form");
       const data = await sendContactMessage({
         email: formData.email.trim(),
         message: formData.note.trim(),
         website: formData.website,
+        recaptcha_token: captchaToken,
       });
 
       toast.success(data.message || "Thanks! We've received your message.");
@@ -208,18 +222,27 @@ function ContactSection() {
               </p>
             )}
 
-            <AuthButton isFormFilled={isFormFilled}>Send</AuthButton>
+            <AuthButton isFormFilled={isFormFilled} isLoading={isLoading}>
+              Send
+            </AuthButton>
           </form>
         </div>
       </div>
 
       <img
         src={illustration}
-        alt=""
         className="pointer-events-none absolute bottom-0 left-1/2 z-0 w-full min-w-[900px] -translate-x-1/2 select-none"
       />
     </section>
   );
 }
 
-export default ContactSection;
+export default function ContactSection() {
+  return (
+    <GoogleReCaptchaProvider
+      reCaptchaKey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+    >
+      <ContactSectionForm />
+    </GoogleReCaptchaProvider>
+  );
+}

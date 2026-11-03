@@ -4,6 +4,10 @@ import { useNavigate, Navigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import {
+  GoogleReCaptchaProvider,
+  useGoogleReCaptcha,
+} from "react-google-recaptcha-v3";
 
 import loginsvg from "../../assets/auth/loginsvg.svg";
 import logo from "../../assets/auth/logo.svg";
@@ -21,7 +25,8 @@ import GithubButton from "../../components/auth/GithubButton";
 import { loginUser } from "../../api/loginApi";
 import { debounce } from "../../utils/debounce";
 
-function Login() {
+function LoginForm() {
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const navigate = useNavigate();
   const { login, isAuthenticated, loading, role } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
@@ -127,11 +132,12 @@ function Login() {
 
   const debouncedLogin = useMemo(
     () =>
-      debounce(async (data) => {
+      debounce(async (data, captchaToken) => {
         try {
           const response = await loginUser({
             email: data.email,
             password: data.password,
+            recaptcha_token: captchaToken,
           });
           const access = response.data.access;
           const profile = await getProfile(access);
@@ -160,14 +166,30 @@ function Login() {
     [login, navigate],
   );
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (isSubmitting) return;
     if (!validateForm()) {
       return;
     }
+    if (!executeRecaptcha) {
+      setErrors((prev) => ({
+        ...prev,
+        general: "Security check is still loading. Please try again.",
+      }));
+      return;
+    }
     setIsSubmitting(true);
-    debouncedLogin(formData);
+    try {
+      const captchaToken = await executeRecaptcha("login");
+      debouncedLogin(formData, captchaToken);
+    } catch {
+      setErrors((prev) => ({
+        ...prev,
+        general: "Security check failed. Please try again.",
+      }));
+      setIsSubmitting(false);
+    }
   };
 
   const isFormFilled =
@@ -335,4 +357,12 @@ function Login() {
   );
 }
 
-export default Login;
+export default function Login() {
+  return (
+    <GoogleReCaptchaProvider
+      reCaptchaKey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+    >
+      <LoginForm />
+    </GoogleReCaptchaProvider>
+  );
+}

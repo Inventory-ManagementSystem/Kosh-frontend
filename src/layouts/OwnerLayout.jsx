@@ -5,6 +5,7 @@ import OwnerSidebar from "../features/owner/components/OwnerSidebar";
 import OwnerTopbar from "../features/owner/components/OwnerTopbar";
 import logo from "../assets/auth/logo.svg";
 import { useTheme } from "../context/ThemeContext";
+import PushPrompt from "../features/notifications/components/PushPrompt";
 
 function OwnerLayout() {
   const [collapsed, setCollapsed] = useState(false);
@@ -47,6 +48,7 @@ function OwnerLayout() {
           </div>
         </div>
       </main>
+      <PushPrompt />
     </div>
   );
 }

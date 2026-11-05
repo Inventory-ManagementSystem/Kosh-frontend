@@ -5,6 +5,7 @@ import EmployeeSidebar from "../features/employee/components/EmployeeSidebar";
 import EmployeeTopbar from "../features/employee/components/EmployeeTopbar";
 import logo from "../assets/auth/logo.svg";
 import { useTheme } from "../context/ThemeContext";
+import PushPrompt from "../features/notifications/components/PushPrompt";
 
 function EmployeeLayout() {
   const [collapsed, setCollapsed] = useState(false);
@@ -51,6 +52,7 @@ function EmployeeLayout() {
           </div>
         </div>
       </main>
+      <PushPrompt />
     </div>
   );
 }

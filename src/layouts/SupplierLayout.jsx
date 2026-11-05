@@ -5,6 +5,7 @@ import SupplierSidebar from "../features/supplier/components/SupplierSidebar";
 import SupplierTopbar from "../features/supplier/components/SupplierTopbar";
 import logo from "../assets/auth/logo.svg";
 import { useTheme } from "../context/ThemeContext";
+import PushPrompt from "../features/notifications/components/PushPrompt";
 
 function SupplierLayout() {
   const [collapsed, setCollapsed] = useState(false);
@@ -51,6 +52,7 @@ function SupplierLayout() {
           </div>
         </div>
       </main>
+      <PushPrompt />
     </div>
   );
 }

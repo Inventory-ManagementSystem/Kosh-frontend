@@ -10,6 +10,7 @@ import {
 import { refreshAccessToken, setOnTokenRefresh } from "../api/refreshTokenApi";
 import { getProfile } from "../api/getProfileApi";
 import { logoutUser } from "../api/logoutApi";
+import { disablePush } from "../features/notifications/pushService";
 
 const AuthContext = createContext(null);
 
@@ -18,6 +19,8 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [role, setRole] = useState(null);
   const restored = useRef(false);
+  const tokenRef = useRef(null);
+  tokenRef.current = accessToken;
 
   const login = useCallback((access, userRole) => {
     console.log("LOGIN CONTEXT CALLED");
@@ -37,6 +40,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = useCallback(async () => {
     try {
+      await disablePush(tokenRef.current);
       await logoutUser();
     } finally {
       setAccessToken(null);

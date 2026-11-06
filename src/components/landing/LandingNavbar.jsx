@@ -8,6 +8,7 @@ const NAV_LINKS = [
   { label: "Demo", id: "demo" },
   { label: "Roles", id: "roles" },
   { label: "Features", id: "features" },
+  { label: "FAQ", id: "faq" },
 ];
 
 function LandingNavbar() {

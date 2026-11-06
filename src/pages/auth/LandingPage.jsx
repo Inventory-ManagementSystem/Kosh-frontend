@@ -4,6 +4,7 @@ import DemoSection from "../../components/landing/DemoSection";
 import FeaturesSection from "../../components/landing/FeaturesSection";
 import ReportsSection from "../../components/landing/ReportsSection";
 import ContactSection from "../../components/landing/ContactSection";
+import FaqSection from "../../components/landing/FaqSection";
 
 function LandingPage() {
   return (
@@ -14,6 +15,7 @@ function LandingPage() {
         <DemoSection />
         <FeaturesSection />
         <ReportsSection />
+        <FaqSection />
         <ContactSection />
       </main>
     </div>

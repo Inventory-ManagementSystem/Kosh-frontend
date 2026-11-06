@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 
 import SectionBadge from "./SectionBadge";
 import { FaPlay } from "react-icons/fa";
+import thumbnail from "../../assets/auth/thumbnail.jpeg";
 
 const DEMO_VIDEO_FILES = import.meta.glob("../../assets/auth/Kosh_final.mp4", {
   eager: true,
@@ -35,6 +36,7 @@ function DemoSection() {
             <video
               ref={videoRef}
               src={DEMO_VIDEO}
+              poster={thumbnail}
               controls={isPlaying}
               playsInline
               preload="metadata"

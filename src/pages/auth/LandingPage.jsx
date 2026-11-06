@@ -5,8 +5,10 @@ import FeaturesSection from "../../components/landing/FeaturesSection";
 import ReportsSection from "../../components/landing/ReportsSection";
 import ContactSection from "../../components/landing/ContactSection";
 import FaqSection from "../../components/landing/FaqSection";
+import useSmoothScroll from "../../hooks/useSmoothScroll";
 
 function LandingPage() {
+  useSmoothScroll();
   return (
     <div className="relative min-h-screen overflow-x-clip bg-(--page-background) text-(--text-color)">
       <LandingNavbar />

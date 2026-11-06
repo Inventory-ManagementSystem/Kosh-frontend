@@ -20,6 +20,7 @@ import RfqCard from "../components/RfqCard";
 import ConfirmDelete from "../components/ConfirmDelete";
 import Pagination from "../components/Pagination";
 import Toggle from "../components/Toggle";
+import Info from "../../../components/common/Info";
 
 const PAGE_SIZE = 5;
 
@@ -247,6 +248,7 @@ function RFQAlerts() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="font-['Google_Sans_Flex'] text-2xl font-semibold sm:text-3xl">
           RFQ & Alerts
+          <Info text="Request sent to suppliers to invite price bids for specific products or services." />
         </h1>
 
         {settings && (

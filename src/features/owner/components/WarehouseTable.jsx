@@ -17,6 +17,7 @@ function WarehouseTable({
 }) {
   const isDispatch = variant === "dispatch";
   const isOrders = variant === "orders";
+  const hasRowMenu = !isDispatch && !isOrders && showDelete;
 
   const [openMenuId, setOpenMenuId] = useState(null);
   const menuRef = useRef(null);
@@ -144,13 +145,26 @@ function WarehouseTable({
           </colgroup>
         ) : (
           <colgroup>
-            <col className="w-[22%]" />
-            <col className="w-[14%]" />
-            <col className="w-[15%]" />
-            <col className="w-[10%]" />
-            <col className="w-[12%]" />
-            <col className="w-[15%]" />
-            {(isDispatch || showDelete) && <col className="w-[12%]" />}
+            {isDispatch ? (
+              <>
+                <col className="w-[22%]" />
+                <col className="w-[14%]" />
+                <col className="w-[15%]" />
+                <col className="w-[10%]" />
+                <col className="w-[12%]" />
+                <col className="w-[15%]" />
+                <col className="w-[12%]" />
+              </>
+            ) : (
+              <>
+                <col className="w-[26%]" />
+                <col className="w-[15%]" />
+                <col className="w-[17%]" />
+                <col className="w-[11%]" />
+                <col className="w-[14%]" />
+                <col className="w-[17%]" />
+              </>
+            )}
           </colgroup>
         )}
 
@@ -173,11 +187,17 @@ function WarehouseTable({
                 <th className="px-3 py-3 font-medium">Category</th>
                 <th className="px-3 py-3 font-medium">Stock</th>
                 <th className="px-3 py-3 font-medium">Price</th>
-                <th className="px-3 py-3 text-center font-medium">Status</th>
+                <th
+                  className={`px-3 py-3 text-center font-medium ${
+                    isDispatch ? "" : "rounded-r-lg"
+                  } ${hasRowMenu ? "pr-10" : ""}`}
+                >
+                  Status
+                </th>
 
-                {(isDispatch || showDelete) && (
+                {isDispatch && (
                   <th className="rounded-r-lg px-2 py-3 text-center font-medium">
-                    {isDispatch ? "Dispatch" : ""}
+                    Dispatch
                   </th>
                 )}
               </>
@@ -248,7 +268,12 @@ function WarehouseTable({
                   <td className="whitespace-nowrap px-3 py-3.5 text-xs text-(--text-color)">
                     {formatPrice(item.price)}
                   </td>
-                  <td className="px-3 py-3.5 text-center">
+
+                  <td
+                    className={`relative px-3 py-3.5 text-center ${
+                      hasRowMenu ? "pr-10" : ""
+                    }`}
+                  >
                     <span
                       className={`inline-flex w-20 justify-center whitespace-nowrap rounded-full px-2.5 py-1 text-[10px] font-medium ${getStatusClass(
                         item.status,
@@ -256,9 +281,88 @@ function WarehouseTable({
                     >
                       {item.status || "—"}
                     </span>
+
+                    {hasRowMenu && (
+                      <div
+                         className={`absolute right-1.5 top-1/2 -translate-y-1/2 ${
+                              openMenuId === item.id ? "z-30" : ""
+                              }`}
+                              ref={openMenuId === item.id ? menuRef : null}
+                      >
+                        <button
+                          type="button"
+                          title="Product actions"
+                          aria-label={`Actions for ${item.name || "product"}`}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setOpenMenuId((currentId) =>
+                              currentId === item.id ? null : item.id,
+                            );
+                          }}
+                          className={`inline-flex items-center justify-center rounded-md p-1.5 text-(--secondary-text-color) transition hover:bg-(--input-background) hover:text-(--text-color) focus-visible:outline focus-visible:outline-(--accent-color) ${
+                            openMenuId === item.id
+                              ? "opacity-100"
+                              : "opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
+                          }`}
+                        >
+                          <IoMdMore size={16} />
+                        </button>
+
+                        {openMenuId === item.id && (
+                          <div
+                            role="menu"
+                            className="absolute right-0 top-full z-30 mt-1 w-32 overflow-hidden rounded-lg border border-(--border-color) bg-(--dropdown-background) p-1 shadow-xl"
+                          >
+                            <button
+                              type="button"
+                              role="menuitem"
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                handleEdit(item);
+                              }}
+                              className="flex w-full items-center justify-center gap-2 rounded-md px-3 py-2 text-left text-xs text-(--text-color) transition hover:bg-(--input-background)"
+                            >
+                              Edit
+                            </button>
+                            {item.is_active === false ? (
+                              <button
+                                type="button"
+                                role="menuitem"
+                                disabled={deletingId === item.id}
+                                onClick={(event) => {
+                                  event.stopPropagation();
+                                  setOpenMenuId(null);
+                                  onReactivate?.(item);
+                                }}
+                                className="flex w-full items-center justify-center gap-2 rounded-md px-3 py-2 text-left text-xs text-(--text-color) transition hover:bg-(--input-background)"
+                              >
+                                {deletingId === item.id
+                                  ? "Reactivating"
+                                  : "Reactivate"}
+                              </button>
+                            ) : (
+                              <button
+                                type="button"
+                                role="menuitem"
+                                disabled={deletingId === item.id}
+                                onClick={(event) => {
+                                  event.stopPropagation();
+                                  handleDelete(item);
+                                }}
+                                className="flex w-full items-center justify-center gap-2 rounded-md px-3 py-2 text-left text-xs text-red-400 transition hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-50"
+                              >
+                                {deletingId === item.id
+                                  ? "Deleting"
+                                  : "Delete"}
+                              </button>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </td>
 
-                  {isDispatch ? (
+                  {isDispatch && (
                     <td className="px-3 py-3.5 text-center">
                       <button
                         type="button"
@@ -269,87 +373,6 @@ function WarehouseTable({
                         <BsFillSendFill size={13} />
                       </button>
                     </td>
-                  ) : (
-                    showDelete && (
-                      <td className="px-2 py-3.5 text-center">
-                        <div
-                          className="relative flex items-center justify-center"
-                          ref={openMenuId === item.id ? menuRef : null}
-                        >
-                          <button
-                            type="button"
-                            title="Product actions"
-                            aria-label={`Actions for ${item.name || "product"}`}
-                            aria-haspopup="menu"
-                            aria-expanded={openMenuId === item.id}
-                            onClick={(event) => {
-                              event.stopPropagation();
-                              setOpenMenuId((currentId) =>
-                                currentId === item.id ? null : item.id,
-                              );
-                            }}
-                            className={`inline-flex items-center justify-center rounded-md p-1.5 text-(--secondary-text-color) transition hover:bg-(--input-background) hover:text-(--text-color) focus-visible:outline focus-visible:outline-(--accent-color) ${
-                              openMenuId === item.id
-                                ? "opacity-100"
-                                : "opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
-                            }`}
-                          >
-                            <IoMdMore size={16} />
-                          </button>
-
-                          {openMenuId === item.id && (
-                            <div
-                              role="menu"
-                              className="absolute right-0 top-full z-30 mt-1 w-32 overflow-hidden rounded-lg border border-(--border-color) bg-(--dropdown-background) p-1 shadow-xl"
-                            >
-                              <button
-                                type="button"
-                                role="menuitem"
-                                onClick={(event) => {
-                                  event.stopPropagation();
-                                  handleEdit(item);
-                                }}
-                                className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-xs text-(--text-color) transition hover:bg-(--input-background)"
-                              >
-                                Edit
-                              </button>
-                              {item.is_active === false ? (
-                                <button
-                                  type="button"
-                                  role="menuitem"
-                                  disabled={deletingId === item.id}
-                                  onClick={(event) => {
-                                    event.stopPropagation();
-                                    setOpenMenuId(null);
-                                    onReactivate?.(item);
-                                  }}
-                                  className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-xs text-(--text-color) transition hover:bg-(--input-background)"
-                                >
-                                  {deletingId === item.id
-                                    ? "Reactivating"
-                                    : "Reactivate"}
-                                </button>
-                              ) : (
-                                <button
-                                  type="button"
-                                  role="menuitem"
-                                  disabled={deletingId === item.id}
-                                  onClick={(event) => {
-                                    event.stopPropagation();
-                                    handleDelete(item);
-                                  }}
-                                  className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-xs text-red-400 transition hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-50"
-                                >
-                                  {deletingId === item.id
-                                    ? "Deleting"
-                                    : "Delete"}
-                                </button>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      </td>
-                    )
                   )}
                 </>
               )}

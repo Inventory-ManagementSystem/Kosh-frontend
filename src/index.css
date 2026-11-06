@@ -104,8 +104,20 @@ input[type="password"]::-webkit-credentials-auto-fill-button {
 }
 
 .kosh-marquee {
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 15%, #000 85%, transparent);
-  mask-image: linear-gradient(to right, transparent, #000 15%, #000 85%, transparent);
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 15%,
+    #000 85%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 15%,
+    #000 85%,
+    transparent
+  );
 }
 .kosh-marquee-track {
   display: flex;
@@ -125,16 +137,36 @@ input[type="password"]::-webkit-credentials-auto-fill-button {
 }
 .kosh-video-glow {
   box-shadow:
-    0 0 30px 2px color-mix(in srgb, var(--chat-ai-user-background) 55%, transparent),
+    0 0 30px 2px
+      color-mix(in srgb, var(--chat-ai-user-background) 55%, transparent),
     0 0 100px 16px color-mix(in srgb, var(--dashboard-glow) 18%, transparent);
 }
 .kosh-video-glow-inset {
   box-shadow:
-    inset 0 0 28px 2px color-mix(in srgb, var(--chat-ai-user-background) 75%, transparent),
+    inset 0 0 28px 2px
+      color-mix(in srgb, var(--chat-ai-user-background) 75%, transparent),
     inset 0 0 80px color-mix(in srgb, var(--dashboard-glow) 16%, transparent);
 }
 @media (prefers-reduced-motion: reduce) {
   .kosh-marquee-track {
     animation: none;
   }
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+html,
+body {
+  overscroll-behavior: none;
 }

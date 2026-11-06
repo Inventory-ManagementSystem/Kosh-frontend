@@ -62,7 +62,7 @@ const FAQS = [
 ];
 
 function FaqSection() {
-  const [openIndex, setOpenIndex] = useState(0);
+  const [openIndex, setOpenIndex] = useState(null);
   const handleToggle = (index) => {
     setOpenIndex((current) => (current === index ? null : index));
   };

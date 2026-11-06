@@ -50,12 +50,18 @@ function HeroSection() {
           <br />
           Different Roles.
           <br />
-          ONE <span className="text-(--accent-color)">PLATFORM.</span>
+          ONE{" "}
+          <span className="inline-block bg-linear-to-r from-[#7E99F3] from-39.9% to-[#C8F6EF] bg-clip-text text-transparent">
+            PLATFORM.
+          </span>
         </h1>
 
         <p className="font-['Google_Sans_Flex'] mx-auto mt-6 max-w-[800px] font-medium text-xs text-(--secondary-text-color) sm:text-[16px]">
           Kosh brings business owners, employees and suppliers onto one{" "}
-          <span className="text-(--text-color) font-bold"> B2B </span>
+          <span className="inline-block bg-linear-to-r from-[#7E99F3] from-39.9% to-[#C8F6EF] bg-clip-text text-transparent">
+            B2B
+          </span>
+          {"  "}
           platform — from RFQs and quotations to purchase orders, GRNs and
           automated supplier payouts. Track warehouse stock in real time, catch
           discrepancies on delivery, and give every role exactly the access it

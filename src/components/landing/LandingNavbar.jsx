@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { getLenis } from "../../lib/lenisInstance";
 
 import logo from "../../assets/auth/logo.svg";
 
@@ -16,9 +17,14 @@ function LandingNavbar() {
   const [activeId, setActiveId] = useState("home");
   useEffect(() => {
     if (!location.hash) return;
-    document
-      .getElementById(location.hash.slice(1))
-      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    const el = document.getElementById(location.hash.slice(1));
+    if (!el) return;
+    const lenis = getLenis();
+    if (lenis) {
+      lenis.scrollTo(el, { offset: -64 });
+    } else {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   }, [location]);
   useEffect(() => {
     const sections = NAV_LINKS.map(({ id }) =>

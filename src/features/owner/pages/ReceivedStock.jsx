@@ -1,11 +1,32 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import {
+  FaArchive,
+  FaChevronDown,
+  FaFileAlt,
+  FaPaperPlane,
+  FaRegCalendarAlt,
+} from "react-icons/fa";
 
 import { useAuth } from "../../../context/AuthContext";
 import { getReceivedStock } from "../api/receivedStockApi";
 import Pagination from "../components/Pagination";
 
 const PAGE_SIZE = 10;
+
+const MOVEMENT_LABELS = {
+  grn_received: "GRN Received",
+  dispatch: "Dispatch",
+};
+
+const TABLE_HEADERS = [
+  "PRODUCT",
+  "Movement type",
+  "Quantity change",
+  "Balance after",
+  "Recorded by",
+  "Date & Time",
+];
 
 function formatDate(date) {
   if (!date) return "—";
@@ -16,6 +37,61 @@ function formatDate(date) {
     hour: "2-digit",
     minute: "2-digit",
   });
+}
+
+function formatPickerDate(value) {
+  if (!value) return "";
+  return new Date(`${value}T00:00:00`).toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function getChangeClass(change) {
+  if (change > 0) return "text-emerald-400";
+  if (change < 0) return "text-red-400";
+  return "text-(--text-color)";
+}
+
+function StatCard({ label, value, icon: Icon }) {
+  return (
+    <div className="rounded-lg border border-(--border-color) bg-(--card-background) px-4 py-3">
+      <p className="text-xs text-(--text-color)">{label}</p>
+      <div className="mt-2 flex items-center justify-between">
+        <p className="text-2xl font-bold text-(--text-color)">{value}</p>
+        <Icon size={16} className="text-(--text-color)" />
+      </div>
+    </div>
+  );
+}
+
+function DatePill({ id, label, value, min, max, onChange }) {
+  const openPicker = (e) => {
+    try {
+      e.currentTarget.showPicker?.();
+    } catch {
+      // showPicker can throw in restricted contexts; the native input still works
+    }
+  };
+
+  return (
+    <div className="relative flex h-8 w-36 items-center justify-between rounded-full border border-(--border-color) px-3 text-xs text-(--text-color)">
+      <span>{value ? formatPickerDate(value) : label}</span>
+      <FaRegCalendarAlt size={12} className="text-(--secondary-text-color)" />
+      <input
+        id={id}
+        type="date"
+        aria-label={label}
+        value={value}
+        min={min}
+        max={max}
+        onChange={(e) => onChange(e.target.value)}
+        onClick={openPicker}
+        className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+      />
+    </div>
+  );
 }
 
 function ReceivedStock() {
@@ -73,194 +149,143 @@ function ReceivedStock() {
 
   return (
     <div className="min-h-screen p-4 text-(--text-color) sm:p-6 lg:p-8">
-      <div className="mx-auto max-w-7xl space-y-4">
-        <div>
-          <h1 className="text-2xl font-semibold text-(--accent-color) sm:text-3xl">
-            Stock History
-          </h1>
-          <p className="mt-2 text-sm text-(--text-color)">
-            Track incoming and outgoing stock movements in your inventory.
-          </p>
+      <div className="mx-auto max-w-7xl space-y-5">
+        <h1 className="text-3xl font-semibold text-(--accent-color)">
+          Stock History
+        </h1>
+
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <StatCard
+            label="Total Movements"
+            value={movements.length}
+            icon={FaArchive}
+          />
+          <StatCard label="GRN Received" value={grnCount} icon={FaFileAlt} />
+          <StatCard
+            label="Dispatches"
+            value={dispatchCount}
+            icon={FaPaperPlane}
+          />
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div className="rounded-xl border border-(--border-color) bg-(--card-background) p-5">
-            <p className="text-sm text-(--secondary-text-color)">
-              Total Movements
-            </p>
-            <p className="mt-2 text-2xl text-(--text-color) font-semibold">
-              {movements.length}
-            </p>
-          </div>
-          <div className="rounded-xl border border-(--border-color) bg-(--card-background) p-5">
-            <p className="text-sm text-(--secondary-text-color)">
-              GRN Received
-            </p>
-            <p className="mt-2 text-2xl font-semibold text-(--text-color)">
-              {grnCount}
-            </p>
-          </div>
-          <div className="rounded-xl border border-(--border-color) bg-(--card-background) p-5">
-            <p className="text-sm text-(--secondary-text-color)">Dispatches</p>
-            <p className="mt-2 text-2xl text-(--text-color) font-semibold">
-              {dispatchCount}
-            </p>
-          </div>
-        </div>
+        <div className="rounded-xl border border-(--border-color) bg-(--card-background) p-5">
+          <h2 className="text-base font-semibold text-(--text-color)">
+            Inventory
+          </h2>
 
-        <div className="rounded-xl border border-(--border-color) bg-(--card-background) p-4 sm:p-5">
-          <div className="mb-5 flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
-            <div className="w-full xl:max-w-xs">
-              <label
-                htmlFor="movement-filter"
-                className="mb-2 block text-sm text-(--secondary-text-color)"
-              >
-                Movement Type
-              </label>
+          <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+            <div className="relative">
               <select
                 id="movement-filter"
+                aria-label="Movement type"
                 value={selectedMovement}
                 onChange={(e) => {
                   setSelectedMovement(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="h-10 w-full rounded-xl border border-(--border-color) bg-(--dropdown-background) px-3 text-sm text-(--text-color) outline-none sm:max-w-52"
+                className="h-8 w-40 cursor-pointer appearance-none rounded-full border border-(--border-color) bg-(--dropdown-background) pl-3 pr-8 text-xs text-(--text-color) outline-none"
               >
-                <option value="all">All Movements</option>
+                <option value="all">Movement type</option>
                 <option value="grn_received">GRN Received</option>
                 <option value="dispatch">Dispatch</option>
               </select>
+              <FaChevronDown
+                size={10}
+                className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-(--secondary-text-color)"
+              />
             </div>
 
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:flex xl:flex-1 xl:justify-end">
-              <div>
-                <label htmlFor="from-date" className="mb-2 block text-sm">
-                  From Date
-                </label>
-
-                <div className="relative">
-                  <input
-                    id="from-date"
-                    type="date"
-                    value={fromDate}
-                    max={toDate || undefined}
-                    onChange={(e) => {
-                      const date = e.target.value;
-                      setFromDate(date);
-                      setAppliedFrom(date);
-                      setCurrentPage(1);
-                    }}
-                    className="w-full rounded-lg border border-(--border-color) bg-(--input-background) px-3 py-2.5 pr-9 text-sm outline-none"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="to-date" className="mb-2 block text-sm">
-                  To Date
-                </label>
-                <div className="relative">
-                  <input
-                    id="to-date"
-                    type="date"
-                    value={toDate}
-                    min={fromDate || undefined}
-                    onChange={(e) => {
-                      const date = e.target.value;
-                      setToDate(date);
-                      setAppliedTo(date);
-                      setCurrentPage(1);
-                    }}
-                    className="w-full rounded-lg border border-(--border-color) bg-(--input-background) px-3 py-2.5 pr-9 text-sm outline-none"
-                  />
-                </div>
-              </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <DatePill
+                id="from-date"
+                label="From Date"
+                value={fromDate}
+                max={toDate || undefined}
+                onChange={(date) => {
+                  setFromDate(date);
+                  setCurrentPage(1);
+                }}
+              />
+              <DatePill
+                id="to-date"
+                label="To Date"
+                value={toDate}
+                min={fromDate || undefined}
+                onChange={(date) => {
+                  setToDate(date);
+                  setCurrentPage(1);
+                }}
+              />
             </div>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[850px] text-left text-sm">
+          <div className="mt-5 overflow-x-auto">
+            <table className="w-full min-w-[760px] text-center text-xs">
               <thead>
-                <tr className="border-b border-(--border-color) text-(--secondary-text-color)">
-                  <th className="px-4 py-4 font-medium">Product</th>
-                  <th className="px-4 py-4 font-medium">Movement Type</th>
-                  <th className="px-4 py-4 font-medium">Quantity Change</th>
-                  <th className="px-4 py-4 font-medium">Balance After</th>
-                  <th className="px-4 py-4 font-medium">Recorded By</th>
-                  <th className="px-4 py-4 font-medium">Date & Time</th>
+                <tr>
+                  {TABLE_HEADERS.map((header) => (
+                    <th
+                      key={header}
+                      className="bg-(--sidebar-active-background) px-4 py-3 text-[11px] font-normal text-(--secondary-text-color) first:rounded-l-lg last:rounded-r-lg"
+                    >
+                      {header}
+                    </th>
+                  ))}
                 </tr>
               </thead>
 
               <tbody>
                 {loading ? (
-                  <tr>
-                    <td
-                      colSpan={7}
-                      className="px-4 py-12 text-center text-(--secondary-text-color)"
-                    >
-                      Loading stock history
-                    </td>
-                  </tr>
+                  Array.from({ length: PAGE_SIZE }).map((_, rowIndex) => (
+                    <tr key={rowIndex}>
+                      {TABLE_HEADERS.map((header) => (
+                        <td key={header} className="px-4 py-4">
+                          <div className="mx-auto h-3 w-20 animate-pulse rounded bg-(--sidebar-active-background)" />
+                        </td>
+                      ))}
+                    </tr>
+                  ))
                 ) : currentMovements.length === 0 ? (
                   <tr>
                     <td
-                      colSpan={7}
-                      className="px-4 py-12 text-center text-(--secondary-text-color)"
+                      colSpan={TABLE_HEADERS.length}
+                      className="px-4 py-12 text-(--secondary-text-color)"
                     >
                       No stock movements found for the selected filters.
                     </td>
                   </tr>
                 ) : (
-                  currentMovements.map((movement) => (
-                    <tr
-                      key={movement.id}
-                      className="border-b border-(--border-color)"
-                    >
-                      <td className="px-4 py-4">
-                        <p>{movement.product_name || "—"}</p>
-                        {movement.product_sku && (
-                          <p className="mt-1 text-xs">{movement.product_sku}</p>
-                        )}
-                      </td>
+                  currentMovements.map((movement) => {
+                    const change = Number(movement.quantity_change);
 
-                      <td className="px-4 py-4">
-                        {movement.reason === "grn_received" ? (
-                          <span className="inline-flex whitespace-nowrap rounded-full px-3 py-1 text-xs font-medium">
-                            GRN Received
-                          </span>
-                        ) : (
-                          <span className="inline-flex whitespace-nowrap rounded-full px-3 py-1 text-xs font-medium">
-                            Dispatch
-                          </span>
-                        )}
-                      </td>
-
-                      <td
-                        className={`whitespace-nowrap px-4 py-4 font-medium ${
-                          Number(movement.quantity_change) > 0
-                            ? "text-emerald-400"
-                            : Number(movement.quantity_change) < 0
-                              ? "text-red-400"
-                              : "text-(--text-color)"
-                        }`}
-                      >
-                        {Number(movement.quantity_change) > 0 ? "+" : ""}
-                        {movement.quantity_change ?? "—"}
-                      </td>
-
-                      <td className="px-4 py-4">
-                        {movement.balance_after ?? "—"}
-                      </td>
-
-                      <td className="px-4 py-4">
-                        {movement.created_by_email || "—"}
-                      </td>
-
-                      <td className="whitespace-nowrap px-4 py-4">
-                        {formatDate(movement.created_at)}
-                      </td>
-                    </tr>
-                  ))
+                    return (
+                      <tr key={movement.id}>
+                        <td className="px-4 py-4 font-medium text-(--accent-color)">
+                          {movement.product_name || "—"}
+                        </td>
+                        <td className="px-4 py-4 font-semibold">
+                          {MOVEMENT_LABELS[movement.reason] ??
+                            movement.reason ??
+                            "—"}
+                        </td>
+                        <td
+                          className={`whitespace-nowrap px-4 py-4 font-semibold ${getChangeClass(change)}`}
+                        >
+                          {change > 0 ? "+" : ""}
+                          {movement.quantity_change ?? "—"}
+                        </td>
+                        <td className="px-4 py-4 font-semibold">
+                          {movement.balance_after ?? "—"}
+                        </td>
+                        <td className="px-4 py-4 font-semibold">
+                          {movement.created_by_email || "—"}
+                        </td>
+                        <td className="whitespace-nowrap px-4 py-4 font-semibold">
+                          {formatDate(movement.created_at)}
+                        </td>
+                      </tr>
+                    );
+                  })
                 )}
               </tbody>
             </table>

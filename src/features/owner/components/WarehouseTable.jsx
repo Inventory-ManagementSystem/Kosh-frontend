@@ -284,10 +284,10 @@ function WarehouseTable({
 
                     {hasRowMenu && (
                       <div
-                         className={`absolute right-1.5 top-1/2 -translate-y-1/2 ${
-                              openMenuId === item.id ? "z-30" : ""
-                              }`}
-                              ref={openMenuId === item.id ? menuRef : null}
+                        className={`absolute right-1.5 top-1/2 -translate-y-1/2 ${
+                          openMenuId === item.id ? "z-30" : ""
+                        }`}
+                        ref={openMenuId === item.id ? menuRef : null}
                       >
                         <button
                           type="button"
@@ -351,9 +351,7 @@ function WarehouseTable({
                                 }}
                                 className="flex w-full items-center justify-center gap-2 rounded-md px-3 py-2 text-left text-xs text-red-400 transition hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-50"
                               >
-                                {deletingId === item.id
-                                  ? "Deleting"
-                                  : "Delete"}
+                                {deletingId === item.id ? "Deleting" : "Delete"}
                               </button>
                             )}
                           </div>

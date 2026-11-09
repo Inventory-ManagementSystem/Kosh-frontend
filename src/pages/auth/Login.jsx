@@ -31,6 +31,7 @@ function LoginForm() {
   const { login, isAuthenticated, loading, role } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [formData, setFormData] = useState(() => {
     const savedData = localStorage.getItem("loginFormData");
     if (savedData) {
@@ -142,7 +143,7 @@ function LoginForm() {
           const access = response.data.access;
           const profile = await getProfile(access);
           const role = profile.data.role ?? null;
-          login(access, role);
+          login(access, role, data.remember);
           navigate(getHomeRoute(role), { replace: true });
         } catch (error) {
           console.log("Login Failed", error.message);
@@ -182,7 +183,7 @@ function LoginForm() {
     setIsSubmitting(true);
     try {
       const captchaToken = await executeRecaptcha("login");
-      debouncedLogin(formData, captchaToken);
+      debouncedLogin({ ...formData, remember: rememberMe }, captchaToken);
     } catch {
       setErrors((prev) => ({
         ...prev,
@@ -300,7 +301,16 @@ function LoginForm() {
                 {errors.general}
               </p>
             )}
-            <div className="mb-6 text-right">
+            <div className="mb-6 flex items-center justify-between">
+              <label className="flex cursor-pointer items-center gap-2 text-xs text-(--secondary-text-color)">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="h-4 w-4 cursor-pointer accent-(--accent-color)"
+                />
+                Remember me
+              </label>
               <button
                 type="button"
                 onClick={() => navigate("/forgot-password")}

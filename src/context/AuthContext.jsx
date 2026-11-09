@@ -11,6 +11,11 @@ import { refreshAccessToken, setOnTokenRefresh } from "../api/refreshTokenApi";
 import { getProfile } from "../api/getProfileApi";
 import { logoutUser } from "../api/logoutApi";
 import { disablePush } from "../features/notifications/pushService";
+import {
+  markLogin,
+  clearLoginMarkers,
+  canRestoreSession,
+} from "../utils/remember";
 
 const AuthContext = createContext(null);
 
@@ -22,8 +27,9 @@ export const AuthProvider = ({ children }) => {
   const tokenRef = useRef(null);
   tokenRef.current = accessToken;
 
-  const login = useCallback((access, userRole) => {
+  const login = useCallback((access, userRole, remember = true) => {
     console.log("LOGIN CONTEXT CALLED");
+    markLogin(remember);
     setAccessToken(access);
     setRole(userRole);
     setLoading(false);
@@ -43,6 +49,7 @@ export const AuthProvider = ({ children }) => {
       await disablePush(tokenRef.current);
       await logoutUser();
     } finally {
+      clearLoginMarkers();
       setAccessToken(null);
       setRole(null);
       setLoading(false);
@@ -79,6 +86,18 @@ export const AuthProvider = ({ children }) => {
     }
     restored.current = true;
     const restoreSession = async () => {
+      if (!canRestoreSession()) {
+        try {
+          await logoutUser();
+        } catch {
+          // ignore
+        }
+        clearLoginMarkers();
+        setAccessToken(null);
+        setRole(null);
+        setLoading(false);
+        return;
+      }
       console.log("Trying to refresh session");
       try {
         const access = await refreshAccessToken();

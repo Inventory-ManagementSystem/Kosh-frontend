@@ -16,7 +16,7 @@ function OwnerLayout() {
       className="dashboard min-h-screen bg-(--page-background) text-(--text-color)"
       data-theme={themes.owner}
     >
-      <div className="fixed left-0 top-0 z-50 flex h-18 w-57.5 items-center px-5 bg-(--page-background)">
+      <div className="fixed left-0 top-0 z-50 hidden h-18 w-57.5 items-center px-5 bg-(--page-background) lg:flex">
         <Link to="/dashboard" className="flex items-center">
           <img src={logo} alt="KOSH" className="h-7 w-auto shrink-0" />
         </Link>
@@ -26,7 +26,7 @@ function OwnerLayout() {
       <main
         className={`
           min-h-screen
-          pt-18
+          pt-32 md:pt-18
           transition-all
           ${collapsed ? "lg:ml-18" : "lg:ml-57.5"}
         `}

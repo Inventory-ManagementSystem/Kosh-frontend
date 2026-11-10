@@ -14,6 +14,7 @@ import { useTheme } from "../../../context/ThemeContext";
 import { useNotificationSocket } from "../hooks/useNotificationSocket";
 import { navItems } from "./OwnerSidebar";
 import NotificationDropdown from "../pages/NotificationDropdown";
+import GlobalSearch from "../../search/components/GlobalSearch";
 
 function OwnerTopbar() {
   const { accessToken } = useAuth();
@@ -22,7 +23,7 @@ function OwnerTopbar() {
   const notificationRef = useRef(null);
   const theme = themes.owner;
   const [unreadCount, setUnreadCount] = useState(0);
-
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
 
@@ -88,10 +89,17 @@ function OwnerTopbar() {
     <>
       <header className="fixed left-0 right-0 top-0 z-50 h-18 bg-(--page-background) lg:left-57.5">
         <div className="flex h-full items-center justify-between gap-2 px-3 sm:px-6 lg:px-8">
-          <div className="min-w-0 w-full max-w-[320px]">
-            <Link to="/dashboard" className="flex items-center lg:hidden">
+          <div className="flex min-w-0 flex-1 items-center gap-4 md:gap-8">
+            <Link
+              to="/dashboard"
+              className="flex shrink-0 items-center lg:hidden"
+            >
               <img src={logo} alt="KOSH" className="h-6 w-auto shrink-0" />
             </Link>
+            <GlobalSearch
+              role="owner"
+              className="hidden min-w-0 flex-1 md:block md:max-w-sm lg:max-w-md"
+            />
           </div>
 
           <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2">
@@ -146,12 +154,14 @@ function OwnerTopbar() {
           </div>
         </div>
       </header>
+      <div className="fixed inset-x-0 top-18 z-40 bg-(--page-background) px-3 pb-3 pt-1 md:hidden">
+        <GlobalSearch role="owner" />
+      </div>
       {mobileMenuOpen && (
         <div className="fixed inset-x-0 bottom-0 top-18 z-40 overflow-y-auto border-t border-(--border-color) bg-(--page-background) lg:hidden">
           <nav className="space-y-1 px-3 py-4">
             {navItems.map((item, index) => {
               const Icon = item.icon;
-
               const itemClass = `
                 flex min-h-11 items-center gap-3 rounded-lg px-3
                 text-(--secondary-text-color)
@@ -159,7 +169,6 @@ function OwnerTopbar() {
                 hover:bg-(--sidebar-hover-background)
                 hover:text-(--text-color)
               `;
-
               return item.path ? (
                 <NavLink
                   key={item.label}

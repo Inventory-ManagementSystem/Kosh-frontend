@@ -265,3 +265,23 @@ export const updateProcurementSettings = async (accessToken, payload) => {
   }
   return data.data;
 };
+
+export const getSavingsSeries = async (accessToken, days = 90) => {
+  const params = new URLSearchParams({ days: String(days) });
+  const response = await fetch(
+    `${PROCUREMENT_URL}/savings/series/?${params.toString()}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Accept: "application/json",
+      },
+    },
+  );
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(
+      getErrorMessage(data, "Failed to fetch estimated savings."),
+    );
+  }
+  return data.data;
+};

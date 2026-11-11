@@ -7,7 +7,7 @@ import Report from "../../assets/auth/Report.svg";
 
 const SQUARES = [
   "left-[8%] top-[22%] h-4 w-4 opacity-10",
-  "left-[18%] top-[48%] h-3 w-3 opacity-10",
+  "left-[8%] top-[48%] h-3 w-3 opacity-10",
   "right-[10%] top-[18%] h-5 w-5 opacity-10",
   "right-[6%] top-[42%] h-3 w-3 opacity-10",
   "left-[3%] top-[70%] h-6 w-6 opacity-5",
@@ -29,7 +29,8 @@ function HeroSection() {
       {SQUARES.map((position, index) => (
         <span
           key={index}
-          className={`pointer-events-none absolute hidden rounded-sm bg-(--text-color) sm:block ${position}`}
+          style={{ animationDelay: `${index}s` }}
+          className={`pointer-events-none absolute hidden animate-float rounded-sm bg-(--text-color) sm:block ${position}`}
         />
       ))}
       <div
@@ -45,7 +46,7 @@ function HeroSection() {
         className="pointer-events-none absolute left-0 top-[52%] z-0 h-auto w-full min-w-[1200px] max-w-none select-none"
       />
       <div className="relative z-10 mx-auto max-w-6xl px-5 pb-6 pt-14 text-center sm:px-8 sm:pt-20">
-        <h1 className="font-['Google_Sans_Flex'] text-4xl font-bold text-(--text-color) sm:text-5xl md:text-6xl">
+        <h1 className="animate-reveal-up font-['Google_Sans_Flex'] text-4xl font-bold text-(--text-color) sm:text-5xl md:text-6xl">
           Invoices &amp; Inventory.
           <br />
           Different Roles.
@@ -56,7 +57,7 @@ function HeroSection() {
           </span>
         </h1>
 
-        <p className="font-['Google_Sans_Flex'] mx-auto mt-6 max-w-[800px] font-medium text-xs text-(--secondary-text-color) sm:text-[16px]">
+        <p className="animate-reveal-up font-['Google_Sans_Flex'] mx-auto mt-6 max-w-[800px] font-medium text-xs text-(--secondary-text-color) sm:text-[16px]">
           Kosh brings business owners, employees and suppliers onto one{" "}
           <span className="inline-block bg-linear-to-r from-[#7E99F3] from-39.9% to-[#C8F6EF] bg-clip-text text-transparent">
             B2B
@@ -73,17 +74,17 @@ function HeroSection() {
             <img
               src={warehouses}
               alt="Warehouse inventory dashboard"
-              className="absolute left-[39%] top-0 z-10 w-[55%] rounded-lg ring-1 ring-(--border-color)"
+              className="animate-reveal-up [animation-delay:400ms] absolute left-[39%] top-0 z-10 w-[55%] rounded-lg ring-1 ring-(--border-color)"
             />
             <img
               src={Report}
               alt="Invoice and report page"
-              className="absolute left-0 top-[10%] z-20 w-[53%] rounded-lg ring-1 ring-(--border-color)"
+              className="animate-reveal-up [animation-delay:550ms] absolute left-0 top-[10%] z-20 w-[53%] rounded-lg ring-1 ring-(--border-color)"
             />
             <img
               src={firstScreen}
               alt="Choose your workplace"
-              className="absolute bottom-0 right-0 z-30 w-[49%] rounded-lg ring-1 ring-(--border-color)"
+              className="animate-reveal-up [animation-delay:700ms] absolute bottom-0 right-0 z-30 w-[49%] rounded-lg ring-1 ring-(--border-color)"
             />
           </div>
         </div>

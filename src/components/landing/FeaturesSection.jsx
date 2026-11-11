@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 
 import SectionBadge from "./SectionBadge";
+import Reveal from "../common/Reveal";
+import Parallax from "../common/Parallax";
 
 import firstScreen from "../../assets/auth/first-screen.svg";
 import warehouses from "../../assets/auth/Warehouses.svg";
@@ -43,33 +45,50 @@ function FeaturesSection() {
               <div
                 className={`text-left ${index % 2 === 1 ? "lg:order-2" : ""}`}
               >
-                <p className="font-['Google_Sans_Flex'] text-sm font-medium text-(--accent-color) sm:text-base">
+                <Reveal
+                  as="p"
+                  className="font-['Google_Sans_Flex'] text-sm font-medium text-(--accent-color) sm:text-base"
+                >
                   {row.head}
-                </p>
-                <h3 className="mt-2 font-['Google_Sans_Flex'] text-3xl font-bold leading-tight text-(--text-color) sm:text-4xl">
+                </Reveal>
+                <Reveal
+                  as="h3"
+                  delay={100}
+                  className="mt-2 font-['Google_Sans_Flex'] text-3xl font-bold leading-tight text-(--text-color) sm:text-4xl"
+                >
                   {row.title}
-                </h3>
-                <p className="mt-5 max-w-md text-xs leading-relaxed text-(--secondary-text-color) sm:text-sm">
+                </Reveal>
+                <Reveal
+                  as="p"
+                  delay={200}
+                  className="mt-5 max-w-md text-xs leading-relaxed text-(--secondary-text-color) sm:text-sm"
+                >
                   {row.description}
-                </p>
+                </Reveal>
 
                 {row.cta && (
-                  <Link
-                    to={row.cta.to}
-                    className="mt-6 inline-block rounded-md bg-(--accent-color) px-6 py-2 text-xs font-semibold text-(--page-background) transition hover:bg-(--accent-hover-color)"
-                  >
-                    {row.cta.label}
-                  </Link>
+                  <Reveal delay={300}>
+                    <Link
+                      to={row.cta.to}
+                      className="mt-6 inline-block rounded-md bg-(--accent-color) px-6 py-2 text-xs font-semibold text-(--page-background) transition hover:bg-(--accent-hover-color)"
+                    >
+                      {row.cta.label}
+                    </Link>
+                  </Reveal>
                 )}
               </div>
-
-              <div className={index % 2 === 1 ? "lg:order-1" : ""}>
-                <img
-                  src={row.image}
-                  alt={row.alt}
-                  className="w-full rounded-lg shadow-[0_0_80px_4px_color-mix(in_srgb,var(--chat-ai-user-background)_55%,transparent)] ring-1 ring-(--border-color)"
-                />
-              </div>
+              <Parallax
+                speed={0.06}
+                className={index % 2 === 1 ? "lg:order-1" : ""}
+              >
+                <Reveal variant={index % 2 === 1 ? "left" : "right"}>
+                  <img
+                    src={row.image}
+                    alt={row.alt}
+                    className="w-full rounded-lg shadow-[0_0_80px_4px_color-mix(in_srgb,var(--chat-ai-user-background)_55%,transparent)] ring-1 ring-(--border-color)"
+                  />
+                </Reveal>
+              </Parallax>
             </div>
           ))}
         </div>

@@ -7,6 +7,7 @@ import {
 } from "react-google-recaptcha-v3";
 
 import AuthButton from "../auth/AuthButton";
+import Reveal from "../common/Reveal";
 import { sendContactMessage } from "../../api/contactApi";
 import illustration from "../../assets/auth/illustration.svg";
 
@@ -120,7 +121,8 @@ function ContactSectionForm() {
       {SQUARES.map((position, index) => (
         <span
           key={index}
-          className={`pointer-events-none absolute hidden rounded-sm bg-(--text-color) sm:block ${position}`}
+          style={{ animationDelay: `${index}s` }}
+          className={`pointer-events-none absolute hidden animate-float rounded-sm bg-(--text-color) sm:block ${position}`}
         />
       ))}
 
@@ -134,14 +136,21 @@ function ContactSectionForm() {
       </button>
 
       <div className="relative z-10 mx-auto mt-10 max-w-[480px] text-center">
-        <h2 className="font-['Google_Sans_Flex'] text-5xl font-bold text-(--accent-color)">
+        <Reveal
+          as="h2"
+          className="font-['Google_Sans_Flex'] text-5xl font-bold text-(--accent-color)"
+        >
           Exciting ?
-        </h2>
-        <p className="mt-2 text-xl text-(--text-color)">
+        </Reveal>
+        <Reveal as="p" delay={100} className="mt-2 text-xl text-(--text-color)">
           Sign Up and get started for free
-        </p>
+        </Reveal>
 
-        <div className="mt-8 w-full rounded-lg shadow-[0_0_80px_4px_color-mix(in_srgb,var(--chat-ai-user-background)_55%,transparent)]">
+        <Reveal
+          variant="scale"
+          delay={200}
+          className="mt-8 w-full rounded-lg shadow-[0_0_80px_4px_color-mix(in_srgb,var(--chat-ai-user-background)_55%,transparent)]"
+        >
           <form
             noValidate
             onSubmit={handleSubmit}
@@ -226,7 +235,7 @@ function ContactSectionForm() {
               Send
             </AuthButton>
           </form>
-        </div>
+        </Reveal>
       </div>
 
       <img

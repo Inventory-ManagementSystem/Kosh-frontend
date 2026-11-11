@@ -1,4 +1,5 @@
 import FeatureMarquee from "./Featuremarquee";
+import Parallax from "../common/Parallax";
 
 import wave from "../../assets/auth/wave.svg";
 import firstScreen from "../../assets/auth/first-screen.svg";
@@ -27,19 +28,29 @@ function HeroSection() {
       style={{ backgroundImage: GLOW_BACKGROUND }}
     >
       {SQUARES.map((position, index) => (
-        <span
+        <Parallax
           key={index}
-          style={{ animationDelay: `${index}s` }}
-          className={`pointer-events-none absolute hidden animate-float rounded-sm bg-(--text-color) sm:block ${position}`}
-        />
+          speed={index % 2 === 0 ? 0.06 : -0.05}
+          className={`pointer-events-none absolute hidden sm:block ${position}`}
+        >
+          <span
+            style={{ animationDelay: `${index}s` }}
+            className="block h-full w-full animate-float rounded-sm bg-(--text-color)"
+          />
+        </Parallax>
       ))}
-      <div
-        className="pointer-events-none absolute left-1/2 top-[60%] z-0 h-[520px] w-[900px] max-w-[90vw] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-60 blur-[120px]"
-        style={{
-          background:
-            "radial-gradient(ellipse at center, color-mix(in srgb, var(--chat-ai-user-background) 80%, transparent), color-mix(in srgb, var(--chat-ai-user-background) 25%, transparent) 60%, transparent 80%)",
-        }}
-      />
+      <Parallax
+        speed={0.1}
+        className="pointer-events-none absolute inset-0 z-0"
+      >
+        <div
+          className="absolute left-1/2 top-[60%] h-[520px] w-[900px] max-w-[90vw] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-60 blur-[120px]"
+          style={{
+            background:
+              "radial-gradient(ellipse at center, color-mix(in srgb, var(--chat-ai-user-background) 80%, transparent), color-mix(in srgb, var(--chat-ai-user-background) 25%, transparent) 60%, transparent 80%)",
+          }}
+        />
+      </Parallax>
       <img
         src={wave}
         alt="wave"

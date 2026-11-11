@@ -150,10 +150,10 @@ function NotificationDropdown({ onUnreadCountChange, liveNotification }) {
           notifications.map((notification) => (
             <div
               key={notification.id}
-              className="flex items-start gap-2 rounded-xl bg-(--input-background) px-2.5 py-2.5"
+              className="flex items-stretch gap-2 rounded-xl bg-(--input-background) px-2.5 py-2.5"
             >
               <span
-                className={`mt-0.5 mr-1 h-10 w-1 shrink-0 rounded-full ${
+                className={`mt-0.5 mr-1 w-1 shrink-0 self-stretch rounded-full ${
                   notification.is_read
                     ? "bg-(--secondary-text-color)"
                     : "bg-teal-300"
@@ -167,7 +167,7 @@ function NotificationDropdown({ onUnreadCountChange, liveNotification }) {
                 className="min-w-0 flex-1 text-left disabled:cursor-default"
               >
                 <p
-                  className={`text-xs text-(--text-color) ${
+                  className={`wrap-break-word text-xs text-(--text-color) ${
                     notification.is_read ? "font-normal" : "font-semibold"
                   }`}
                 >

@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import FaqItem from "./FaqItem";
 import SectionBadge from "./SectionBadge";
+import Reveal from "../common/Reveal";
 
 const Highlight = ({ children }) => (
   <span className="font-['Google_Sans_Flex'] font-semibold text-(--chat-ai-user-background) brightness-150">
@@ -75,12 +76,19 @@ function FaqSection() {
       <div className="mx-auto max-w-2xl">
         <div className="text-center">
           <SectionBadge>FAQ</SectionBadge>
-          <h2 className="font-['Google_Sans_Flex'] text-3xl font-bold leading-tight text-(--text-color) sm:text-5xl">
+          <Reveal
+            as="h2"
+            className="font-['Google_Sans_Flex'] text-3xl font-bold text-(--text-color) sm:text-5xl"
+          >
             Frequently Asked Questions
-          </h2>
-          <p className="mt-3 font-['Google_Sans_Flex'] text-sm font-medium text-(--accent-color) sm:text-lg">
+          </Reveal>
+          <Reveal
+            as="p"
+            delay={150}
+            className="mt-3 font-['Google_Sans_Flex'] text-sm font-medium text-(--accent-color) sm:text-lg"
+          >
             Everything you need to know about KOSH
-          </p>
+          </Reveal>
         </div>
 
         <div className="mt-10 flex flex-col gap-3 sm:mt-12">
@@ -89,6 +97,7 @@ function FaqSection() {
               key={index}
               question={faq.question}
               answer={faq.answer}
+              index={index}
               isOpen={openIndex === index}
               onToggle={() => handleToggle(index)}
             />

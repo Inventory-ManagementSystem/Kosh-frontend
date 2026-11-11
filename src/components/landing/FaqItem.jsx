@@ -1,8 +1,14 @@
 import { FiPlus } from "react-icons/fi";
-function FaqItem({ question, answer, isOpen, onToggle }) {
+import useReveal from "../../hooks/useReveal";
+
+function FaqItem({ question, answer, isOpen, onToggle, index = 0 }) {
+  const [ref, visible] = useReveal();
+
   return (
     <div
-      className={`relative rounded-xl border transition-[box-shadow,border-color,background-color] duration-500 motion-reduce:transition-none ${
+      ref={ref}
+      style={{ animationDelay: `${index * 80}ms` }}
+      className={`${visible ? "animate-reveal-up" : "opacity-0"} relative rounded-xl border transition-[box-shadow,border-color,background-color] duration-500 motion-reduce:transition-none ${
         isOpen
           ? "z-0 border-[#231D4D] bg-(--card-background) shadow-[0_0_40px_1px_color-mix(in_srgb,var(--chat-ai-user-background)_55%,transparent)]"
           : "z-10 border-[#231D4D] bg-(--card-background) shadow-[0_0_40px_1px_transparent]"

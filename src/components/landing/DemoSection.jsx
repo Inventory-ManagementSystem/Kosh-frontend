@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import SectionBadge from "./SectionBadge";
+import Reveal from "../common/Reveal";
 import { FaPlay } from "react-icons/fa";
 import thumbnail from "../../assets/auth/thumbnail.jpeg";
 
@@ -19,12 +20,19 @@ function DemoSection() {
     >
       <div className="mx-auto max-w-5xl text-center">
         <SectionBadge>Demo</SectionBadge>
-        <h2 className="font-['Google_Sans_Flex'] text-3xl font-bold leading-tight text-(--text-color) sm:text-5xl">
+        <Reveal
+          as="h2"
+          className="font-['Google_Sans_Flex'] text-3xl font-bold text-(--text-color) sm:text-5xl"
+        >
           See how KOSH makes Business
           <span className="block text-(--accent-color)">simple.</span>
-        </h2>
+        </Reveal>
 
-        <div className="kosh-video-glow relative mx-auto mt-12 aspect-video w-full max-w-4xl overflow-hidden rounded-xl border border-(--border-color) bg-(--card-background) sm:mt-16">
+        <Reveal
+          variant="scale"
+          delay={150}
+          className="kosh-video-glow relative mx-auto mt-12 aspect-video w-full max-w-4xl overflow-hidden rounded-xl border border-(--border-color) bg-(--card-background) sm:mt-16"
+        >
           {!DEMO_VIDEO ? (
             <div className="flex h-full w-full items-end justify-center pb-6 text-xs text-(--secondary-text-color)">
               Demo video coming soon
@@ -57,7 +65,7 @@ function DemoSection() {
               <FaPlay size={24} />
             </button>
           )}
-        </div>
+        </Reveal>
       </div>
     </section>
   );

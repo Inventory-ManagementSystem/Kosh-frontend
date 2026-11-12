@@ -12,7 +12,11 @@ import { registerSupplier, getSupplierCategories } from "../../api/supplierApi";
 function SetupSupplier() {
   const navigate = useNavigate();
   const { accessToken } = useAuth();
-
+  const removeEmojis = (value) =>
+    value.replace(
+      /[\p{Extended_Pictographic}\p{Regional_Indicator}\uFE0F\u200D\u20E3]/gu,
+      "",
+    );
   const [formData, setFormData] = useState({
     businessName: "",
     phoneNumber: "",
@@ -105,7 +109,11 @@ function SetupSupplier() {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name } = e.target;
+    let { value } = e.target;
+    if (name === "businessName" || name === "address") {
+      value = removeEmojis(value);
+    }
     setFormData((prev) => ({
       ...prev,
       [name]: value,

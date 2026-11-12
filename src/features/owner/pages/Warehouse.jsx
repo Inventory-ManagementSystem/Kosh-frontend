@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { FiSearch } from "react-icons/fi";
 import { FaCirclePlus } from "react-icons/fa6";
+import { MdModeEditOutline } from "react-icons/md";
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../../../context/AuthContext";
 import Pagination from "../components/Pagination";
@@ -9,6 +10,7 @@ import {
   getProducts,
   deleteProducts,
   updateProduct,
+  editWarehouse,
 } from "../api/warehouseApi";
 import WarehouseTable from "../components/WarehouseTable";
 import WarehouseTableSkeleton from "../components/WarehouseTableSkeleton";
@@ -38,6 +40,14 @@ function Warehouse() {
 
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
+
+  const [isEditingWarehouse, setIsEditingWarehouse] = useState(false);
+  const [warehouseForm, setWarehouseForm] = useState({
+    name: "",
+    address: "",
+  });
+  const [warehouseErrors, setWarehouseErrors] = useState({});
+  const [warehouseLoading, setWarehouseLoading] = useState(false);
 
   useEffect(() => {
     if (!accessToken) {
@@ -148,6 +158,69 @@ function Warehouse() {
     }
   };
 
+  const handleEditWarehouse = () => {
+    setWarehouseForm({
+      name: warehouse?.name || "",
+      address: warehouse?.address || "",
+    });
+
+    setWarehouseErrors({});
+    setIsEditingWarehouse(true);
+  };
+
+  const handleWarehouseChange = (e) => {
+    const { name, value } = e.target;
+
+    setWarehouseForm((prev) => ({
+      ...prev,
+      [name]: removeEmojis(value),
+    }));
+
+    setWarehouseErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
+  };
+
+  const handleSaveWarehouse = async (e) => {
+    e.preventDefault();
+    if (warehouseLoading) return;
+    const newErrors = {};
+    if (!warehouseForm.name.trim()) {
+      newErrors.name = "Warehouse name is required";
+    }
+    if (!warehouseForm.address.trim()) {
+      newErrors.address = "Address is required";
+    }
+    setWarehouseErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
+    if (!accessToken) {
+      toast.error("Please log in again to continue.");
+      return;
+    }
+    const updatedData = {};
+    if (warehouseForm.name.trim() !== warehouse?.name) {
+      updatedData.name = warehouseForm.name.trim();
+    }
+    if (warehouseForm.address.trim() !== warehouse?.address) {
+      updatedData.address = warehouseForm.address.trim();
+    }
+    if (Object.keys(updatedData).length === 0) {
+      setIsEditingWarehouse(false);
+      return;
+    }
+    setWarehouseLoading(true);
+    try {
+      const response = await editWarehouse(accessToken, updatedData);
+      setWarehouse(response.data);
+      setIsEditingWarehouse(false);
+      toast.success("Warehouse details updated successfully.");
+    } catch (error) {
+      toast.error(error.message || "Failed to update warehouse.");
+    } finally {
+      setWarehouseLoading(false);
+    }
+  };
   return (
     <div className="p-5 text-(--accent-color)">
       <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -155,9 +228,20 @@ function Warehouse() {
           Warehouse
         </h1>
 
-        <div className="text-left text-xs sm:text-right">
-          <p className="text-base">{warehouse?.name}</p>
-          <p>{warehouse?.address}</p>
+        <div className="flex items-center justify-between gap-2 sm:justify-end">
+          <div className="text-left text-xs sm:text-right">
+            <p className="text-base">{warehouse?.name}</p>
+            <p>{warehouse?.address}</p>
+          </div>
+          <button
+            type="button"
+            onClick={handleEditWarehouse}
+            disabled={!warehouse}
+            title="Edit warehouse details"
+            className="cursor-pointer rounded-md p-2 text-(--secondary-text-color) transition hover:bg-(--input-background) hover:text-(--accent-color) disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <MdModeEditOutline size={20} />
+          </button>
         </div>
       </div>
 
@@ -232,6 +316,93 @@ function Warehouse() {
           </>
         )}
       </section>
+      {isEditingWarehouse && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-(--page-background)/40 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-xl border border-(--border-color) bg-(--sidebar-active-background) p-6">
+            <h2 className="mb-5 text-lg font-semibold text-(--text-color)">
+              Edit Warehouse
+            </h2>
+            <form onSubmit={handleSaveWarehouse}>
+              <div className="mb-5">
+                <label
+                  htmlFor="warehouseName"
+                  className="mb-2 block text-sm font-medium text-(--text-color)"
+                >
+                  Warehouse Name
+                </label>
+                <input
+                  id="warehouseName"
+                  name="name"
+                  type="text"
+                  maxLength={50}
+                  value={warehouseForm.name}
+                  onChange={handleWarehouseChange}
+                  placeholder="Enter warehouse name"
+                  className={`w-full rounded-md border bg-(--input-background) px-4 py-3 text-sm text-(--text-color) outline-none placeholder:text-(--secondary-text-color) ${
+                    warehouseErrors.name
+                      ? "border-(--error-color)"
+                      : "border-(--border-color) focus:border-(--accent-color)"
+                  }`}
+                />
+
+                {warehouseErrors.name && (
+                  <p className="mt-2 text-xs text-(--error-color)">
+                    {warehouseErrors.name}
+                  </p>
+                )}
+              </div>
+
+              <div className="mb-6">
+                <label
+                  htmlFor="warehouseAddress"
+                  className="mb-2 block text-sm font-medium text-(--text-color)"
+                >
+                  Address
+                </label>
+                <textarea
+                  id="warehouseAddress"
+                  name="address"
+                  rows={3}
+                  maxLength={250}
+                  value={warehouseForm.address}
+                  onChange={handleWarehouseChange}
+                  placeholder="Enter warehouse address"
+                  className={`w-full resize-none rounded-md border bg-(--input-background) px-4 py-3 text-sm text-(--text-color) outline-none placeholder:text-(--secondary-text-color) ${
+                    warehouseErrors.address
+                      ? "border-(--error-color)"
+                      : "border-(--border-color) focus:border-(--accent-color)"
+                  }`}
+                />
+
+                {warehouseErrors.address && (
+                  <p className="mt-2 text-xs text-(--error-color)">
+                    {warehouseErrors.address}
+                  </p>
+                )}
+              </div>
+
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  disabled={warehouseLoading}
+                  onClick={() => setIsEditingWarehouse(false)}
+                  className="rounded-md border border-(--border-color) px-4 py-2 text-sm text-(--text-color) transition hover:bg-(--input-background) disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  disabled={warehouseLoading}
+                  className="rounded-md bg-(--accent-color) px-4 py-2 text-sm font-semibold text-(--page-background) transition disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {warehouseLoading ? "Saving..." : "Save Changes"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

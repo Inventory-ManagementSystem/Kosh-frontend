@@ -239,3 +239,19 @@ export const createDispatch = async (accessToken, dispatchData) => {
 
   return data;
 };
+
+export const editWarehouse = async (accessToken, warehouseData) => {
+  const response = await fetch(WAREHOUSE_API_URL, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(warehouseData),
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(getErrorMessage(data, "Failed to edit warehouse details."));
+  }
+  return data;
+};

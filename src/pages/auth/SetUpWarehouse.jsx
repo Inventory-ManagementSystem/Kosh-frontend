@@ -18,6 +18,11 @@ function SetUpWarehouse() {
   const [address, setAddress] = useState("");
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const removeEmojis = (value) =>
+    value.replace(
+      /[\p{Extended_Pictographic}\p{Regional_Indicator}\uFE0F\u200D\u20E3]/gu,
+      "",
+    );
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (loading) return;
@@ -83,7 +88,7 @@ function SetUpWarehouse() {
                 maxLength={50}
                 value={warehouseName}
                 onChange={(e) => {
-                  setWarehouseName(e.target.value);
+                  setWarehouseName(removeEmojis(e.target.value));
                   setErrors((prev) => ({
                     ...prev,
                     warehouseName: "",
@@ -117,7 +122,7 @@ function SetUpWarehouse() {
                 maxLength={250}
                 value={address}
                 onChange={(e) => {
-                  setAddress(e.target.value);
+                  setAddress(removeEmojis(e.target.value));
                   setErrors((prev) => ({
                     ...prev,
                     address: "",

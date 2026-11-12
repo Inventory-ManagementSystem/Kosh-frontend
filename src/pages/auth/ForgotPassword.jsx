@@ -15,6 +15,7 @@ function ForgotPassword() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const isSubmitting = useRef(false);
   const debouncedForgotPassword = useMemo(
     () =>
@@ -30,6 +31,7 @@ function ForgotPassword() {
           setError(error.message);
         } finally {
           isSubmitting.current = false;
+          setLoading(false);
         }
       }, 500),
     [navigate],
@@ -49,6 +51,7 @@ function ForgotPassword() {
       return;
     }
     setError("");
+    setLoading(true);
     isSubmitting.current = true;
     debouncedForgotPassword(email.trim());
   };
@@ -103,20 +106,17 @@ function ForgotPassword() {
               />
 
               {error && (
-                <p className="mt-2 text-xs text-(--error-color)">
-                  {error}
-                </p>
+                <p className="mt-2 text-xs text-(--error-color)">{error}</p>
               )}
             </div>
 
             <div className="mt-6 flex gap-4">
-              <BackButton onClick={() => navigate("/login")}>
-                Back
-              </BackButton>
+              <BackButton onClick={() => navigate("/login")}>Back</BackButton>
 
               <NavigationButton
                 type="submit"
                 isFormFilled={isFormFilled}
+                isLoading={loading}
               >
                 Send OTP
               </NavigationButton>
@@ -125,10 +125,7 @@ function ForgotPassword() {
 
           <div className="hidden lg:flex lg:w-1/2 lg:items-center lg:justify-center lg:pl-8">
             <div className="flex h-72 w-full items-center justify-center rounded-lg">
-              <img
-                src={forgotpass}
-                alt="Forgot Password illustration"
-              />
+              <img src={forgotpass} alt="Forgot Password illustration" />
             </div>
           </div>
         </div>

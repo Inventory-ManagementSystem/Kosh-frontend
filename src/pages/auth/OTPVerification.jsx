@@ -17,6 +17,8 @@ function OTPVerification() {
   const inputRefs = useRef([]);
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [error, setError] = useState("");
+  const [verifyLoading, setVerifyLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
 
   const isFormFilled = otp.every((digit) => digit !== "");
 
@@ -73,6 +75,7 @@ function OTPVerification() {
       setError("Email not found. Please restart the password reset process.");
       return;
     }
+    setVerifyLoading(true);
     try {
       const data = await verifyOTP(email, enteredOtp);
       console.log("OTP verified:", data);
@@ -82,6 +85,8 @@ function OTPVerification() {
       setOtp(["", "", "", "", "", ""]);
       inputRefs.current[0]?.focus();
       setError(error.message);
+    } finally {
+      setVerifyLoading(false);
     }
   };
 
@@ -90,6 +95,7 @@ function OTPVerification() {
       setError("Email not found.");
       return;
     }
+    setResendLoading(true);
     try {
       await forgotPwd(email);
       setOtp(["", "", "", "", "", ""]);
@@ -97,6 +103,8 @@ function OTPVerification() {
       inputRefs.current[0]?.focus();
     } catch (error) {
       setError(error.message);
+    } finally {
+      setResendLoading(false);
     }
   };
 
@@ -158,16 +166,21 @@ function OTPVerification() {
             <button
               type="button"
               onClick={handleResend}
+              disabled={resendLoading || verifyLoading}
               className="text-(--accent-color) transition hover:text-(--text-color)"
             >
-              Resend OTP
+              {resendLoading ? "Sending..." : "Resend OTP"}
             </button>
           </p>
 
           <div className="mt-6 flex justify-center gap-4">
             <BackButton onClick={() => navigate(-1)}>Back</BackButton>
 
-            <NavigationButton type="submit" isFormFilled={isFormFilled}>
+            <NavigationButton
+              type="submit"
+              isFormFilled={isFormFilled}
+              isLoading={verifyLoading}
+            >
               Verify OTP
             </NavigationButton>
           </div>

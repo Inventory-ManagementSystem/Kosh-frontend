@@ -11,6 +11,8 @@ import { resendRegistrationOtp } from "../../api/resendRegistrationOtp";
 
 function RegistrationOTP() {
   const navigate = useNavigate();
+  const [verifyLoading, setVerifyLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
 
   const email = sessionStorage.getItem("registrationEmail");
 
@@ -75,7 +77,7 @@ function RegistrationOTP() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    if (verifyLoading) return;
     const enteredOtp = otp.join("");
 
     if (enteredOtp.length !== 6) {
@@ -87,7 +89,7 @@ function RegistrationOTP() {
       setError("Email not found. Please restart registration.");
       return;
     }
-
+    setVerifyLoading(true);
     try {
       const data = await regVerifyOtp({
         email: email,
@@ -112,6 +114,8 @@ function RegistrationOTP() {
       } else {
         setError(error.message);
       }
+    } finally {
+      setVerifyLoading(false);
     }
   };
 
@@ -120,6 +124,7 @@ function RegistrationOTP() {
       setError("Email not found. Please register again.");
       return;
     }
+    setResendLoading(true);
     try {
       await resendRegistrationOtp(email);
       setOtp(["", "", "", "", "", ""]);
@@ -128,6 +133,8 @@ function RegistrationOTP() {
       console.log("Reg OTP resent");
     } catch (error) {
       setError(error.message);
+    } finally {
+      setResendLoading(false);
     }
   };
 
@@ -188,16 +195,21 @@ function RegistrationOTP() {
             <button
               type="button"
               onClick={handleResend}
+              disabled={resendLoading || verifyLoading}
               className="text-(--accent-color) transition hover:text-(--text-color)"
             >
-              Resend OTP
+              {resendLoading ? "Sending..." : "Resend OTP"}
             </button>
           </p>
 
           <div className="mt-6 flex justify-center gap-4">
             <BackButton onClick={() => navigate(-1)}>Back</BackButton>
 
-            <NavigationButton type="submit" isFormFilled={isFormFilled}>
+            <NavigationButton
+              type="submit"
+              isFormFilled={isFormFilled}
+              isLoading={verifyLoading}
+            >
               Verify OTP
             </NavigationButton>
           </div>

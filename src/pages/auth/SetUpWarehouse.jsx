@@ -17,9 +17,10 @@ function SetUpWarehouse() {
   const [warehouseName, setWarehouseName] = useState("");
   const [address, setAddress] = useState("");
   const [errors, setErrors] = useState({});
-
+  const [loading, setLoading] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return;
     const newErrors = {};
     if (!warehouseName.trim()) {
       newErrors.warehouseName = "Warehouse name is required";
@@ -34,7 +35,7 @@ function SetUpWarehouse() {
       toast.error("Please log in again to continue.");
       return;
     }
-
+    setLoading(true);
     try {
       await updateWarehouse(accessToken, {
         name: warehouseName.trim(),
@@ -44,6 +45,8 @@ function SetUpWarehouse() {
       navigate("/complete-setup");
     } catch (error) {
       toast.error(error.message || "Failed to set up warehouse");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -137,7 +140,11 @@ function SetUpWarehouse() {
             <div className="mt-6 flex gap-4">
               <BackButton onClick={() => navigate(-1)}>Back</BackButton>
 
-              <NavigationButton type="submit" isFormFilled={isFormFilled}>
+              <NavigationButton
+                type="submit"
+                isFormFilled={isFormFilled}
+                isLoading={loading}
+              >
                 Next
               </NavigationButton>
             </div>

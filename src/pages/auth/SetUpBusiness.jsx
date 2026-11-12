@@ -7,12 +7,13 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import AuthDecoration from "../../components/auth/AuthDecoration";
 import setupbusiness from "../../assets/auth/setupbusiness.svg";
 import logo from "../../assets/auth/logo.svg";
-
+import AuthButton from "../../components/auth/AuthButton";
 import { regBusiness } from "../../api/businessApi";
 
 function SetupBusiness() {
   const navigate = useNavigate();
   const { accessToken } = useAuth();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     businessName: "",
     businessType: "",
@@ -23,6 +24,11 @@ function SetupBusiness() {
     businessType: "",
     city: "",
   });
+
+  const isFormFilled =
+    formData.businessName.trim() !== "" &&
+    formData.businessType !== "" &&
+    formData.city !== "";
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -61,6 +67,7 @@ function SetupBusiness() {
     if (!validateForm()) {
       return;
     }
+    setLoading(true);
     try {
       const data = await regBusiness(
         {
@@ -73,6 +80,8 @@ function SetupBusiness() {
       navigate("/setup-warehouse");
     } catch (error) {
       console.error("Business registration failed:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -214,12 +223,9 @@ function SetupBusiness() {
                 </p>
               )}
             </div>
-            <button
-              type="submit"
-              className="w-full rounded-md bg-(--border-color) py-3 text-sm font-semibold text-(--secondary-text-color) transition duration-200 hover:bg-(--accent-hover-color) hover:text-(--page-background)"
-            >
+            <AuthButton isFormFilled={isFormFilled} isLoading={loading}>
               Next
-            </button>
+            </AuthButton>
           </form>
           <div className="hidden lg:flex lg:w-1/2 lg:items-center lg:justify-center lg:self-stretch lg:pl-8">
             <div className="flex h-72 w-full items-center justify-center rounded-lg">

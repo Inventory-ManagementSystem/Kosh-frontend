@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import AuthDecoration from "../../components/auth/AuthDecoration";
 import loginsvg from "../../assets/auth/loginsvg.svg";
 import logo from "../../assets/auth/logo.svg";
+import AuthButton from "../../components/auth/AuthButton";
 
 import { resetPwd } from "../../api/resetPwd";
 
@@ -14,6 +15,7 @@ function ResetPassword() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     password: "",
@@ -24,6 +26,11 @@ function ResetPassword() {
     password: "",
     confirmPassword: "",
   });
+
+  const isFormFilled =
+    formData.password.trim() !== "" &&
+    formData.confirmPassword.trim() !== "" &&
+    formData.password === formData.confirmPassword;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -71,11 +78,13 @@ function ResetPassword() {
     if (!validateForm()) {
       return;
     }
+    if (loading) return;
     const resetToken = sessionStorage.getItem("resetToken");
     if (!resetToken) {
       console.log("Reset token not found");
       return;
     }
+    setLoading(true);
     try {
       const data = await resetPwd(
         resetToken,
@@ -87,6 +96,8 @@ function ResetPassword() {
       navigate("/login");
     } catch (error) {
       console.log("Password reset failed:", error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -148,7 +159,7 @@ function ResetPassword() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-(--icon-color transition hover:text-(--icon-accent-color)"
                 >
-                  {showPassword ? <BsEyeSlash /> : <BsEye />}
+                  {showPassword ? <BsEye /> : <BsEyeSlash />}
                 </button>
               </div>
 
@@ -188,7 +199,7 @@ function ResetPassword() {
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-(--icon-color) transition hover:text-(--icon-accent-color)"
                 >
-                  {showConfirmPassword ? <BsEyeSlash /> : <BsEye />}
+                  {showConfirmPassword ? <BsEye /> : <BsEyeSlash />}
                 </button>
               </div>
 
@@ -199,12 +210,9 @@ function ResetPassword() {
               )}
             </div>
 
-            <button
-              type="submit"
-              className="w-full rounded-md bg-(--border-color) py-3 text-sm font-semibold text-(--secondary-text-color) transition duration-200 hover:bg-(--accent-color) hover:text-(--page-background)"
-            >
+            <AuthButton isFormFilled={isFormFilled} isLoading={loading}>
               Reset Password
-            </button>
+            </AuthButton>
           </form>
 
           <div className="hidden lg:flex lg:w-1/2 lg:items-center lg:justify-center lg:self-stretch lg:pl-8">

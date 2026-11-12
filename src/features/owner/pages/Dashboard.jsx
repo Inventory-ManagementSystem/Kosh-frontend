@@ -21,6 +21,7 @@ import RfqCard from "../components/RfqCard";
 import NewUserDashboard from "../components/NewUserDashboard";
 import DashboardSkeleton from "../components/DashboardSkeleton";
 import cuate from "../../../assets/auth/cuate.svg";
+import SavingChart from "../components/SavingChart";
 
 const LIST_SIZE = 5;
 const WEEK_IN_MS = 7 * 24 * 60 * 60 * 1000;
@@ -241,7 +242,7 @@ function Dashboard() {
           />
         </div>
       </section>
-
+      <SavingChart />
       <section className="rounded-xl border border-(--border-color) bg-(--card-background) p-5">
         <div className="mb-6 flex items-center justify-between gap-3">
           <h2 className="text-sm font-semibold">Weekly Orders</h2>

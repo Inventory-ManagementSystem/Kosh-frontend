@@ -12,6 +12,7 @@ import {
 import BackButton from "../../../components/auth/BackButton";
 import NavigationButton from "../../../components/auth/NavigationButton";
 import { useAuth } from "../../../context/AuthContext";
+import Dropdown from "../../../components/common/Dropdown";
 
 const removeEmojis = (value) => {
   return value.replace(
@@ -365,20 +366,19 @@ function EditProduct() {
             <label htmlFor="edit-supply-category" className={labelClass}>
               Supply Category
             </label>
-            <select
+            <Dropdown
               id="edit-supply-category"
               name="supply_category"
               value={formData.supply_category}
               onChange={handleChange}
-              className={inputClass}
-            >
-              <option value="">Select supply category</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
+              options={categories.map((category) => ({
+                value: category.id,
+                label: category.name,
+              }))}
+              placeholder="Select supply category"
+              size="form"
+              className="mt-2"
+            />
             {errors.supply_category && (
               <p className={errorClass}>{errors.supply_category}</p>
             )}
@@ -465,7 +465,7 @@ function EditProduct() {
               Product Status
             </label>
 
-            <select
+            <Dropdown
               id="edit-is-active"
               name="is_active"
               value={String(formData.is_active)}
@@ -475,11 +475,13 @@ function EditProduct() {
                   is_active: event.target.value === "true",
                 }));
               }}
-              className={inputClass}
-            >
-              <option value="true">Active</option>
-              <option value="false">Inactive</option>
-            </select>
+              options={[
+                { value: "true", label: "Active" },
+                { value: "false", label: "Inactive" },
+              ]}
+              size="form"
+              className="mt-2"
+            />
           </div>
 
           <div>

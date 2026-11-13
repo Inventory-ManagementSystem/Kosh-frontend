@@ -15,6 +15,7 @@ import {
 import WarehouseTable from "../components/WarehouseTable";
 import WarehouseTableSkeleton from "../components/WarehouseTableSkeleton";
 import toast from "react-hot-toast";
+import Dropdown from "../../../components/common/Dropdown";
 
 const PAGE_SIZE = 10;
 
@@ -263,17 +264,18 @@ function Warehouse() {
             />
           </div>
 
-          <select
+          <Dropdown
             value={selectedStatus}
             onChange={(event) => {
               setSelectedStatus(event.target.value);
               setCurrentPage(1);
             }}
-            className="h-10 w-full rounded-xl border border-(--border-color) bg-(--dropdown-background) px-3 text-sm text-(--text-color) outline-none sm:max-w-52"
-          >
-            <option value="true">Activated</option>
-            <option value="false">Deactivated</option>
-          </select>
+            options={[
+              { value: "true", label: "Activated" },
+              { value: "false", label: "Deactivated" },
+            ]}
+            className="w-full sm:max-w-52"
+          />
         </div>
 
         <button

@@ -13,6 +13,7 @@ import { getQuotations } from "../api/quotationApi";
 import RfqCard from "../components/RfqCard";
 import SupplierPerformance from "../components/SupplierPerformance";
 import { IoArrowBack } from "react-icons/io5";
+import Dropdown from "../../../components/common/Dropdown";
 
 const DEFAULT_WEIGHTS = {
   price: 59,
@@ -312,15 +313,16 @@ function ManageQuotation() {
               </p>
             </div>
 
-            <select
+            <Dropdown
               value={sort}
               onChange={(event) => setSort(event.target.value)}
-              aria-label="Sort quotations"
-              className="max-w-[130px] rounded-md border border-(--border-color) bg-(--dropdown-background) px-2 py-2 text-xs outline-none"
-            >
-              <option value="rank">Best ranked</option>
-              <option value="price">Lowest price</option>
-            </select>
+              options={[
+                { value: "rank", label: "Best ranked" },
+                { value: "price", label: "Lowest price" },
+              ]}
+              size="sm"
+              className="w-36"
+            />
           </div>
 
           {loading && (

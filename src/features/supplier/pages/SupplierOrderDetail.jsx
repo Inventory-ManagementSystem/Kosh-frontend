@@ -131,7 +131,7 @@ function SupplierOrderDetail() {
       <section className="rounded-xl border border-(--border-color) bg-(--card-background) px-4 py-4 sm:px-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-green-400" />
+            <span className="h-1.5 w-1.5 rounded-full bg-(--success-color)" />
             <span className="text-sm font-medium">
               {buyer.business_name || order.business_name || "Buyer"}
             </span>

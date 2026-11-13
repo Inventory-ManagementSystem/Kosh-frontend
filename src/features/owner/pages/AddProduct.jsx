@@ -6,6 +6,7 @@ import { FaCloudUploadAlt } from "react-icons/fa";
 import BackButton from "../../../components/auth/BackButton";
 import { useAuth } from "../../../context/AuthContext";
 import NavigationButton from "../../../components/auth/NavigationButton";
+import Dropdown from "../../../components/common/Dropdown";
 
 const removeEmojis = (value) => {
   return value.replace(
@@ -245,20 +246,19 @@ function AddProduct() {
             <label htmlFor="product-category" className={labelClass}>
               Category
             </label>
-            <select
+            <Dropdown
               id="product-category"
               name="category"
               value={formData.category}
               onChange={handleChange}
-              className={inputClass}
-            >
-              <option value="">Select category</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
+              options={categories.map((category) => ({
+                value: category.id,
+                label: category.name,
+              }))}
+              placeholder="Select category"
+              size="form"
+              className="mt-2"
+            />
           </div>
 
           <div>

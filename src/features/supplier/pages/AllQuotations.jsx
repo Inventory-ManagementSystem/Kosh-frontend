@@ -4,6 +4,7 @@ import { toast } from "react-hot-toast";
 import { useAuth } from "../../../context/AuthContext";
 import { getSupplierQuotations } from "../api/supplierRfqApi";
 import Pagination from "../../owner/components/Pagination";
+import Dropdown from "../../../components/common/Dropdown";
 
 const PAGE_SIZE = 5;
 
@@ -16,7 +17,7 @@ const statusOptions = [
 ];
 
 const formatCurrency = (value) =>
-  `₹${(Number(value) || 0).toLocaleString("en-IN", {
+  `\u20b9${(Number(value) || 0).toLocaleString("en-IN", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })}`;
@@ -39,7 +40,7 @@ const formatStatus = (value) => {
 
 const getStatusClass = (status) => {
   if (status === "accepted") {
-    return "border-green-400/30 bg-green-400/10 text-green-600";
+    return "border-green-400/30 bg-green-400/10 text-(--success-color)";
   }
   if (status === "rejected" || status === "withdrawn") {
     return "border-(--error-color) bg-(--decoration-background) text-(--error-color)";
@@ -75,7 +76,7 @@ function QuotationCard({ quotation }) {
     <div className="w-full rounded-xl border border-(--border-color) bg-(--card-background) px-4 py-4 sm:px-5 sm:py-4">
       <div className="flex items-center justify-between gap-4">
         <div className="flex min-w-0 items-center gap-2">
-          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-green-400" />
+          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-(--success-color)" />
           <h2 className="truncate text-base font-semibold text-(--accent-color)">
             {quotation.rfq_number || "Quotation"}
           </h2>
@@ -181,17 +182,12 @@ function AllQuotations() {
           </h1>
         </div>
 
-        <select
+        <Dropdown
           value={status}
           onChange={handleStatusChange}
-          className="rounded-lg border border-(--border-color) bg-(--dropdown-background) px-3 py-2 text-sm text-(--text-color) outline-none focus:border-(--accent-color)"
-        >
-          {statusOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
+          options={statusOptions}
+          className="w-48"
+        />
       </div>
 
       {loading ? (

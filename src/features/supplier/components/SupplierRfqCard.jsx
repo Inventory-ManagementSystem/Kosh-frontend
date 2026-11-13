@@ -11,7 +11,7 @@ function SupplierRfqCard({
   canDecline,
   detailsLoading,
   detailsError,
-  onCardClick
+  onCardClick,
 }) {
   const formatDate = (date) => {
     if (!date) return "—";
@@ -48,18 +48,18 @@ function SupplierRfqCard({
   const items = details?.items || [];
 
   const handleCardKeyDown = (event) => {
-  if (event.target !== event.currentTarget) {
-    return;
-  }
-  if (event.key === "Enter" || event.key === " ") {
-    event.preventDefault();
-    if (onCardClick) {
-      onCardClick(rfq);
-    } else {
-      onToggle(rfq);
+    if (event.target !== event.currentTarget) {
+      return;
     }
-  }
-};
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      if (onCardClick) {
+        onCardClick(rfq);
+      } else {
+        onToggle(rfq);
+      }
+    }
+  };
 
   return (
     <div
@@ -81,7 +81,7 @@ function SupplierRfqCard({
             className={`h-1.5 w-1.5 shrink-0 rounded-full ${
               rfq.my_status?.toLowerCase() === "declined"
                 ? "bg-(--error-color)"
-                : "bg-green-400"
+                : "bg-(--success-color)"
             }`}
           />
 

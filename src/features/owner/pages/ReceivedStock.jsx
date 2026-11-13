@@ -11,6 +11,7 @@ import {
 import { useAuth } from "../../../context/AuthContext";
 import { getReceivedStock } from "../api/receivedStockApi";
 import Pagination from "../components/Pagination";
+import Dropdown from "../../../components/common/Dropdown";
 
 const PAGE_SIZE = 10;
 
@@ -174,26 +175,21 @@ function ReceivedStock() {
           </h2>
 
           <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-            <div className="relative">
-              <select
-                id="movement-filter"
-                aria-label="Movement type"
-                value={selectedMovement}
-                onChange={(e) => {
-                  setSelectedMovement(e.target.value);
-                  setCurrentPage(1);
-                }}
-                className="h-8 w-40 cursor-pointer appearance-none rounded-full border border-(--border-color) bg-(--dropdown-background) pl-3 pr-8 text-xs text-(--text-color) outline-none"
-              >
-                <option value="all">Movement type</option>
-                <option value="grn_received">GRN Received</option>
-                <option value="dispatch">Dispatch</option>
-              </select>
-              <FaChevronDown
-                size={10}
-                className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-(--secondary-text-color)"
-              />
-            </div>
+            <Dropdown
+              id="movement-filter"
+              value={selectedMovement}
+              onChange={(e) => {
+                setSelectedMovement(e.target.value);
+                setCurrentPage(1);
+              }}
+              options={[
+                { value: "all", label: "Movement type" },
+                { value: "grn_received", label: "GRN Received" },
+                { value: "dispatch", label: "Dispatch" },
+              ]}
+              size="sm"
+              className="w-40"
+            />
 
             <div className="flex flex-wrap items-center gap-3">
               <DatePill

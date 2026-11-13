@@ -10,6 +10,7 @@ import WarehouseTable from "../../owner/components/WarehouseTable";
 import WarehouseTableSkeleton from "../../owner/components/WarehouseTableSkeleton";
 import Pagination from "../../owner/components/Pagination";
 import toast from "react-hot-toast";
+import Dropdown from "../../../components/common/Dropdown";
 
 const PAGE_SIZE = 10;
 
@@ -124,22 +125,22 @@ function Warehouse() {
             />
           </div>
 
-          <select
+          <Dropdown
             value={selectedCategory}
             onChange={(event) => {
               setSelectedCategory(event.target.value);
               setCurrentPage(1);
             }}
-            className="h-10 w-full rounded-xl border border-(--border-color) bg-(--dropdown-background) px-3 text-sm text-(--text-color) outline-none sm:max-w-52"
-          >
-            <option value="all">All Categories</option>
-
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
+            options={[
+              { value: "all", label: "All Categories" },
+              ...categories.map((category) => ({
+                value: category.id,
+                label: category.name,
+              })),
+            ]}
+            ariaLabel="Filter by category"
+            className="w-full sm:max-w-52"
+          />
         </div>
       </div>
 

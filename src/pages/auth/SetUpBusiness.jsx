@@ -9,6 +9,7 @@ import setupbusiness from "../../assets/auth/setupbusiness.svg";
 import logo from "../../assets/auth/logo.svg";
 import AuthButton from "../../components/auth/AuthButton";
 import { regBusiness } from "../../api/businessApi";
+import Dropdown from "../../components/common/Dropdown";
 
 function SetupBusiness() {
   const navigate = useNavigate();
@@ -153,29 +154,23 @@ function SetupBusiness() {
               >
                 Business Type
               </label>
-              <select
+              <Dropdown
                 id="businessType"
                 name="businessType"
                 value={formData.businessType}
                 onChange={handleChange}
-                className={`w-full rounded-md border border-(--border-color) bg-(--dropdown-background) px-4 py-3 text-sm outline-none transition ${
-                  formData.businessType
-                    ? "text-(--text-color)"
-                    : "text-(--secondary-text-color)"
-                } ${
-                  errors.businessType
-                    ? "border-(--error-color)"
-                    : "border-(--border-color) focus:border-(--accent-color)"
-                }`}
-              >
-                <option value="">Select business type</option>
-                <option value="retail">Retail</option>
-                <option value="wholesale">Wholesale</option>
-                <option value="restaurant">Restaurant</option>
-                <option value="manufacturing">Manufacturing</option>
-                <option value="service">Service</option>
-                <option value="other">Other</option>
-              </select>
+                options={[
+                  { value: "retail", label: "Retail" },
+                  { value: "wholesale", label: "Wholesale" },
+                  { value: "restaurant", label: "Restaurant" },
+                  { value: "manufacturing", label: "Manufacturing" },
+                  { value: "service", label: "Service" },
+                  { value: "other", label: "Other" },
+                ]}
+                placeholder="Select business type"
+                error={Boolean(errors.businessType)}
+                size="lg"
+              />
               {errors.businessType && (
                 <p className="mt-2 text-xs text-(--error-color)">
                   {errors.businessType}
@@ -189,34 +184,28 @@ function SetupBusiness() {
               >
                 City
               </label>
-              <select
+              <Dropdown
                 id="city"
                 name="city"
                 value={formData.city}
                 onChange={handleChange}
-                className={`w-full rounded-md border border-(--border-color) bg-(--dropdown-background) px-4 py-3 text-sm outline-none transition ${
-                  formData.city
-                    ? "text-(--text-color)"
-                    : "text-(--secondary-text-color)"
-                } ${
-                  errors.city
-                    ? "border-(--error-color)"
-                    : "border-(--border-color) focus:border-(--accent-color)"
-                }`}
-              >
-                <option value="">Select city</option>
-                <option value="delhi">Delhi</option>
-                <option value="gurugram">Gurugram</option>
-                <option value="noida">Noida</option>
-                <option value="ghaziabad">Ghaziabad</option>
-                <option value="mumbai">Mumbai</option>
-                <option value="bangalore">Bangalore</option>
-                <option value="hyderabad">Hyderabad</option>
-                <option value="pune">Pune</option>
-                <option value="chennai">Chennai</option>
-                <option value="kolkata">Kolkata</option>
-                <option value="other">Other</option>
-              </select>
+                options={[
+                  { value: "delhi", label: "Delhi" },
+                  { value: "gurugram", label: "Gurugram" },
+                  { value: "noida", label: "Noida" },
+                  { value: "ghaziabad", label: "Ghaziabad" },
+                  { value: "mumbai", label: "Mumbai" },
+                  { value: "bangalore", label: "Bangalore" },
+                  { value: "hyderabad", label: "Hyderabad" },
+                  { value: "pune", label: "Pune" },
+                  { value: "chennai", label: "Chennai" },
+                  { value: "kolkata", label: "Kolkata" },
+                  { value: "other", label: "Other" },
+                ]}
+                placeholder="Select city"
+                error={Boolean(errors.city)}
+                size="lg"
+              />
               {errors.city && (
                 <p className="mt-2 text-xs text-(--error-color)">
                   {errors.city}

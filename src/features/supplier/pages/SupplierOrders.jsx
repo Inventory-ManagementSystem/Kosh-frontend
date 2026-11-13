@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { useAuth } from "../../../context/AuthContext";
 import { getSupplierOrders } from "../api/supplierOrderApi";
 import Pagination from "../../owner/components/Pagination";
+import Dropdown from "../../../components/common/Dropdown";
 
 const PAGE_SIZE = 5;
 
@@ -34,7 +35,7 @@ const getStatusClass = (status) => {
   if (status === "issued") return "text-(--accent-color)";
   if (status === "dispatched") return "text-blue-400";
   if (status === "partially_received") return "text-yellow-400";
-  if (status === "received") return "text-[#18903f]";
+  if (status === "received") return "text-(--success-color)";
 
   return "text-(--secondary-text-color)";
 };
@@ -57,7 +58,7 @@ function OrderCard({ order, onClick }) {
     >
       <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-2">
-          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-green-400" />
+          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-(--success-color)" />
 
           <h2 className="truncate text-base font-semibold text-(--accent-color)">
             {order.business_name || order.company_name || "Order"}
@@ -213,17 +214,18 @@ function AllOrders() {
           All Orders
         </h1>
 
-        <select
+        <Dropdown
           value={status}
           onChange={handleStatusChange}
-          className="rounded-lg border border-(--border-color) bg-(--dropdown-background) px-3 py-2 text-sm text-(--text-color) outline-none"
-        >
-          <option value="">All Orders</option>
-          <option value="issued">Issued</option>
-          <option value="dispatched">Dispatched</option>
-          <option value="partially_received">Partially Received</option>
-          <option value="received">Received</option>
-        </select>
+          options={[
+            { value: "", label: "All Orders" },
+            { value: "issued", label: "Issued" },
+            { value: "dispatched", label: "Dispatched" },
+            { value: "partially_received", label: "Partially Received" },
+            { value: "received", label: "Received" },
+          ]}
+          className="w-48"
+        />
       </div>
 
       {loading ? (

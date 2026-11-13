@@ -6,6 +6,7 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import AuthDecoration from "../../components/auth/AuthDecoration";
 import supplier from "../../assets/auth/supplier.svg";
 import logo from "../../assets/auth/logo.svg";
+import Dropdown from "../../components/common/Dropdown";
 
 import { registerSupplier, getSupplierCategories } from "../../api/supplierApi";
 
@@ -326,30 +327,27 @@ function SetupSupplier() {
                 Supplier Category
               </label>
 
-              <select
+              <Dropdown
                 id="category"
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                disabled={categoriesLoading || categories.length === 0}
-                className={selectClass("category")}
-              >
-                <option value="">
-                  {categoriesLoading
+                options={categories.map((category) => ({
+                  value: category.id,
+                  label: category.name,
+                }))}
+                placeholder={
+                  categoriesLoading
                     ? "Loading categories..."
                     : categories.length === 0
                       ? "No categories available"
-                      : "Select category"}
-                </option>
-
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-
+                      : "Select category"
+                }
+                disabled={categoriesLoading || categories.length === 0}
+                error={Boolean(errors.category && touched.category)}
+                size="lg"
+              />
               {renderError("category")}
 
               {categories.length === 0 && !categoriesLoading && apiError && (
@@ -393,27 +391,29 @@ function SetupSupplier() {
                   City
                 </label>
 
-                <select
+                <Dropdown
                   id="city"
                   name="city"
                   value={formData.city}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={selectClass("city")}
-                >
-                  <option value="">Select city</option>
-                  <option value="Delhi">Delhi</option>
-                  <option value="Gurugram">Gurugram</option>
-                  <option value="Noida">Noida</option>
-                  <option value="Ghaziabad">Ghaziabad</option>
-                  <option value="Mumbai">Mumbai</option>
-                  <option value="Bangalore">Bangalore</option>
-                  <option value="Hyderabad">Hyderabad</option>
-                  <option value="Pune">Pune</option>
-                  <option value="Chennai">Chennai</option>
-                  <option value="Kolkata">Kolkata</option>
-                  <option value="Other">Other</option>
-                </select>
+                  options={[
+                    { value: "Delhi", label: "Delhi" },
+                    { value: "Gurugram", label: "Gurugram" },
+                    { value: "Noida", label: "Noida" },
+                    { value: "Ghaziabad", label: "Ghaziabad" },
+                    { value: "Mumbai", label: "Mumbai" },
+                    { value: "Bangalore", label: "Bangalore" },
+                    { value: "Hyderabad", label: "Hyderabad" },
+                    { value: "Pune", label: "Pune" },
+                    { value: "Chennai", label: "Chennai" },
+                    { value: "Kolkata", label: "Kolkata" },
+                    { value: "Other", label: "Other" },
+                  ]}
+                  placeholder="Select city"
+                  error={Boolean(errors.city && touched.city)}
+                  size="lg"
+                />
 
                 {renderError("city")}
               </div>

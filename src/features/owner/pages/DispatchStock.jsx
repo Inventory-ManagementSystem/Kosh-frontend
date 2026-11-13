@@ -16,6 +16,7 @@ import {
 import WarehouseTable from "../components/WarehouseTable";
 import WarehouseTableSkeleton from "../components/WarehouseTableSkeleton";
 import Pagination from "../components/Pagination";
+import Dropdown from "../../../components/common/Dropdown";
 
 const removeEmojis = (value) => {
   return value.replace(
@@ -230,24 +231,18 @@ function DispatchStock() {
               className="w-full bg-transparent text-sm text-(--text-color) outline-none placeholder:text-(--secondary-text-color)"
             />
           </div>
-          <div className="relative w-full sm:max-w-52">
-            <select
-              value={selectedCategory}
-              onChange={(event) => setSelectedCategory(event.target.value)}
-              className="h-10 w-full appearance-none rounded-xl border border-(--border-color) bg-(--dropdown-background) px-3 pr-9 text-sm text-(--text-color) outline-none"
-            >
-              <option value="all">All Categories</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-            <FiChevronDown
-              size={17}
-              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-(--secondary-text-color)"
-            />
-          </div>
+          <Dropdown
+            value={selectedCategory}
+            onChange={(event) => setSelectedCategory(event.target.value)}
+            options={[
+              { value: "all", label: "All Categories" },
+              ...categories.map((category) => ({
+                value: category.id,
+                label: category.name,
+              })),
+            ]}
+            className="w-full sm:max-w-52"
+          />
         </div>
 
         <button
@@ -316,26 +311,15 @@ function DispatchStock() {
               className="mx-auto max-w-xs space-y-5"
               noValidate
             >
-              <div className="relative">
-                <select
-                  value={selectedOutlet}
-                  onChange={(event) => setSelectedOutlet(event.target.value)}
-                  className="h-10 w-full appearance-none rounded-md border border-(--icon-border-color) bg-(--dropdown-background) px-3 pr-9 text-sm text-(--text-color) outline-none focus:border-(--accent-color)"
-                >
-                  <option value="">Select Outlet</option>
-
-                  {outlets.map((outlet) => (
-                    <option key={outlet.id} value={outlet.id}>
-                      {outlet.name}
-                    </option>
-                  ))}
-                </select>
-
-                <FiChevronDown
-                  size={16}
-                  className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-(--secondary-text-color)"
-                />
-              </div>
+              <Dropdown
+                value={selectedOutlet}
+                onChange={(event) => setSelectedOutlet(event.target.value)}
+                options={outlets.map((outlet) => ({
+                  value: outlet.id,
+                  label: outlet.name,
+                }))}
+                placeholder="Select Outlet"
+              />
 
               {outlets.length === 0 && (
                 <p className="text-xs text-(--secondary-text-color)">

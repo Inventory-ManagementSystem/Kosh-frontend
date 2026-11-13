@@ -36,7 +36,7 @@ const orderProgress = {
 
 const getStatusClass = (status) => {
   if (["Delivered", "Paid", "Received"].includes(status)) {
-    return "bg-[#26af41]/20 text-[#18903f]";
+    return "bg-[#26af41]/20 text-(--success-color)";
   }
   if (["Dispatched", "Partially Received"].includes(status)) {
     return "bg-[#e5d283]/20 text-[#ffae00]";
@@ -482,7 +482,7 @@ function PurchaseOrderRow({ order, onClick }) {
     >
       <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-2">
-          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-green-400" />
+          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-(--success-color)" />
 
           <h3 className="truncate text-sm font-semibold text-(--accent-color)">
             {order.business_name || order.company_name || "Order"}

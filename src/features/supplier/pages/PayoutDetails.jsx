@@ -92,7 +92,7 @@ function PayoutDetails() {
       return false;
     }
     if (!ACCOUNT_NUMBER_REGEX.test(formData.account_number)) {
-      toast.error("Account number must contain 9–18 digits.");
+      toast.error("Account number must contain 9-18 digits.");
       return false;
     }
     if (!ACCOUNT_NUMBER_REGEX.test(formData.account_number_confirm)) {

@@ -12,6 +12,7 @@ import RegistrationOtp from "./pages/auth/RegistrationOtp";
 import OAuthCallback from "./pages/auth/OAuthCallback";
 import GitHubOAuthCallback from "./pages/auth/GitHubOAuthCallback";
 import HomePage from "./pages/auth/HomePage";
+import NotFound from "./pages/NotFound";
 
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import RequireSetupRole from "./components/auth/RequireSetupRole";
@@ -171,6 +172,7 @@ function App() {
 
       <Route path="/oauth/callback" element={<OAuthCallback />} />
       <Route path="/github/callback" element={<GitHubOAuthCallback />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

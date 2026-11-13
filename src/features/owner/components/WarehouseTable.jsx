@@ -65,7 +65,7 @@ function WarehouseTable({
 
     if (isOrders) {
       if (normalized === "received") {
-        return "bg-[#26af41]/20 text-[#18903f]";
+        return "bg-[#26af41]/20 text-(--success-color)";
       }
 
       if (["dispatched", "partially received"].includes(normalized)) {
@@ -84,7 +84,7 @@ function WarehouseTable({
     }
 
     if (status === "In Stock") {
-      return "bg-[#26af41]/30 text-[#18903f]";
+      return "bg-[#26af41]/30 text-(--success-color)";
     }
 
     if (status === "Low Stock") {

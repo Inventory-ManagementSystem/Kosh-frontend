@@ -55,7 +55,7 @@ function RfqCard({
     >
       <div className="flex items-center justify-between gap-4">
         <div className="flex min-w-0 items-center gap-2">
-          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-green-400" />
+          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-(--success-color)" />
 
           <h2 className="text-base font-semibold text-(--accent-color)">
             {rfq.number}

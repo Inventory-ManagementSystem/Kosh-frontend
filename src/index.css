@@ -18,6 +18,7 @@
   --error-color: #d14d4d;
   --autofill-background: #2b2c40;
   --autofill-text: #e6e6e8;
+  --success-color: #05df72;
   --success-background: #07181e;
   --accent-hover-color: #c5cdeb;
   --dashboard-glow: #6effff;
@@ -46,6 +47,7 @@
   --autofill-background: #f0f2f7;
   --autofill-text: #202436;
   --success-background: #e7f6ed;
+  --success-color: #18903f;
   --accent-hover-color: #334887;
   --dashboard-glow: #4861ad;
   --sidebar-active-background: #e5e9f5;

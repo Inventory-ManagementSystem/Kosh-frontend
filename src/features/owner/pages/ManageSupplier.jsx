@@ -25,7 +25,7 @@ const supplierColumns = [
 
 const getSupplierStatusClass = (status) => {
   if (status === "Linked") {
-    return "bg-[#26af41]/20 text-[#5fba71]";
+    return "bg-[#26af41]/20 text-(--success-color)";
   }
   if (status === "Invited") {
     return "bg-[#454645]/37 text-(--text-color)";

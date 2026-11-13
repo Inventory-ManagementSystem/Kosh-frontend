@@ -49,7 +49,7 @@ function formatPickerDate(value) {
 }
 
 function getChangeClass(change) {
-  if (change > 0) return "text-emerald-400";
+  if (change > 0) return "text-(--success-color)";
   if (change < 0) return "text-red-400";
   return "text-(--text-color)";
 }

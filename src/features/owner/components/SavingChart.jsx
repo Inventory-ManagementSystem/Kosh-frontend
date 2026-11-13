@@ -296,7 +296,7 @@ function PercentBadge({ value }) {
   let style = "bg-(--border-color) text-(--secondary-text-color)";
   let arrow = "";
   if (pct > 0) {
-    style = "bg-[#26af41]/20 text-[#18903f]";
+    style = "bg-[#26af41]/20 text-(--success-color)";
     arrow = <FaCaretUp size={20} />;
   } else if (pct < 0) {
     style = "bg-[#e65757]/15 text-[#e65757]";

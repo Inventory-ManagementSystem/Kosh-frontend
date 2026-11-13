@@ -49,7 +49,7 @@ const getStatusLabel = (status) => {
 
 const getStatusColor = (status) => {
   if (status === "received") {
-    return "bg-green-500/15 text-green-400";
+    return "bg-green-500/15 text-(--success-color)";
   }
   if (status === "dispatched" || status === "partially_received") {
     return "bg-amber-500/15 text-amber-400";
@@ -245,7 +245,7 @@ function OrderDetails() {
                       <div
                         className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
                           step.completed
-                            ? "bg-green-500/15 text-green-400"
+                            ? "bg-green-500/15 text-(--success-color)"
                             : "bg-(--input-background) text-(--secondary-text-color)"
                         }`}
                       >
@@ -261,7 +261,7 @@ function OrderDetails() {
                       {index < progressSteps.length - 1 && (
                         <div className="relative ml-2 h-0.5 flex-1 overflow-hidden rounded-full bg-(--border-color)">
                           <div
-                            className="h-full rounded-full bg-green-500 transition-all duration-500"
+                            className="h-full rounded-full bg-(--success-color) transition-all duration-500"
                             style={{
                               width:
                                 index === 0
@@ -296,7 +296,7 @@ function OrderDetails() {
               )}
 
               {isDispatched && (
-                <div className="mt-5 flex items-start gap-2 rounded-md bg-green-500/10 p-3 text-green-400">
+                <div className="mt-5 flex items-start gap-2 rounded-md bg-green-500/10 p-3 text-(--success-color)">
                   <FiTruck size={15} className="mt-0.5 shrink-0" />
                   <p className="text-xs">
                     Your order was dispatched on{" "}

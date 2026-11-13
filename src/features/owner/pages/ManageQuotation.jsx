@@ -11,13 +11,22 @@ import { useAuth } from "../../../context/AuthContext";
 import { getRFQDetails } from "../api/procurementApi";
 import { getQuotations } from "../api/quotationApi";
 import RfqCard from "../components/RfqCard";
+import SupplierPerformance from "../components/SupplierPerformance";
 import { IoArrowBack } from "react-icons/io5";
 
 const DEFAULT_WEIGHTS = {
   price: 59,
-  delivery: 29,
-  payment: 12,
+  delivery: 25,
+  payment: 10,
+  reliability: 15,
 };
+
+const PRIORITIES = [
+  { key: "price", label: "Price", color: "#39e9ef" },
+  { key: "delivery", label: "Delivery", color: "#ff9800" },
+  { key: "payment", label: "Advance Payment", color: "#4bc783" },
+  { key: "reliability", label: "Reliability", color: "#a78bfa" },
+];
 
 const formatCurrency = (amount) =>
   new Intl.NumberFormat("en-IN", {
@@ -74,6 +83,7 @@ function ManageQuotation() {
           weightPrice: appliedWeights.price,
           weightDelivery: appliedWeights.delivery,
           weightPayment: appliedWeights.payment,
+          weightReliability: appliedWeights.reliability,
         }),
       ]);
 
@@ -98,23 +108,25 @@ function ManageQuotation() {
   const updateWeight = (key, value) => {
     setWeights((current) => {
       const newValue = Math.min(100, Math.max(0, Number(value)));
-      const [first, second] = Object.keys(current).filter(
-        (item) => item !== key,
-      );
+      const otherKeys = Object.keys(current).filter((item) => item !== key);
       const remaining = 100 - newValue;
-      const othersTotal = current[first] + current[second];
-
-      const firstValue =
-        othersTotal === 0
-          ? Math.ceil(remaining / 2)
-          : Math.round((remaining * current[first]) / othersTotal);
-
-      return {
-        ...current,
-        [key]: newValue,
-        [first]: firstValue,
-        [second]: remaining - firstValue,
-      };
+      const othersTotal = otherKeys.reduce(
+        (sum, item) => sum + current[item],
+        0,
+      );
+      const updated = { ...current, [key]: newValue };
+      otherKeys.forEach((item) => {
+        updated[item] =
+          othersTotal === 0
+            ? Math.floor(remaining / otherKeys.length)
+            : Math.round((remaining * current[item]) / othersTotal);
+      });
+      const total = Object.values(updated).reduce((sum, item) => sum + item, 0);
+      const biggest = otherKeys.reduce((a, b) =>
+        updated[a] >= updated[b] ? a : b,
+      );
+      updated[biggest] += 100 - total;
+      return updated;
     });
   };
 
@@ -197,22 +209,14 @@ function ManageQuotation() {
 
         <section className="space-y-4 p-1 sm:p-2">
           <div className="flex items-center gap-2">
-            <span className="h-2 w-2 shrink-0 rounded-full bg-[#18903f]" />
+            <span className="h-2 w-2 shrink-0 rounded-full bg-(--success-color)" />
             <h2 className="text-base font-semibold sm:text-lg">
               Set Priorities
             </h2>
           </div>
 
           <div className="space-y-5 px-1 sm:px-3">
-            {[
-              { key: "price", label: "Price", color: "#39e9ef" },
-              { key: "delivery", label: "Delivery", color: "#ff9800" },
-              {
-                key: "payment",
-                label: "Advance Payment",
-                color: "#4bc783",
-              },
-            ].map((priority) => (
+            {PRIORITIES.map((priority) => (
               <div
                 key={priority.key}
                 className="flex items-center gap-3 sm:gap-5"
@@ -255,16 +259,16 @@ function ManageQuotation() {
                 style={{ width: `${weights.delivery}%` }}
               />
               <div
-                className="bg-[#18903f]"
+                className="bg-[#4bc783]"
                 style={{ width: `${weights.payment}%` }}
+              />
+              <div
+                className="bg-[#a78bfa]"
+                style={{ width: `${weights.reliability}%` }}
               />
             </div>
 
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <p className="text-xs text-(--secondary-text-color)">
-                Reliability excluded
-              </p>
-
               <button
                 type="button"
                 onClick={applyWeights}
@@ -364,7 +368,7 @@ function ManageQuotation() {
 
                   <div className="mb-3 flex items-start justify-between gap-2">
                     <div className="flex min-w-0 items-start gap-2">
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#18903f]" />
+                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-(--success-color)" />
                       <h3 className="break-words text-sm font-semibold">
                         {quotation.company_name || "Supplier"}
                       </h3>
@@ -379,14 +383,14 @@ function ManageQuotation() {
                     {badges.map((badge) => (
                       <span
                         key={badge}
-                        className="rounded border border-[#315746] px-2 py-1 text-[9px] font-bold uppercase text-[#18903f]"
+                        className="rounded border border-[#315746] px-2 py-1 text-[9px] font-bold uppercase text-(--success-color)"
                       >
                         {String(badge).replaceAll("_", " ")}
                       </span>
                     ))}
 
                     {quotation.supplier_verified && (
-                      <span className="flex items-center gap-1 rounded border border-[#315746] font-bold uppercase px-2 py-1 text-[9px] text-[#18903f]">
+                      <span className="flex items-center gap-1 rounded border border-[#315746] font-bold uppercase px-2 py-1 text-[9px] text-(--success-color)">
                         <FiCheckCircle />
                         Verified
                       </span>
@@ -401,7 +405,7 @@ function ManageQuotation() {
                   </p>
 
                   {quotation.delivery_date && rfqDetails.expected_delivery && (
-                    <p className="mt-1 text-[10px] text-[#18903f] font-bold uppercase">
+                    <p className="mt-1 text-[10px] text-(--success-color) font-bold uppercase">
                       {(() => {
                         const deliveryDate = new Date(quotation.delivery_date);
                         const expectedDate = new Date(
@@ -419,7 +423,7 @@ function ManageQuotation() {
                       })()}
                     </p>
                   )}
-
+                  <SupplierPerformance reliability={quotation.reliability} />
                   <div className="mt-4 space-y-3 border-t border-(--border-color) pt-3">
                     <div className="flex items-center justify-between gap-2 text-xs">
                       <span className="text-(--secondary-text-color)">
@@ -449,11 +453,7 @@ function ManageQuotation() {
                         `/manage-quotation/${rfqId}/quotation/${quotation.id}`,
                       )
                     }
-                    className={`mt-4 flex w-full items-center justify-center gap-2 rounded-md border px-3 py-2 text-xs font-medium transition ${
-                      isBest
-                        ? "border-[#b6c8e7] bg-[#b6c8e7] text-[#101323] hover:bg-[#d0dcf5]"
-                        : "border-[#46536e] text-(--text-color) hover:bg-(--sidebar-hover-background)"
-                    }`}
+                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-md border px-3 py-2 text-xs font-medium transition border-(--border-color) bg-(--accent-color) text-(--page-background)"
                   >
                     View Quotation
                     <FiArrowRight />

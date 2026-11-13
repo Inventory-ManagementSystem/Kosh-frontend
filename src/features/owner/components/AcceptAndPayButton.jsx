@@ -369,7 +369,7 @@ function AcceptAndPayButton({ quotationId, advanceAmount, onPaymentUpdate }) {
   return (
     <>
       {advancePaid ? (
-        <div className="flex items-center gap-2 text-sm font-medium text-[#18903f]">
+        <div className="flex items-center gap-2 text-sm font-medium text-(--success-color)">
           <FiCheckCircle size={17} />
           Advance Payment Completed
         </div>

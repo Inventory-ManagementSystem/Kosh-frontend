@@ -35,7 +35,7 @@ const employeeColumns = [
 
 const getEmployeeStatusClass = (status) => {
   if (status === "Approved") {
-    return "bg-[#26af41]/20 text-[#5fba71]";
+    return "bg-[#26af41]/20 text-(--success-color)";
   }
   if (status === "Pending") {
     return "bg-[#454645]/37 text-(--text-color)";

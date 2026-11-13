@@ -282,7 +282,7 @@ function QuotationDetails() {
                     </p>
 
                     {quotation.score != null && (
-                      <p className="mt-1 flex items-center gap-1 text-xs text-[#18903f]">
+                      <p className="mt-1 flex items-center gap-1 text-xs text-(--success-color)">
                         <FiCheckCircle />
                         Score {Number(quotation.score).toFixed(1)}/100
                       </p>

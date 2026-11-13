@@ -37,7 +37,7 @@ const orderProgress = {
 
 const getStatusClass = (status) => {
   if (["Delivered", "In Stock", "Approved", "Linked"].includes(status)) {
-    return "bg-[#26af41]/20 text-[#18903f]";
+    return "bg-[#26af41]/20 text-(--success-color)";
   }
   if (["Dispatched", "Partially Received", "Low Stock"].includes(status)) {
     return "bg-[#e5d283]/20 text-[#ffae00]";

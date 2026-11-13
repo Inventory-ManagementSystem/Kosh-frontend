@@ -25,6 +25,9 @@ export const getQuotations = async (accessToken, rfqId, options = {}) => {
   if (options.weightPayment !== undefined) {
     params.set("weight_payment", String(options.weightPayment));
   }
+  if (options.weightReliability !== undefined) {
+    params.set("weight_reliability", String(options.weightReliability));
+  }
   const query = params.toString();
   const url = `${PROCUREMENT_URL}/rfqs/${rfqId}/quotations/${query ? `?${query}` : ""}`;
   const response = await fetch(url, {

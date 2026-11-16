@@ -15,6 +15,7 @@ import { BsPeopleFill } from "react-icons/bs";
 import { BsPersonLinesFill } from "react-icons/bs";
 import { CgPushLeft } from "react-icons/cg";
 import { CgPushRight } from "react-icons/cg";
+import { IoMapSharp } from "react-icons/io5";
 
 export const navItems = [
   { label: "Dashboard", path: "/dashboard", icon: MdDashboard },
@@ -27,6 +28,7 @@ export const navItems = [
   { label: "Report & Payments", path: "/reports", icon: BiSolidReport },
   { label: "Dispatch Stock", path: "/dispatch-stock", icon: BiSolidSend },
   { label: "Stock History", path: "/received-stock", icon: FaHistory },
+  { label: "Supplier Map", path: "/supplier-map", icon: IoMapSharp },
   { label: "Kosh AI", path: "/kosh-ai", icon: MdPersonAddAlt1 },
   { label: "Manage Employees", path: "/employees", icon: BsPeopleFill },
   { label: "Manage Suppliers", path: "/suppliers", icon: BsPersonLinesFill },

@@ -15,7 +15,7 @@
   --secondary-text-color: #9697a1;
   --accent-color: #b4bedd;
   --icon-color: #6b6c7a;
-  --error-color: #d14d4d;
+  --error-color: #e65757;
   --autofill-background: #2b2c40;
   --autofill-text: #e6e6e8;
   --success-color: #05df72;
@@ -43,11 +43,11 @@
   --secondary-text-color: #324479;
   --accent-color: #324479;
   --icon-color: #4861ad33;
-  --error-color: #c82828;
+  --error-color: #d90000;
   --autofill-background: #f0f2f7;
   --autofill-text: #202436;
   --success-background: #e7f6ed;
-  --success-color: #18903f;
+  --success-color: #2b783b;
   --accent-hover-color: #334887;
   --dashboard-glow: #4861ad;
   --sidebar-active-background: #e5e9f5;
@@ -249,4 +249,12 @@ body {
   .animate-glow-pulse {
     animation: none !important;
   }
+}
+.kosh-iw {
+  padding: 0 !important;
+  border-radius: 12px !important;
+}
+.kosh-iw .gm-style-iw-d {
+  overflow: visible !important;
+  max-height: none !important;
 }

@@ -4,11 +4,13 @@ import toast from "react-hot-toast";
 import { FaWarehouse } from "react-icons/fa6";
 
 import { useAuth } from "../../../context/AuthContext";
+import { useTheme } from "../../../context/ThemeContext";
 import Dropdown from "../../../components/common/Dropdown";
 import { getWarehouse, getCategories } from "../api/warehouseApi";
 import { useNearbySuppliers } from "../hooks/useNearbySuppliers";
 import SupplierListPanel from "../components/SupplierListPanel";
 import { WarehouseNotFoundState } from "../components/SupplierMapStates";
+import SupplierMapView from "../components/SupplierMapView";
 
 const RADIUS_OPTIONS = [5, 10, 50];
 
@@ -20,6 +22,7 @@ const SOURCE_OPTIONS = [
 
 function SupplierMap() {
   const { accessToken } = useAuth();
+  const { themes } = useTheme();
   const [radius, setRadius] = useState(10);
   const [category, setCategory] = useState("all");
   const [source, setSource] = useState("all");
@@ -149,9 +152,21 @@ function SupplierMap() {
       ) : (
         <div className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_380px]">
           <div className="h-96 overflow-hidden rounded-xl border border-(--border-color) bg-(--card-background) lg:h-136">
-            <div className="flex h-full items-center justify-center text-xs text-(--secondary-text-color)">
-              Map
-            </div>
+            {data?.origin ? (
+              <SupplierMapView
+                origin={data.origin}
+                radiusKm={radius}
+                suppliers={suppliers}
+                selectedId={selectedId}
+                dark={themes.owner === "dark"}
+                onSelect={setSelectedId}
+                onSendRfq={handleSendRfq}
+              />
+            ) : (
+              <div className="flex h-full animate-pulse items-center justify-center text-xs text-(--secondary-text-color)">
+                {loading ? "Loading map…" : "Map unavailable"}
+              </div>
+            )}
           </div>
 
           <SupplierListPanel

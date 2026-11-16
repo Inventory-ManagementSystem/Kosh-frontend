@@ -1,7 +1,6 @@
-import { Link } from "react-router-dom";
 import { FiMapPin, FiTarget, FiAlertCircle } from "react-icons/fi";
 
-export function WarehouseNotFoundState() {
+export function WarehouseNotFoundState({ onEdit }) {
   return (
     <div className="mt-6 flex min-h-96 flex-col items-center justify-center rounded-xl border border-(--border-color) bg-(--card-background) px-6 py-12 text-center">
       <span className="flex h-12 w-12 items-center justify-center rounded-full bg-(--error-color)/15 text-(--error-color)">
@@ -14,12 +13,13 @@ export function WarehouseNotFoundState() {
         Add a full warehouse address with street, area and pincode so Kosh can
         show suppliers near you.
       </p>
-      <Link
-        to="/warehouse"
-        className="mt-5 rounded-lg bg-(--accent-color) px-4 py-2 text-xs font-semibold text-(--page-background) transition hover:opacity-90"
+      <button
+        type="button"
+        onClick={onEdit}
+        className="mt-5 cursor-pointer rounded-lg bg-(--accent-color) px-4 py-2 text-xs font-semibold text-(--page-background) transition hover:opacity-90"
       >
         Edit warehouse address
-      </Link>
+      </button>
     </div>
   );
 }

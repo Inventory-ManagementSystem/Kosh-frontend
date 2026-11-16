@@ -227,7 +227,7 @@ function SupplierMapView({
         <LegendDot className="bg-[#05df72]" label="My suppliers" />
         <LegendDot className="bg-[#4f7cff]" label="Other Kosh suppliers" />
         <LegendDot
-          className="border-2 border-white bg-(--page-background)"
+          className="border-2 border-white bg-black"
           label="Your warehouse"
         />
       </div>

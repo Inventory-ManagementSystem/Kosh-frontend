@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { FaWarehouse } from "react-icons/fa6";
 
@@ -10,6 +10,7 @@ import { getWarehouse, getCategories } from "../api/warehouseApi";
 import { useNearbySuppliers } from "../hooks/useNearbySuppliers";
 import SupplierListPanel from "../components/SupplierListPanel";
 import { WarehouseNotFoundState } from "../components/SupplierMapStates";
+import EditWarehouseModal from "../components/EditWarehouseModal";
 import SupplierMapView from "../components/SupplierMapView";
 
 const RADIUS_OPTIONS = [5, 10, 50];
@@ -22,6 +23,7 @@ const SOURCE_OPTIONS = [
 
 function SupplierMap() {
   const { accessToken } = useAuth();
+  const navigate = useNavigate();
   const { themes } = useTheme();
   const [radius, setRadius] = useState(10);
   const [category, setCategory] = useState("all");
@@ -29,6 +31,7 @@ function SupplierMap() {
   const [categories, setCategories] = useState([]);
   const [warehouse, setWarehouse] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
+  const [isEditingWarehouse, setIsEditingWarehouse] = useState(false);
 
   const { data, loading, error, reload } = useNearbySuppliers(accessToken, {
     radius,
@@ -69,6 +72,12 @@ function SupplierMap() {
     setSelectedId(null);
   }, [data]);
 
+  const handleWarehouseSaved = (updated) => {
+    setWarehouse(updated);
+    setIsEditingWarehouse(false);
+    reload();
+  };
+
   const categoryOptions = [
     { value: "all", label: "All categories" },
     ...categories.map((item) => ({ value: item.id, label: item.name })),
@@ -78,7 +87,10 @@ function SupplierMap() {
       ? ""
       : categories.find((item) => String(item.id) === category)?.name || "";
 
-  const handleSendRfq = (supplier) => setSelectedId(supplier.id);
+  const handleSendRfq = (supplier) =>
+    navigate(`/supplier-map/rfq/${supplier.id}`, {
+      state: { supplier, warehouseName: warehouse?.name },
+    });
 
   return (
     <div>
@@ -104,12 +116,13 @@ function SupplierMap() {
                 {warehouse.address}
               </p>
             </div>
-            <Link
-              to="#"
-              className="ml-2 text-[11px] font-semibold text-(--accent-color) underline"
+            <button
+              type="button"
+              onClick={() => setIsEditingWarehouse(true)}
+              className="ml-2 cursor-pointer text-[11px] font-semibold text-(--accent-color) underline"
             >
               Edit address
-            </Link>
+            </button>
           </div>
         )}
       </div>
@@ -148,7 +161,7 @@ function SupplierMap() {
       </div>
 
       {warehouseMissing ? (
-        <WarehouseNotFoundState />
+        <WarehouseNotFoundState onEdit={() => setIsEditingWarehouse(true)} />
       ) : (
         <div className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_380px]">
           <div className="h-96 overflow-hidden rounded-xl border border-(--border-color) bg-(--card-background) lg:h-136">
@@ -183,6 +196,15 @@ function SupplierMap() {
             onClearCategory={() => setCategory("all")}
           />
         </div>
+      )}
+
+      {isEditingWarehouse && (
+        <EditWarehouseModal
+          warehouse={warehouse}
+          accessToken={accessToken}
+          onClose={() => setIsEditingWarehouse(false)}
+          onSaved={handleWarehouseSaved}
+        />
       )}
     </div>
   );

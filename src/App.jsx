@@ -40,6 +40,7 @@ import CreateGRN from "./features/owner/pages/CreateGRN";
 import Reports from "./features/owner/pages/Reports";
 import EditProduct from "./features/owner/pages/EditProduct";
 import ReceivedStock from "./features/owner/pages/ReceivedStock";
+import SupplierMap from "./features/owner/pages/SupplierMap";
 
 import EmployeeLayout from "./layouts/EmployeeLayout";
 import EmployeeInvites from "./features/employee/pages/EmployeeInvites";
@@ -122,6 +123,7 @@ function App() {
             <Route path="/reports" element={<Reports />} />
             <Route path="/received-stock" element={<ReceivedStock />} />
             <Route path="/edit-product/:id" element={<EditProduct />} />
+            <Route path="/supplier-map" element={<SupplierMap />} />
           </Route>
         </Route>
 

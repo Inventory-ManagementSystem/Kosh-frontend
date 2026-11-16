@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import {
   getActiveAlerts,
@@ -32,10 +33,11 @@ function RFQAlerts() {
   const [summary, setSummary] = useState({});
   const [rfqs, setRfqs] = useState([]);
   const [rfqTotalPages, setRfqTotalPages] = useState(1);
-  const [rfqPage, setRfqPage] = useState(1);
   const [alerts, setAlerts] = useState([]);
   const [alertTotalPages, setAlertTotalPages] = useState(1);
-  const [alertPage, setAlertPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const rfqPage = Math.max(1, Number(searchParams.get("rfqPage")) || 1);
+  const alertPage = Math.max(1, Number(searchParams.get("alertPage")) || 1);
   const [loading, setLoading] = useState(true);
   const [refreshingAlerts, setRefreshingAlerts] = useState(false);
   const [error, setError] = useState("");
@@ -47,6 +49,22 @@ function RFQAlerts() {
   const [confirmCancelRfq, setConfirmCancelRfq] = useState(null);
   const [settings, setSettings] = useState(null);
   const [savingSettings, setSavingSettings] = useState(false);
+
+  const setPageParam = (key, current, value) => {
+    const next = typeof value === "function" ? value(current) : value;
+    setSearchParams(
+      (prev) => {
+        const params = new URLSearchParams(prev);
+        if (next <= 1) params.delete(key);
+        else params.set(key, String(next));
+        return params;
+      },
+      { replace: true },
+    );
+  };
+
+  const setRfqPage = (value) => setPageParam("rfqPage", rfqPage, value);
+  const setAlertPage = (value) => setPageParam("alertPage", alertPage, value);
 
   const loadData = async () => {
     try {

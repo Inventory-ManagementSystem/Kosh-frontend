@@ -1,6 +1,6 @@
 # Kosh
 
-Kosh is a role-based procurement and inventory management web application. It brings business owners, employees, and suppliers onto a single platform, covering the full cycle from low-stock alerts and requests for quotation (RFQs) through purchase orders, goods receipt notes (GRNs), invoicing, and payments.
+Kosh is a role-based procurement and inventory monitoring web application. It brings business owners, employees, and suppliers onto a single platform, covering the full cycle from low-stock alerts and requests for quotation (RFQs) through purchase orders, goods receipt notes (GRNs), invoicing, and payments.
 
 This repository contains the frontend client, built with React and Vite. It communicates with a separate backend REST API and WebSocket service.
 
@@ -15,6 +15,7 @@ This repository contains the frontend client, built with React and Vite. It comm
 - [Application Routes](#application-routes)
 - [Authentication and Session Handling](#authentication-and-session-handling)
 - [Real-Time Notifications](#real-time-notifications)
+- [Supplier Map](#supplier-map)
 
 ---
 
@@ -28,7 +29,7 @@ Kosh provides a separate workspace for each type of user:
 | Employee | Joins a business through an invitation. Handles warehouse stock, orders, dispatches, and goods receipts.                                                                |
 | Supplier | Responds to RFQs with quotations, fulfils and tracks orders, and manages payout details.                                                                                |
 
-Each role has its own layout, navigation, and dashboard. Access to all application routes beyond the public pages is gated by an authentication check.
+Each role has its own layout, navigation, theme, and dashboard. Access to all application routes beyond the public pages is gated by an authentication check, and each workspace is restricted to its own role.
 
 ---
 
@@ -36,17 +37,18 @@ Each role has its own layout, navigation, and dashboard. Access to all applicati
 
 **Owner**
 
-- Dashboard with an overview of stock, orders, and activity
+- Dashboard with an overview of stock, orders, activity, and estimated savings
 - Warehouse and product management, including product creation and editing
 - Low-stock alerts that lead directly into RFQ creation
-- RFQ management and side-by-side quotation review and acceptance
+- RFQ management and side-by-side quotation review, with adjustable ranking weights, and acceptance
+- Supplier Map to find nearby verified suppliers and send an RFQ directly
 - Purchase order and invoice management with downloadable PDF invoices
 - Advance and balance payment flows through Razorpay
 - Goods receipt (GRN) creation, with downloadable GRN documents
 - Stock dispatch to outlets and a received-stock history
 - Reports covering orders, invoices, and GRNs
 - Employee and supplier management, including employee invitations
-- Real-time notifications and an in-app AI assistant (Kosh AI)
+- Real-time and push notifications, and an in-app AI assistant (Kosh AI)
 
 **Employee**
 
@@ -66,30 +68,35 @@ Each role has its own layout, navigation, and dashboard. Access to all applicati
 
 **Platform**
 
-- Email and password authentication with OTP verification
+- Email and password authentication with OTP verification and reCAPTCHA
 - Google and GitHub OAuth sign-in
 - Password reset through OTP
+- Optional "remember me" session persistence
 - Multi-step onboarding for businesses, warehouses, and suppliers
 - Automatic access token refresh with request retry
+- Global search and independent light and dark themes for each workspace
 - Public landing page with a contact form
 
 ---
 
 ## Technology Stack
 
-| Area                      | Technology           |
-| ------------------------- | -------------------- |
-| UI library                | React                |
-| Build tool and dev server | Vite                 |
-| Routing                   | React Router         |
-| Styling                   | Tailwind CSS         |
-| Notifications and toasts  | react-hot-toast      |
-| Icons                     | react-icons          |
-| Payments                  | Razorpay Checkout    |
-| Real-time updates         | Native WebSocket API |
-| Language                  | JavaScript (JSX)     |
+| Area                      | Technology                                     |
+| ------------------------- | ---------------------------------------------- |
+| UI library                | React                                          |
+| Build tool and dev server | Vite                                           |
+| Routing                   | React Router                                   |
+| Styling                   | Tailwind CSS                                   |
+| State                     | React Context (auth), Redux Toolkit (theme)    |
+| Notifications and toasts  | react-hot-toast                                |
+| Icons                     | react-icons                                    |
+| Charts                    | Recharts                                       |
+| Maps                      | Google Maps JavaScript API                     |
+| Payments                  | Razorpay Checkout                              |
+| Real-time updates         | Native WebSocket API, Firebase Cloud Messaging |
+| Language                  | JavaScript (JSX)                               |
 
-State is managed through React Context and local component state. There is no external state management library.
+Authentication state lives in React Context. Redux Toolkit holds the per-workspace theme, and server data is kept in local component state.
 
 ---
 
@@ -100,6 +107,7 @@ State is managed through React Context and local component state. There is no ex
 - Node.js (an active LTS release is recommended)
 - npm, yarn, or pnpm
 - A running instance of the Kosh backend API
+- A Google Maps API key (for the Supplier Map)
 
 ### Installation
 
@@ -118,6 +126,16 @@ State is managed through React Context and local component state. There is no ex
 
 3. Create a `.env` file in the project root and add the required environment variables.
 
+   | Variable                   | Description                                                                                          |
+   | -------------------------- | ---------------------------------------------------------------------------------------------------- |
+   | `VITE_BASE_URL`            | Backend API base URL, with a trailing slash. The WebSocket host is derived from it.                  |
+   | `VITE_RECAPTCHA_SITE_KEY`  | reCAPTCHA v3 site key                                                                                |
+   | `VITE_GOOGLE_MAPS_API_KEY` | Google Maps JavaScript API key                                                                       |
+   | `VITE_MAPS_URL`            | Optional. Full URL the Supplier Map menu item opens (for example a subdomain)                        |
+   | `VITE_*_API_URL`           | Full endpoint URLs for authentication, business, warehouse, product, supplier, and employee requests |
+
+   Vite bakes these values into the build, so restart the dev server after editing `.env` and rebuild after changing them for production.
+
 4. Start the development server.
 
    ```bash
@@ -126,7 +144,7 @@ State is managed through React Context and local component state. There is no ex
 
 The application will be available at the local address printed by Vite, typically `http://localhost:5173`.
 
-To create a production build, run `npm run build`. To preview it locally, run `npm run preview`.
+To create a production build, run `npm run build`. To preview it locally, run `npm run preview`. Serve the build as a single-page application, with unknown paths falling back to `index.html`.
 
 ---
 
@@ -158,6 +176,8 @@ To create a production build, run `npm run build`. To preview it locally, run `n
 | -------------------------------------------------- | ---------------------------- |
 | `/dashboard`                                       | Dashboard                    |
 | `/rfq-alerts`                                      | RFQs and stock alerts        |
+| `/supplier-map`                                    | Supplier Map                 |
+| `/supplier-map/rfq/:supplierId`                    | Send an RFQ to one supplier  |
 | `/manage-quotation/:rfqId`                         | Quotations for an RFQ        |
 | `/manage-quotation/:rfqId/quotation/:quotationId`  | Quotation detail             |
 | `/owner/orders`, `/owner/orders/:orderId`          | Orders                       |
@@ -202,11 +222,12 @@ To create a production build, run `npm run build`. To preview it locally, run `n
 - The access token is held in memory within `AuthContext` and is never written to browser storage.
 - The refresh token is managed by the backend as a cookie. All requests use `credentials: "include"`.
 - On page load, the application attempts to restore the session by calling the refresh endpoint and then fetching the user profile.
-- A scheduled refresh runs periodically while a session is active.
+- A scheduled refresh runs every 8 minutes while a session is active.
 - `apiFetch` wraps requests and, on a `401` response, refreshes the token once and retries the original request. Concurrent refresh calls are de-duplicated, and a `429` response from the refresh endpoint temporarily blocks further attempts, honouring the `Retry-After` header.
 - If refresh fails with `400`, `401`, or `403`, the user is redirected to `/login`.
-- `ProtectedRoute` guards all authenticated routes and shows a loading screen while the session is being restored.
-- After login, the backend returns a `next_step` value that determines the destination: the relevant dashboard, a setup screen, the invitations page, or role selection.
+- "Remember me" is stored as a flag in `localStorage` and a marker in `sessionStorage`, and decides whether a session is restored in a new browser session.
+- `ProtectedRoute` guards all authenticated routes and shows a loading screen while the session is being restored. `RequireRole` restricts each workspace to its role.
+- After login, the destination follows the user's role: the relevant dashboard, or role selection and the matching setup screen when no role is set.
 
 ---
 
@@ -218,3 +239,15 @@ The `useNotificationSocket` hook establishes a WebSocket connection to `/ws/noti
 - The protocol is derived from the configured API base URL (`wss` for HTTPS, `ws` for HTTP).
 - Reconnection uses exponential backoff, starting at 3 seconds and capped at 30 seconds.
 - The connection is closed cleanly on logout or component unmount.
+
+Push notifications use Firebase Cloud Messaging through a service worker, so alerts also arrive when the app is closed.
+
+---
+
+## Supplier Map
+
+The Supplier Map lists verified suppliers within 5, 10, or 50 km of the owner's warehouse, filtered by category and source (all, my suppliers, or platform). Markers and the side list stay in sync, and the owner can send an RFQ to a chosen supplier from the map.
+
+- Add `https://your-domain.com/*` (and `http://localhost:5173/*` for development) to the Google API key's website restrictions, and enable the Maps JavaScript API with billing.
+- If the map shows "This page didn't load Google Maps correctly", read the error name in the browser console. `RefererNotAllowedMapError` means the current origin is missing from the key restrictions.
+- If `VITE_MAPS_URL` points to a subdomain, that subdomain must serve this same application, be added to the key restrictions, and be allowed in the backend CORS settings.
